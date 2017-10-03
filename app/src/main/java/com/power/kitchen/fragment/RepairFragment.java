@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.power.kitchen.R;
@@ -24,7 +23,6 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.pzksbx_layout) LinearLayout pzksbxLayout;
     @BindView(R.id.txbxd_layout) LinearLayout txbxdLayout;
-    @BindView(R.id.my_message_iv) ImageView myMessageIv;
     Unbinder unbinder;
 
     @Nullable

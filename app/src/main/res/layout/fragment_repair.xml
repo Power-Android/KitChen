@@ -10,13 +10,13 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
-        <ImageView
+        <!--<ImageView
             android:id="@+id/my_message_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/kc_my_message_black"
             android:padding="30dp"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"/>-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

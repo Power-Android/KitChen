@@ -14,6 +14,15 @@ public class WaiteRepairBean implements Serializable {
     private String is_baoxiu;
     private String xinghao;
     private String shijian;
+    private String money;
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
+    }
 
     public String getBianhao() {
         return bianhao;

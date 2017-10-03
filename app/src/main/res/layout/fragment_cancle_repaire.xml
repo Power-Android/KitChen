@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="取消维修"
-        android:textColor="@color/text_color01"
-        android:layout_gravity="center_horizontal"/>
+    <ListView
+        android:id="@+id/cancle_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
 </LinearLayout>
