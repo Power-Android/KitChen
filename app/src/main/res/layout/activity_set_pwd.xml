@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gary_background02"
+    tools:context="com.power.kitchen.activity.SetPwdActivity">
+
+    <include layout="@layout/item_title_layout" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/white">
+        <ImageView
+            android:id="@+id/iv_01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/kc_suo_icon"
+            android:padding="10dp" />
+        <TextView
+            android:id="@+id/tv_01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/ymm"
+            android:paddingLeft="10dp"
+            style="@style/black_textview"
+            android:layout_toRightOf="@+id/iv_01"/>
+        <EditText
+            android:id="@+id/enter_password_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/tv_01"
+            android:layout_toLeftOf="@+id/look_password01_iv"
+            android:singleLine="true"
+            android:password="true"
+            android:background="@null"
+            android:hint="@string/mmts"
+            style="@style/gary_hint" />
+        <ImageView
+            android:id="@+id/look_password01_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@mipmap/kc_eye_gary" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gary02"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/white">
+        <ImageView
+            android:id="@+id/iv_02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/kc_suo_icon"
+            android:padding="10dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tv_02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_02"
+            android:layout_centerVertical="true"
+            android:text="@string/xmm"
+            android:paddingLeft="10dp"
+            style="@style/black_textview" />
+        <EditText
+            android:id="@+id/new_password_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_02"
+            android:layout_toLeftOf="@+id/look_password02_iv"
+            android:singleLine="true"
+            android:password="true"
+            android:layout_marginLeft="20dp"
+            android:background="@null"
+            android:hint="@string/mmts"
+            style="@style/gary_hint" />
+        <ImageView
+            android:id="@+id/look_password02_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@mipmap/kc_eye_gary" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gary02"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/white">
+        <ImageView
+            android:id="@+id/iv_03"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/kc_suo_icon"
+            android:padding="10dp" />
+        <TextView
+            android:id="@+id/tv_03"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_03"
+            android:layout_centerVertical="true"
+            android:text="@string/qrmm"
+            android:paddingLeft="10dp"
+            style="@style/black_textview"/>
+        <EditText
+            android:id="@+id/query_password_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_03"
+            android:singleLine="true"
+            android:password="true"
+            android:layout_toLeftOf="@+id/look_password03_iv"
+            android:background="@null"
+            android:hint="@string/mmts"
+            android:layout_marginLeft="20dp"
+            style="@style/gary_hint" />
+        <ImageView
+            android:id="@+id/look_password03_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@mipmap/kc_eye_gary" />
+    </RelativeLayout>
+    <Button
+        android:id="@+id/query_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/green01"
+        android:text="@string/xgmm"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

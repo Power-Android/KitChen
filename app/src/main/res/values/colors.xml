@@ -14,5 +14,6 @@
     <color name="gary02">#DDDDDD</color>   <!--下划线颜色-->
     <color name="gary_background">#FAFAFA</color>   <!--灰色背景-->
     <color name="yellow01">#ff9900</color>    <!--报修记录橘黄色-->
-
+    <color name="hint">#CCCCCC</color>  <!--hint字体颜色-->
+    <color name="gary_background02">#EEEEF0</color>
 </resources>

@@ -39,6 +39,10 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/text_color01</item>
     </style>
+    <style name="gary_hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/hint</item>
+    </style>
 
     <!-- animation 样式 -->
     <style name="activityAnimation" parent="@android:style/Animation">

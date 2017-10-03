@@ -1,5 +1,6 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.power.kitchen.R;
+import com.power.kitchen.activity.SetPwdActivity;
 import com.power.kitchen.view.CircleImageView;
 import com.suke.widget.SwitchButton;
 
@@ -94,6 +96,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
             case R.id.my_msg_iv://消息页面
                 break;
             case R.id.my_setpwd_layout://密码设置
+                startActivity(new Intent(getActivity(),SetPwdActivity.class));
                 break;
             case R.id.my_pj_layout://评价页面
                 break;

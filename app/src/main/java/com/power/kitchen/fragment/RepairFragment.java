@@ -49,10 +49,10 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.pzksbx_layout:
-                TUtils.showShort(getActivity(), "11111111111");
+                TUtils.showShort(getActivity().getApplicationContext(), "11111111111");
                 break;
             case R.id.txbxd_layout:
-                TUtils.showShort(getActivity(), "22222222222");
+                TUtils.showShort(getActivity().getApplicationContext(), "22222222222");
                 break;
         }
     }
