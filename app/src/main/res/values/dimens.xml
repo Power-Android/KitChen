@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="tab_max_width">30dp</dimen>
+    <dimen name="text_big_size">16sp</dimen><!-- 主要使用的字体大小 对应-->
+
+</resources>

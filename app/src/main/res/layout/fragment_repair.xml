@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/shouye_background">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+        <ImageView
+            android:id="@+id/my_message_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/kc_my_message_black"
+            android:padding="30dp"
+            android:layout_alignParentEnd="true"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/app_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="68dp"/>
+        <LinearLayout
+            android:id="@+id/pzksbx_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="60dp"
+            android:layout_marginBottom="100dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/kc_pzksbx"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pzksbx"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/text_color01"
+                android:layout_gravity="center_horizontal" />
+            <View
+                android:layout_width="35dp"
+                android:layout_height="2dp"
+                android:background="@color/green01"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/txbxd_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+            android:layout_marginRight="60dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/kc_txbxd"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txbxd"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/text_color01"
+                android:layout_gravity="center_horizontal" />
+            <View
+                android:layout_width="35dp"
+                android:layout_height="2dp"
+                android:background="@color/green01"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

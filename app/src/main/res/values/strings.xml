@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">商厨联盟</string>
+    <string name="tab_bxjl">报修记录</string>
+    <string name="tab_baoxiu">报修</string>
+    <string name="tab_grzx">个人中心</string>
+    <string name="pzksbx">拍照快速报修</string>
+    <string name="txbxd">填写保修单</string>
+    <string name="mmsz">密码设置</string>
+    <string name="pj">评价</string>
+    <string name="xxts">消息提示</string>
+    <string name="wdwz">我的位置</string>
+    <string name="gywm">关于我们</string>
+    <string name="fwrx">服务热线</string>
+    <string name="tcdl">退出登录</string>
+    <string name="voice">声音</string>
+    <string name="zhendong">震动</string>
+    <string name="telnum">400-400-4000</string>
+
+    <string-array name="tab_name">
+        <item>待维修</item>
+        <item>已维修</item>
+        <item>未完成</item>
+        <item>已取消</item>
+    </string-array>
+
+
+</resources>
