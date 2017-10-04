@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.power.kitchen.R;
 import com.power.kitchen.activity.SetPwdActivity;
+import com.power.kitchen.activity.SettingActivity;
 import com.power.kitchen.view.CircleImageView;
 import com.suke.widget.SwitchButton;
 
@@ -92,6 +93,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
             case R.id.my_head_iv://头像
                 break;
             case R.id.into_set_iv://进入设置
+                startActivity(new Intent(getActivity(),SettingActivity.class));
                 break;
             case R.id.my_msg_iv://消息页面
                 break;

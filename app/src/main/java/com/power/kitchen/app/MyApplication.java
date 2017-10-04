@@ -16,6 +16,7 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.BuildConfig;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.LogStrategy;
+import com.orhanobut.logger.LogcatLogStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
 
@@ -124,9 +125,6 @@ public class MyApplication extends Application {
         }
     }
 
-    //自定义TAG
-    private static String TAG = "POWER";
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -158,11 +156,21 @@ public class MyApplication extends Application {
      */
     private void setLogger() {
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
-                .showThreadInfo(true)  // (Optional) Whether to show thread info or not. Default true
-                .methodCount(3)         // (Optional) How many method line to show. Default 2
-                .methodOffset(7)        // (Optional) Hides internal method calls up to offset. Default 5
+                .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true
+//                .methodCount(3)         // (Optional) How many method line to show. Default 2
+//                .methodOffset(7)        // (Optional) Hides internal method calls up to offset. Default 5
                 .tag("POWER")   // (Optional) Global tag for every log. Default PRETTY_LOGGER
+//                .logStrategy(logStrategy)   // (Optional) Changes the log strategy to print out. Default LogCat
                 .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
+        /**
+         * 隐藏Log日志---上线前打开注释即可
+         */
+        /*Logger.addLogAdapter(new AndroidLogAdapter(){
+            @Override
+            public boolean isLoggable(int priority, String tag) {
+                return BuildConfig.DEBUG;
+            }
+        });*/
     }
 }

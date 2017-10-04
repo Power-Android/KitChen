@@ -22,6 +22,12 @@
     <string name="qrmm">确认密码</string>
     <string name="mmts">6-20位字母或汉字</string>
     <string name="xgmm">修改密码</string>
+    <string name="xm">姓名</string>
+    <string name="ctmc">餐厅名称</string>
+    <string name="sjh">手机号</string>
+    <string name="szqy">所在区域</string>
+    <string name="xxdz">详细地址</string>
+    <string name="dzgl">地址管理</string>
 
 
     <string-array name="tab_name">

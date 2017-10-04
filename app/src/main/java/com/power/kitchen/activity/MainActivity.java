@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.fragment.PersonCenterFragment;

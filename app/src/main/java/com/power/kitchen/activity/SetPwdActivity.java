@@ -90,6 +90,5 @@ public class SetPwdActivity extends BaseActivity {
             imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_eye_gary));
             editText.setSelection(editText.getText().length());
         }
-
     }
 }
