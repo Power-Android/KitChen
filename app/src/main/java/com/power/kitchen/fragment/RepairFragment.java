@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.DeviceDetailActivity;
 import com.power.kitchen.utils.CommonPopupWindow;
 import com.power.kitchen.utils.TUtils;
 import java.io.File;
@@ -31,6 +32,8 @@ import butterknife.Unbinder;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by power on 2017/9/19.
@@ -75,7 +78,7 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
                 showPopup();
                 break;
             case R.id.txbxd_layout:
-                TUtils.showShort(getActivity().getApplicationContext(), "22222222222");
+                startActivity(new Intent(getActivity(),DeviceDetailActivity.class));
                 break;
         }
     }
@@ -202,12 +205,28 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
         switch (requestCode){
             case WRITE_SD_CODE:
                 //TODO 跳转到设备详情页面
-
+                if (resultCode == RESULT_OK){
+                    jumpActivity();
+                }
                 break;
             case READ_SD_CODE:
                 //TODO 跳转到选择图片页面
-                
+
                 break;
         }
     }
+
+    private void jumpActivity() {
+
+    }
+   /* public void gotoClipActivity(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, ClipImageActivity.class);
+        intent.putExtra("type", type);
+        intent.setData(uri);
+        startActivityForResult(intent, REQUEST_CROP_PHOTO);
+    }*/
 }

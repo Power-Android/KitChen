@@ -3,6 +3,7 @@ package com.power.kitchen.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,6 +13,9 @@ import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.fragment.PersonCenterFragment;
 import com.power.kitchen.fragment.RepairFragment;
 import com.power.kitchen.fragment.RepairRecordsFragment;
+
+import org.zackratos.ultimatebar.UltimateBar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -33,10 +37,16 @@ public class MainActivity extends BaseActivity {
     private RepairRecordsFragment repairRecordsFragment;
     private RepairFragment repairFragment;
     private PersonCenterFragment personCenterFragment;
+    private UltimateBar ultimateBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /**
+         * GitHub：导航栏
+         * https://github.com/Zackratos/UltimateBar
+         */
+        ultimateBar = new UltimateBar(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initListener();
@@ -67,6 +77,7 @@ public class MainActivity extends BaseActivity {
                 }else {
                     transaction.show(repairRecordsFragment);
                 }
+                ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
                 break;
             case 1:
                 tabBaoxiuIv.setImageResource(R.mipmap.kc_baoxiu_click);
@@ -77,6 +88,7 @@ public class MainActivity extends BaseActivity {
                 }else {
                     transaction.show(repairFragment);
                 }
+                ultimateBar.setImmersionBar();
                 break;
             case 2:
                 tabGrzxIv.setImageResource(R.mipmap.kc_mine_click);
@@ -87,6 +99,7 @@ public class MainActivity extends BaseActivity {
                 }else {
                     transaction.show(personCenterFragment);
                 }
+                ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
                 break;
             default:
                 break;
