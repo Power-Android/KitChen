@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.power.kitchen">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -27,7 +28,8 @@
         android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:label">
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +56,10 @@
             android:name=".activity.SettingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name=".activity.DeviceDetailActivity"></activity>
+        <activity
+            android:name=".activity.DeviceDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
     </application>
 
 </manifest>

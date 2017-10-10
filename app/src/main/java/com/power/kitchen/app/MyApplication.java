@@ -5,24 +5,17 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
+import com.kingja.loadsir.core.LoadSir;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
-import com.lzy.okgo.cookie.CookieJarImpl;
-import com.lzy.okgo.cookie.store.SPCookieStore;
 import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
 import com.orhanobut.logger.AndroidLogAdapter;
-import com.orhanobut.logger.BuildConfig;
 import com.orhanobut.logger.FormatStrategy;
-import com.orhanobut.logger.LogStrategy;
-import com.orhanobut.logger.LogcatLogStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
-
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
-
 import okhttp3.OkHttpClient;
 
 /**
@@ -131,7 +124,10 @@ public class MyApplication extends Application {
 
         setLogger();//Logger---第三方日志打印
         setOkGo();//OkGo----第三方网络框架
+        setLoadSir();//管理状态框架
+    }
 
+    private void setLoadSir() {
 
     }
 

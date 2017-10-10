@@ -34,4 +34,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'org.zackratos:ultimatebar:1.0.3'//透明状态栏导航栏、沉浸式状态栏导航栏
+    compile 'com.kingja.loadsir:loadsir:1.2.2'
 }
