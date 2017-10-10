@@ -202,9 +202,11 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
         switch (requestCode){
             case WRITE_SD_CODE:
                 //TODO 跳转到设备详情页面
+
                 break;
             case READ_SD_CODE:
                 //TODO 跳转到选择图片页面
+                
                 break;
         }
     }
