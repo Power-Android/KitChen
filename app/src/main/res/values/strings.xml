@@ -22,12 +22,26 @@
     <string name="qrmm">确认密码</string>
     <string name="mmts">6-20位字母或汉字</string>
     <string name="xgmm">修改密码</string>
-    <string name="xm">姓名</string>
+    <string name="xm">姓名&#8195;&#8195;</string>
     <string name="ctmc">餐厅名称</string>
-    <string name="sjh">手机号</string>
+    <string name="sjh">手机号&#8195;</string>
     <string name="szqy">所在区域</string>
     <string name="xxdz">详细地址</string>
     <string name="dzgl">地址管理</string>
+    <string name="sbxx">设备信息</string>
+    <string name="txm">条形码&#8195;</string>
+    <string name="gmrq">购买日期</string>
+    <string name="bxq">保修期&#8195;</string>
+    <string name="bxqn">保修期内</string>
+    <string name="bxqw">保修期外</string>
+    <string name="pp">品牌&#8195;&#8195;</string>
+    <string name="lx">类型&#8195;&#8195;</string>
+    <string name="xh">型号&#8195;&#8195;</string>
+    <string name="lxxx">联系信息</string>
+    <string name="wtms">问题描述</string>
+    <string name="sbtp">设备图片</string>
+    <string name="qxbx">取消报修</string>
+    <string name="qrbx">确认报修</string>
 
 
     <string-array name="tab_name">

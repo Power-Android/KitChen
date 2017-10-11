@@ -8,11 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.kingja.loadsir.callback.Callback;
+import com.kingja.loadsir.core.LoadService;
+import com.kingja.loadsir.core.LoadSir;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.NotRepaireAdapter;
 import com.power.kitchen.adapter.WaitRepairAdapter;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.callback.EmptyCallback;
+import com.power.kitchen.callback.ErrorCallback;
+import com.power.kitchen.callback.LoadingCallback;
+import com.power.kitchen.callback.PostUtil;
+import com.power.kitchen.callback.TimeoutCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +31,7 @@ import butterknife.Unbinder;
 
 /**
  * Created by Administrator on 2017/9/20.
+ * 未完成
  */
 
 public class NotRepairTabFragment extends Fragment {
@@ -30,14 +39,35 @@ public class NotRepairTabFragment extends Fragment {
     @BindView(R.id.not_list) ListView notList;
     Unbinder unbinder;
     private List<WaiteRepairBean> list = null;
+    private View view;
+    private LoadService loadService;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_not_repaire, container, false);
+        view = inflater.inflate(R.layout.fragment_not_repaire, container, false);
         unbinder = ButterKnife.bind(this, view);
+        initLoad();
         initView();
-        return view;
+        return loadService.getLoadLayout();
+    }
+
+    private void initLoad() {
+        LoadSir loadSir = new LoadSir.Builder()
+                .addCallback(new EmptyCallback())
+                .addCallback(new ErrorCallback())
+                .addCallback(new TimeoutCallback())
+                .addCallback(new LoadingCallback())
+                .setDefaultCallback(ErrorCallback.class)
+                .build();
+        loadService = loadSir.register(view, new Callback.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                //重新加载逻辑
+                loadService.showSuccess();
+            }
+
+        });
     }
 
     private void initView() {
