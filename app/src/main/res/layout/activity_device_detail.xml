@@ -476,16 +476,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/gary01"
-                android:paddingBottom="20dp"
                 android:paddingLeft="10dp"
+                android:paddingBottom="10dp"
                 android:paddingTop="20dp"
                 android:text="@string/sbtp" />
+            <com.power.kitchen.view.MyGridView
+                android:id="@+id/gridview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/gary01"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:numColumns="3"
+                android:verticalSpacing="3dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@color/gary01"
-                android:layout_marginBottom="20dp">
+                android:paddingTop="30dp"
+                android:paddingBottom="20dp">
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

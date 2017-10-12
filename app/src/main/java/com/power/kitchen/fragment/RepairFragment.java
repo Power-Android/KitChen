@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.DeviceDetailActivity;
+import com.power.kitchen.activity.DeviceDetailsActivity;
 import com.power.kitchen.utils.CommonPopupWindow;
 import com.power.kitchen.utils.TUtils;
 import java.io.File;
@@ -78,7 +79,7 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
                 showPopup();
                 break;
             case R.id.txbxd_layout:
-                startActivity(new Intent(getActivity(),DeviceDetailActivity.class));
+                startActivity(new Intent(getActivity(),DeviceDetailsActivity.class));
                 break;
         }
     }
