@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -8,13 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.GridViewAddImgesAdpter;
 import com.power.kitchen.app.BaseActivity;
@@ -28,6 +32,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
 
 public class DeviceDetailsActivity extends BaseActivity {
 
@@ -49,7 +54,7 @@ public class DeviceDetailsActivity extends BaseActivity {
     }
 
     private void initView() {
-        addImgesAdpter = new GridViewAddImgesAdpter(list,this);
+        addImgesAdpter = new GridViewAddImgesAdpter(list, this);
         gridview.setAdapter(addImgesAdpter);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -119,14 +124,14 @@ public class DeviceDetailsActivity extends BaseActivity {
         // 进入相册 以下是例子：不需要的api可以不写
         PictureSelector.create(DeviceDetailsActivity.this)
                 .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                .theme(R.style.picture_default_style)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
+                .theme(R.style.picture_default_style1)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
                 .maxSelectNum(9)// 最大图片选择数量
                 .minSelectNum(1)// 最小选择数量
                 .imageSpanCount(4)// 每行显示个数
                 .selectionMode(PictureConfig.MULTIPLE )// 多选 or 单选 PictureConfig.SINGLE
                 .previewImage(true)// 是否可预览图片
-//                .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
-//                .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
+                .previewVideo(true)// 是否可预览视频
+                .enablePreviewAudio(true) // 是否可播放音频
                 .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
                 .isCamera(true)// 是否显示拍照按钮
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
@@ -137,14 +142,14 @@ public class DeviceDetailsActivity extends BaseActivity {
                 //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
 //                .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-//                .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
-//                .isGif(cb_isGif.isChecked())// 是否显示gif图片
-//                .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
-//                .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
-//                .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
-//                .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-//                .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-//                .selectionMedia(selectList)// 是否传入已选图片
+                .hideBottomControls(true)// 是否显示uCrop工具栏，默认不显示
+                .isGif(true)// 是否显示gif图片
+                .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
+                .circleDimmedLayer(false)// 是否圆形裁剪
+                .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                .openClickSound(true)// 是否开启点击声音
+//                .selectionMedia(list)// 是否传入已选图片
 //                        .videoMaxSecond(15)
 //                        .videoMinSecond(10)
                 //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
@@ -165,7 +170,7 @@ public class DeviceDetailsActivity extends BaseActivity {
                 .openCamera(PictureMimeType.ofImage())// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
                 .theme(R.style.picture_default_style)// 主题样式设置 具体参考 values/styles
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
-//                .selectionMedia()// 是否传入已选图片
+//                .selectionMedia(list)// 是否传入已选图片
                 .previewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                 .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }

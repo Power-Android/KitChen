@@ -40,8 +40,8 @@ public class LoadingDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_loading);
 
-        myProgress = findViewById(R.id.myProgress);
-        tipTextView = findViewById(R.id.tipTextView);
+        myProgress = (ProgressBar) findViewById(R.id.myProgress);
+        tipTextView = (TextView) findViewById(R.id.tipTextView);
 
     }
 
