@@ -20,7 +20,7 @@
     <string name="ymm">原密码&#8195;</string>
     <string name="xmm">新密码&#8195;</string>
     <string name="qrmm">确认密码</string>
-    <string name="mmts">6-20位字母或汉字</string>
+    <string name="mmts">6-20位字母或字母</string>
     <string name="xgmm">修改密码</string>
     <string name="xm">姓名&#8195;&#8195;</string>
     <string name="ctmc">餐厅名称</string>
@@ -44,6 +44,15 @@
     <string name="qrbx">确认报修</string>
     <string name="dl">登录</string>
     <string name="zc">注册</string>
+    <string name="dldqsjh">大陆地区手机号</string>
+    <string name="srybszzm">输入右边数字、字母</string>
+    <string name="wjmm">忘记密码？</string>
+    <string name="qsrsjh">请输入手机号</string>
+    <string name="wczckqbxfw">完成注册，开启报修服务</string>
+    <string name="djwcjty">点击完成即同意</string>
+    <string name="sclmyhzcxy">《商厨联盟用户注册协议》</string>
+    <string name="qsrmm">请输入6-20位密码</string>
+    <string name="qsryzm">请输入验证码</string>
 
 
     <string-array name="tab_name">

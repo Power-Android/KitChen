@@ -35,30 +35,30 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
         OkGo.getInstance().cancelTag(this);
     }
 
-//    /**
-//     * 设置状态栏背景状态
-//     */
-//    private void setTranslucentStatus() {
-//        setStatusBarTranslucent(true);
-//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//        tintManager.setStatusBarTintEnabled(true);
-//        tintManager.setStatusBarTintResource(R.color.green01);// 状态栏的背景颜色(0表示无背景)
-//    }
-//
-//    /**
-//     * 设置状态栏是否透明
-//     *
-//     * @param isTransparent
-//     */
-//    private void setStatusBarTranslucent(boolean isTransparent) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-//                && isTransparent) {
-//            Window win = getWindow();
-//            WindowManager.LayoutParams winParams = win.getAttributes();
-//            // 导航栏透明
-//            final int sBits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-//            winParams.flags |= sBits;
-//            win.setAttributes(winParams);
-//        }
-//    }
+    /**
+     * 设置状态栏背景状态
+     */
+    private void setTranslucentStatus() {
+        setStatusBarTranslucent(true);
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintResource(R.mipmap.kc_login_background);// 状态栏的背景颜色(0表示无背景)
+    }
+
+    /**
+     * 设置状态栏是否透明
+     *
+     * @param isTransparent
+     */
+    private void setStatusBarTranslucent(boolean isTransparent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && isTransparent) {
+            Window win = getWindow();
+            WindowManager.LayoutParams winParams = win.getAttributes();
+            // 导航栏透明
+            final int sBits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+            winParams.flags |= sBits;
+            win.setAttributes(winParams);
+        }
+    }
 }
