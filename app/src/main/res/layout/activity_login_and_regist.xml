@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.power.kitchen.activity.LoginAndRegistActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_01"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@mipmap/kc_login_background"/>
+    <LinearLayout
+        android:id="@+id/ll_01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="190dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/btn_01"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:text="登录"
+            android:paddingTop="10dp"
+            android:layout_weight="1"
+            android:background="@mipmap/kc_login_shape"
+            android:textColor="@color/green01"
+            android:textSize="16sp"
+            android:gravity="center"/>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:background="@color/gary_03"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="注册"
+                android:textSize="16sp"
+                android:textColor="@color/black"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <View
+        android:layout_below="@+id/ll_01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gary02"/>
+
+</RelativeLayout>

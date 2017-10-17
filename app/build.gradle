@@ -25,6 +25,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.orhanobut:logger:2.1.1'    //Logger日志
     compile 'com.jakewharton:butterknife:8.8.1'
@@ -34,9 +35,8 @@ dependencies {
     compile 'com.android.support:design:24.1.1'
     compile 'pub.devrel:easypermissions:1.0.1'    //动态权限
     compile 'org.zackratos:ultimatebar:1.0.3'    //透明状态栏导航栏、沉浸式状态栏导航栏
-    compile 'com.kingja.loadsir:loadsir:1.2.2'  //状态管理框架
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'   //图片选择器
-    testCompile 'junit:junit:4.12'
+    compile 'com.kingja.loadsir:loadsir:1.2.2'    //状态管理框架
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'    //图片选择器
 }
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
