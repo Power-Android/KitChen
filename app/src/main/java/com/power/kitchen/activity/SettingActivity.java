@@ -12,6 +12,11 @@ import com.power.kitchen.app.BaseActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 个人资料
+ * power
+ */
+
 public class SettingActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;

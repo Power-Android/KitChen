@@ -4,18 +4,19 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.app.MyApplication;
 import com.power.kitchen.fragment.PersonCenterFragment;
 import com.power.kitchen.fragment.RepairFragment;
 import com.power.kitchen.fragment.RepairRecordsFragment;
-
+import com.power.kitchen.utils.TUtils;
 import org.zackratos.ultimatebar.UltimateBar;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -38,6 +39,7 @@ public class MainActivity extends BaseActivity {
     private RepairFragment repairFragment;
     private PersonCenterFragment personCenterFragment;
     private UltimateBar ultimateBar;
+    private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,5 +143,20 @@ public class MainActivity extends BaseActivity {
                 setTabSelection(2);
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN){
+            if (System.currentTimeMillis() - exitTime > 2000) {
+                TUtils.showShort(getApplicationContext(),"再按一次退出程序");
+                exitTime = System.currentTimeMillis();
+            }else{
+                MyApplication.getInstance().AppExit(MainActivity.this);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

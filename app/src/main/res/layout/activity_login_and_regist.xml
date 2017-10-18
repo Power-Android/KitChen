@@ -62,6 +62,7 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/login_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -123,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_02"
-                        android:layout_toLeftOf="@+id/look_password02_iv"
+                        android:layout_toLeftOf="@+id/look_login_iv"
                         android:singleLine="true"
                         android:password="true"
                         android:layout_marginLeft="10dp"
@@ -131,7 +132,7 @@
                         android:hint="@string/mmts"
                         style="@style/gary_hint" />
                     <ImageView
-                        android:id="@+id/look_password02_iv"
+                        android:id="@+id/look_login_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -164,7 +165,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_03"
-                        android:layout_toLeftOf="@+id/look_password03_iv"
+                        android:layout_toLeftOf="@+id/login_yzm_iv"
                         android:singleLine="true"
                         android:password="true"
                         android:layout_marginLeft="10dp"
@@ -172,13 +173,13 @@
                         android:hint="@string/srybszzm"
                         style="@style/gary_hint" />
                     <ImageView
-                        android:id="@+id/look_password03_iv"
+                        android:id="@+id/login_yzm_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:padding="10dp"
-                        android:src="@mipmap/kc_eye_gary" />
+                        android:src="@mipmap/kc_yzm" />
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
@@ -187,7 +188,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <Button
-                    android:id="@+id/login_regist_btn"
+                    android:id="@+id/login_btn"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="60dp"
@@ -202,10 +203,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/wjmm"
                     android:padding="20dp"
-                    android:layout_marginBottom="50dp"
+                    android:textSize="12dp"
                     android:layout_gravity="center"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/regist_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -262,25 +264,30 @@
                         android:padding="10dp"
                         android:layout_centerVertical="true"/>
                     <EditText
+                        android:id="@+id/regist_yzm_et"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_08"
-                        android:layout_toLeftOf="@+id/look_password08_iv"
+                        android:layout_toLeftOf="@+id/get_yzm_tv"
                         android:singleLine="true"
                         android:password="true"
                         android:layout_marginLeft="10dp"
                         android:background="@null"
                         android:hint="@string/qsryzm"
                         style="@style/gary_hint" />
-                    <ImageView
-                        android:id="@+id/look_password08_iv"
+                    <TextView
+                        android:id="@+id/get_yzm_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
                         android:padding="10dp"
-                        android:src="@mipmap/kc_eye_gary" />
+                        android:layout_marginRight="10dp"
+                        android:text="@string/hqyzm"
+                        android:gravity="center"
+                        android:background="@color/gary04"
+                        android:textColor="@color/white"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
@@ -302,11 +309,12 @@
                         android:padding="10dp"
                         android:layout_centerVertical="true"/>
                     <EditText
+                        android:id="@+id/rigist_pwd_et"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_05"
-                        android:layout_toLeftOf="@+id/look_password04_iv"
+                        android:layout_toLeftOf="@+id/look_rigitspwd_iv"
                         android:singleLine="true"
                         android:password="true"
                         android:layout_marginLeft="10dp"
@@ -314,7 +322,7 @@
                         android:hint="@string/qsrmm"
                         style="@style/gary_hint" />
                     <ImageView
-                        android:id="@+id/look_password04_iv"
+                        android:id="@+id/look_rigitspwd_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -342,11 +350,12 @@
                         android:padding="10dp"
                         android:layout_centerVertical="true"/>
                     <EditText
+                        android:id="@+id/rigist_querypwd_et"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_07"
-                        android:layout_toLeftOf="@+id/look_password07_iv"
+                        android:layout_toLeftOf="@+id/look_querypwd_iv"
                         android:singleLine="true"
                         android:password="true"
                         android:layout_marginLeft="10dp"
@@ -354,7 +363,7 @@
                         android:hint="@string/qrmm"
                         style="@style/gary_hint" />
                     <ImageView
-                        android:id="@+id/look_password07_iv"
+                        android:id="@+id/look_querypwd_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -382,11 +391,12 @@
                         android:padding="10dp"
                         android:layout_centerVertical="true"/>
                     <EditText
+                        android:id="@+id/regist_yzmiv_et"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_06"
-                        android:layout_toLeftOf="@+id/look_password06_iv"
+                        android:layout_toLeftOf="@+id/regist_yzm_iv"
                         android:singleLine="true"
                         android:password="true"
                         android:layout_marginLeft="10dp"
@@ -394,13 +404,13 @@
                         android:hint="@string/srybszzm"
                         style="@style/gary_hint" />
                     <ImageView
-                        android:id="@+id/look_password06_iv"
+                        android:id="@+id/regist_yzm_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:padding="10dp"
-                        android:src="@mipmap/kc_eye_gary" />
+                        android:src="@mipmap/kc_yzm" />
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
@@ -409,9 +419,10 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <LinearLayout
+                    android:id="@+id/regist_xieyi_ll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:padding="10dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
@@ -437,6 +448,5 @@
                     android:text="@string/wczckqbxfw"
                     android:textColor="@color/white"/>
             </LinearLayout>
-
         </RelativeLayout>
 </ScrollView>

@@ -42,7 +42,7 @@
     <string name="sbtp">设备图片</string>
     <string name="qxbx">取消报修</string>
     <string name="qrbx">确认报修</string>
-    <string name="dl">登录</string>
+    <string name="dl">登&#8195;录</string>
     <string name="zc">注册</string>
     <string name="dldqsjh">大陆地区手机号</string>
     <string name="srybszzm">输入右边数字、字母</string>
@@ -53,6 +53,7 @@
     <string name="sclmyhzcxy">《商厨联盟用户注册协议》</string>
     <string name="qsrmm">请输入6-20位密码</string>
     <string name="qsryzm">请输入验证码</string>
+    <string name="hqyzm">获取验证码</string>
 
 
     <string-array name="tab_name">

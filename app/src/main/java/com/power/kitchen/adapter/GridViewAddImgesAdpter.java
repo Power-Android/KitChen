@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.power.kitchen.R;
@@ -102,17 +104,14 @@ public class GridViewAddImgesAdpter extends BaseAdapter {
         /**代表+号之前的需要正常显示图片**/
         if (list != null && position < list.size()) {
             final File file = new File(list.get(position).getPath());
-            Glide.with(context)
-                    .load(file)
-                    .into(viewHolder.ivimage);
-           /* RequestOptions options = new RequestOptions()
+            RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.color.green01)
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
-            Glide.with(viewHolder.ivimage.getContext())
+            Glide.with(context)
                     .load(file)
                     .apply(options)
-                    .into(viewHolder.ivimage);*/
+                    .into(viewHolder.ivimage);
             viewHolder.btdel.setVisibility(View.VISIBLE);
             viewHolder.btdel.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,8 +127,6 @@ public class GridViewAddImgesAdpter extends BaseAdapter {
             /**代表+号的需要+号图片显示图片**/
             Glide.with(context)
                     .load(R.mipmap.kc_sbbx_tjzp)
-//                    .priority(Priority.HIGH)
-//                    .centerCrop()
                     .into(viewHolder.ivimage);
             viewHolder.ivimage.setScaleType(ImageView.ScaleType.FIT_XY);
             viewHolder.btdel.setVisibility(View.GONE);

@@ -72,7 +72,6 @@ public class SetPwdActivity extends BaseActivity {
     }
 
     /**
-     *
      * @param editText
      * @param imageView
      * 设置隐藏/显示密码

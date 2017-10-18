@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.power.kitchen.activity.DeviceDetailActivity">
+    tools:context="com.power.kitchen.activity.DeviceDetailsActivity">
 
     <include layout="@layout/item_title_layout"/>
 
@@ -43,6 +43,7 @@
                     android:text="@string/txm" />
 
                 <EditText
+                    android:id="@+id/device_txm_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -76,6 +77,7 @@
                     android:text="@string/gmrq" />
 
                 <TextView
+                    android:id="@+id/date_tv"
                     style="@style/gary_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -85,6 +87,7 @@
                     android:text="2017-10-11" />
 
                 <ImageView
+                    android:id="@+id/jump_date_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -122,6 +125,7 @@
                     android:text="@string/bxq" />
 
                 <RadioGroup
+                    android:id="@+id/radiogroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -129,18 +133,35 @@
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/bxqn_rbt"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="40dp"
+                        android:button="@null"
+                        android:checked="true"
+                        android:background="@drawable/radio_selector_style"
+                        android:textColor="@color/text_color01" />
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="35dp"
+                        android:layout_marginLeft="10dp"
                         android:text="@string/bxqn"
-                        android:textColor="@color/text_color01" />
+                        android:textColor="@color/text_color01"/>
 
                     <RadioButton
+                        android:id="@+id/bxqw_rbt"
+                        android:button="@null"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@drawable/radio_selector_style"
+                        android:textColor="@color/text_color01" />
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginLeft="10dp"
                         android:text="@string/bxqw"
-                        android:textColor="@color/text_color01" />
+                        android:textColor="@color/text_color01"/>
                 </RadioGroup>
 
             </RelativeLayout>
@@ -173,6 +194,7 @@
                     android:text="@string/pp" />
 
                 <TextView
+                    android:id="@+id/pinpai_tv"
                     style="@style/gary_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -185,6 +207,7 @@
                     android:layout_marginStart="39dp" />
 
                 <ImageView
+                    android:id="@+id/jump_pinpai_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -214,6 +237,7 @@
                     android:text="@string/lx" />
 
                 <TextView
+                    android:id="@+id/leixing_tv"
                     style="@style/gary_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -223,6 +247,7 @@
                     android:text="空调" />
 
                 <ImageView
+                    android:id="@+id/jump_leixing_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -251,22 +276,18 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/xh" />
 
-                <TextView
+                <EditText
+                    android:id="@+id/xinghao_et"
                     style="@style/gary_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="40dp"
                     android:layout_toRightOf="@+id/tv_05"
-                    android:text="KFC-ASDBHADDSALKD" />
+                    android:singleLine="true"
+                    android:background="@null"
+                    android:text="请填写设备型号" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:padding="10dp"
-                    android:src="@mipmap/kc_arrowhead_black" />
             </RelativeLayout>
 
             <TextView
@@ -298,6 +319,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/xm" />
                 <EditText
+                    android:id="@+id/device_name_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -332,6 +354,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/sjh" />
                 <EditText
+                    android:id="@+id/device_phone_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -366,6 +389,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/ctmc" />
                 <EditText
+                    android:id="@+id/device_ctmc_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -399,6 +423,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/szqy" />
                 <TextView
+                    android:id="@+id/device_adress_tv"
                     style="@style/gary_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -407,6 +432,7 @@
                     android:layout_toRightOf="@+id/tv_10"
                     android:text="北京市 海淀区 西二旗" />
                 <ImageView
+                    android:id="@+id/jump_adress_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -443,6 +469,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/xxdz" />
                 <EditText
+                    android:id="@+id/detail_adress_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -462,6 +489,7 @@
                 android:paddingTop="20dp"
                 android:text="@string/wtms" />
             <EditText
+                android:id="@+id/problem_device_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minLines="7"
@@ -498,6 +526,7 @@
                 android:paddingTop="30dp"
                 android:paddingBottom="20dp">
                 <Button
+                    android:id="@+id/cancle_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -508,6 +537,7 @@
                     android:textSize="16sp"
                     android:background="@color/button_gary"/>
                 <Button
+                    android:id="@+id/query_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
