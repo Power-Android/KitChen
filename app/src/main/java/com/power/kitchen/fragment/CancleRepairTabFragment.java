@@ -1,17 +1,21 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.CancleRepaireDetailActivity;
+import com.power.kitchen.activity.NotRepaireDetailActivity;
 import com.power.kitchen.adapter.CancleRepaireAdapter;
 import com.power.kitchen.bean.WaiteRepairBean;
 import com.power.kitchen.callback.EmptyCallback;
@@ -84,6 +88,12 @@ public class CancleRepairTabFragment extends Fragment {
         }
         CancleRepaireAdapter adapter = new CancleRepaireAdapter(getActivity(),list);
         cancleList.setAdapter(adapter);
+        cancleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(getActivity(), CancleRepaireDetailActivity.class));
+            }
+        });
     }
 
     @Override

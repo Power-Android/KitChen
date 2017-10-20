@@ -103,7 +103,11 @@ public class DeviceDetailsActivity extends BaseActivity {
 
     private boolean isLoaded = false;
     private OptionsPickerView pvOptions;
-    private TimePickerView pvTime, pvCustomTime, pvCustomLunar;
+    private TimePickerView pvCustomLunar;
+    private ArrayList<String> listExtra;//拍照报修传过来的图片路径
+    private Intent intent;
+    private String brandNme;
+    private String typeNme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,13 +121,17 @@ public class DeviceDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_device_detail);
         ButterKnife.bind(this);
         initView();
-        initListener();
     }
 
     private void initView() {
         contentTv.setText("设备详情");
-        initJsonData();//解析json数据
+        initListener();
+        getIntentData();//上级拍照返回来的数据----图片的path路径
+        initJsonData();//解析json数据----地址选择器
         initLunarPicker();//初始化时间选择器
+        /**
+         * 添加照片adapter
+         */
         addImgesAdpter = new GridViewAddImgesAdpter(list, this);
         gridview.setAdapter(addImgesAdpter);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,22 +140,39 @@ public class DeviceDetailsActivity extends BaseActivity {
                 showPopup();
             }
         });
-
+        /**
+         * 是否保修期判断
+         */
         radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (checkedId){
                     case R.id.bxqn_rbt:
                         temp = "1";
-                        Logger.e("--------"+temp+"---------");
                         break;
                     case R.id.bxqw_rbt:
                         temp = "2";
-                        Logger.e("--------"+temp+"---------");
                 }
             }
         });
 
+    }
+
+    /**
+     * 上级拍照页面返回的数据---图片的path路径
+     */
+    private void getIntentData() {
+        listExtra = getIntent().getStringArrayListExtra("list");
+        LocalMedia localMedia = new LocalMedia();
+        if (listExtra != null){
+        for (int i = 0; i < listExtra.size(); i++) {
+            String path = listExtra.get(i);
+            localMedia.setPath(path);
+            list.add(localMedia);
+        }
+            addImgesAdpter = new GridViewAddImgesAdpter(list,this);
+            gridview.setAdapter(addImgesAdpter);
+        }
     }
 
     private void initListener() {
@@ -172,6 +197,13 @@ public class DeviceDetailsActivity extends BaseActivity {
                 pvCustomLunar.show();
                 break;
             case R.id.jump_pinpai_iv://选择品牌
+                intent = new Intent();
+                intent.setClass(DeviceDetailsActivity.this,BrandAndTypeActivity.class);
+                startActivityForResult(intent,101);
+                break;
+            case R.id.jump_leixing_iv://选择类型
+                intent.setClass(DeviceDetailsActivity.this,BrandAndTypeActivity.class);
+                startActivityForResult(intent,101);
                 break;
             case R.id.jump_adress_iv://选择所在区域
                 ShowPickerView();
@@ -179,6 +211,7 @@ public class DeviceDetailsActivity extends BaseActivity {
             case R.id.location_iv://定位
                 break;
             case R.id.cancle_btn://取消报修
+
                 break;
             case R.id.query_btn://确认报修
                 break;
@@ -221,7 +254,6 @@ public class DeviceDetailsActivity extends BaseActivity {
                             @Override
                             public void onClick(View v) {
                                 if (popupWindow != null) {
-                                    TUtils.showShort(getApplicationContext(), "取消");
                                     popupWindow.dismiss();
                                 }
                             }
@@ -315,6 +347,18 @@ public class DeviceDetailsActivity extends BaseActivity {
                     break;
             }
         }
+        /**
+         * 选择品牌和类型返回的数据
+         */
+        if (requestCode == 101){
+            if (data != null){
+                brandNme = data.getStringExtra("brandName");
+                typeNme = data.getStringExtra("typeName");
+                pinpaiTv.setText(brandNme);
+                leixingTv.setText(typeNme);
+            }
+
+        }
     }
 
     /**
@@ -330,7 +374,7 @@ public class DeviceDetailsActivity extends BaseActivity {
         pvCustomLunar = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
-                Toast.makeText(DeviceDetailsActivity.this, getTime(date), Toast.LENGTH_SHORT).show();
+                dateTv.setText(getTime(date));
             }
         })
                 .setDate(selectedDate)
@@ -381,8 +425,7 @@ public class DeviceDetailsActivity extends BaseActivity {
                 String tx = options1Items.get(options1).getPickerViewText()+
                         options2Items.get(options1).get(options2)+
                         options3Items.get(options1).get(options2).get(options3);
-
-                Toast.makeText(DeviceDetailsActivity.this,tx,Toast.LENGTH_SHORT).show();
+                deviceAdressTv.setText(tx);
             }
         })
                 .setLayoutRes(R.layout.pickerview_city_layout, new CustomListener() {

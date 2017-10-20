@@ -28,7 +28,7 @@
                     android:id="@+id/my_head_iv"
                     android:layout_width="108dp"
                     android:layout_height="108dp"
-                    android:src="@mipmap/kc_my_head"
+                    android:src="@mipmap/face"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="50dp"
                     android:layout_marginBottom="30dp"/>

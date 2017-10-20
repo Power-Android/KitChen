@@ -1,11 +1,13 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
@@ -13,6 +15,7 @@ import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.NotRepaireDetailActivity;
 import com.power.kitchen.adapter.NotRepaireAdapter;
 import com.power.kitchen.adapter.WaitRepairAdapter;
 import com.power.kitchen.bean.WaiteRepairBean;
@@ -86,6 +89,12 @@ public class NotRepairTabFragment extends Fragment {
         }
         NotRepaireAdapter adapter = new NotRepaireAdapter(getActivity(),list);
         notList.setAdapter(adapter);
+        notList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(getActivity(), NotRepaireDetailActivity.class));
+            }
+        });
 
     }
 

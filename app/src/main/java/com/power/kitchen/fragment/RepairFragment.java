@@ -18,12 +18,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.compress.Luban;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.DeviceDetailsActivity;
 import com.power.kitchen.utils.CommonPopupWindow;
 import com.power.kitchen.utils.TUtils;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
@@ -39,7 +47,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by power on 2017/9/19.
  */
 
-public class RepairFragment extends Fragment implements View.OnClickListener,EasyPermissions.PermissionCallbacks {
+public class RepairFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.pzksbx_layout) LinearLayout pzksbxLayout;
     @BindView(R.id.txbxd_layout) LinearLayout txbxdLayout;
@@ -50,6 +58,7 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
     private String image_from_sd_paizhao_or_xianche__path;//图片sd路径
     private boolean isuploadImage;//标记用户是否上传图片
     private String path; //sd卡路径
+    private List<LocalMedia> selectList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -111,7 +120,6 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
                             @Override
                             public void onClick(View v) {
                                 if (popupWindow != null) {
-                                    TUtils.showShort(getActivity().getApplicationContext(),"相册");
                                     popupWindow.dismiss();
                                     requestPhoto();
                                 }
@@ -121,7 +129,6 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
                             @Override
                             public void onClick(View v) {
                                 if (popupWindow != null) {
-                                    TUtils.showShort(getActivity().getApplicationContext(),"取消");
                                     popupWindow.dismiss();
                                 }
                             }
@@ -141,92 +148,84 @@ public class RepairFragment extends Fragment implements View.OnClickListener,Eas
         popupWindow.showAtLocation(getActivity().findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0);
     }
 
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-
+    private void requestPhoto() {
+        // 进入相册 以下是例子：不需要的api可以不写
+        PictureSelector.create(RepairFragment.this)
+                .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                .theme(R.style.picture_default_style1)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
+                .maxSelectNum(9)// 最大图片选择数量
+                .minSelectNum(1)// 最小选择数量
+                .imageSpanCount(4)// 每行显示个数
+                .selectionMode(PictureConfig.MULTIPLE)// 多选 or 单选 PictureConfig.SINGLE
+                .previewImage(true)// 是否可预览图片
+                .previewVideo(true)// 是否可预览视频
+                .enablePreviewAudio(true) // 是否可播放音频
+                .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
+                .isCamera(true)// 是否显示拍照按钮
+                .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
+                .enableCrop(false)// 是否裁剪
+                .compress(true)// 是否压缩
+                .compressMode(PictureConfig.SYSTEM_COMPRESS_MODE)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+                //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
+                .glideOverride(200, 200)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+//                .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                .hideBottomControls(true)// 是否显示uCrop工具栏，默认不显示
+                .isGif(true)// 是否显示gif图片
+                .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
+                .circleDimmedLayer(false)// 是否圆形裁剪
+                .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                .openClickSound(false)// 是否开启点击声音
+//                .selectionMedia(list)// 是否传入已选图片
+//                        .videoMaxSecond(15)
+//                        .videoMinSecond(10)
+                //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                //.cropCompressQuality(90)// 裁剪压缩质量 默认100
+                //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
+                //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+                //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                //.rotateEnabled() // 裁剪是否可旋转图片
+                //.scaleEnabled()// 裁剪是否可放大缩小图片
+                //.videoQuality()// 视频录制质量 0 or 1
+                //.videoSecond()//显示多少秒以内的视频or音频也可适用
+                //.recordVideoSecond()//录制视频秒数 默认60s
+                .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            //这里需要重新设置Rationale和title，否则默认是英文格式
-            new AppSettingsDialog.Builder(this)
-                    .setRationale("没有该权限，此应用程序可能无法正常工作。打开应用设置屏幕以修改应用权限")
-                    .setTitle("必需权限")
-                    .build()
-                    .show();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @AfterPermissionGranted(WRITE_SD_CODE)
-    public void requestCamera(){
-        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            path = Environment.getExternalStorageDirectory().getPath() + "/";
-            //将当前的拍照时间作为图片的文件名称
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String filename = simpleDateFormat.format(new Date()) + ".jpg";
-            image_from_sd_paizhao_or_xianche__path = path + filename;
-            File file = new File(image_from_sd_paizhao_or_xianche__path);
-            //******************************************************************
-            Uri photoURI;
-            //解决三星7.x或其他7.x系列的手机拍照失败或应用崩溃的bug.解决4.2.2(oppo)/4.x系统拍照执行不到设置显示图片的bug
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N){ //7.0以下的系统用 Uri.fromFile(file)
-                photoURI = Uri.fromFile(file);
-            }else {                                            //7.0以上的系统用下面这种方案
-                photoURI = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName()
-                        + ".provider",file);
-            }
-            //******************************************************************
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);//将图片文件转化为一个uri传入
-            startActivityForResult(intent, 100);
-        } else {
-            // request for one permission
-            EasyPermissions.requestPermissions(this, "需要读写本地权限",
-                    WRITE_SD_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-    }
-
-    @AfterPermissionGranted(READ_SD_CODE)
-    public void requestPhoto(){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 200);
+    private void requestCamera() {
+        PictureSelector.create(RepairFragment.this)
+                .openCamera(PictureMimeType.ofImage())// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
+                .theme(R.style.picture_default_style)// 主题样式设置 具体参考 values/styles
+//                .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+//                .selectionMedia(list)// 是否传入已选图片
+//                .previewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case WRITE_SD_CODE:
-                //TODO 跳转到设备详情页面
-                if (resultCode == RESULT_OK){
-                    jumpActivity();
-                }
-                break;
-            case READ_SD_CODE:
-                //TODO 跳转到选择图片页面
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    selectList = PictureSelector.obtainMultipleResult(data);
+                    ArrayList<String> list = new ArrayList<>();
+                    for (int i = 0; i < selectList.size(); i++) {
+                        LocalMedia localMedia = selectList.get(i);
+                        String path = localMedia.getPath();
+                        list.add(path);
+                    }
+                    /**
+                     * 拿到图片路径，跳转到设备详情页
+                     */
+                    Intent intent = new Intent(getActivity(),DeviceDetailsActivity.class);
+                    intent.putStringArrayListExtra("list",list);
+                    startActivity(intent);
 
-                break;
+                    break;
+            }
         }
     }
-
-    private void jumpActivity() {
-
-    }
-   /* public void gotoClipActivity(Uri uri) {
-        if (uri == null) {
-            return;
-        }
-        Intent intent = new Intent();
-        intent.setClass(this, ClipImageActivity.class);
-        intent.putExtra("type", type);
-        intent.setData(uri);
-        startActivityForResult(intent, REQUEST_CROP_PHOTO);
-    }*/
 }

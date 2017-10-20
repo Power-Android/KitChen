@@ -14,6 +14,7 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.power.kitchen.R;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -106,8 +107,8 @@ public class GridViewAddImgesAdpter extends BaseAdapter {
             final File file = new File(list.get(position).getPath());
             RequestOptions options = new RequestOptions()
                     .centerCrop()
-                    .placeholder(R.color.green01)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+                    .placeholder(R.color.green01);
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL);
             Glide.with(context)
                     .load(file)
                     .apply(options)
@@ -116,10 +117,12 @@ public class GridViewAddImgesAdpter extends BaseAdapter {
             viewHolder.btdel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (file.exists()) {
+                    /*if (file.exists()) { //删除图片文件
                         file.delete();
+                    }*/
+                    if (list.size() > 0){
+                        list.remove(position);
                     }
-                    list.remove(position);
                     notifyDataSetChanged();
                 }
             });

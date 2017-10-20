@@ -83,8 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="40dp"
-                    android:layout_toRightOf="@+id/tv_01"
-                    android:text="2017-10-11" />
+                    android:layout_toRightOf="@+id/tv_01" />
 
                 <ImageView
                     android:id="@+id/jump_date_iv"
@@ -420,6 +419,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:singleLine="true"
                     android:layout_marginLeft="20dp"
                     android:text="@string/szqy" />
                 <TextView
@@ -428,9 +428,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:singleLine="true"
                     android:layout_marginLeft="40dp"
-                    android:layout_toRightOf="@+id/tv_10"
-                    android:text="北京市 海淀区 西二旗" />
+                    android:layout_toRightOf="@+id/tv_10"/>
                 <ImageView
                     android:id="@+id/jump_adress_iv"
                     android:layout_width="wrap_content"

@@ -54,6 +54,16 @@
     <string name="qsrmm">请输入6-20位密码</string>
     <string name="qsryzm">请输入验证码</string>
     <string name="hqyzm">获取验证码</string>
+    <string name="bxdh">报修单号</string>
+    <string name="jdxx">接单信息</string>
+    <string name="sfxm">师傅姓名</string>
+    <string name="lxdh">联系电话</string>
+    <string name="gsmc">公司名称</string>
+    <string name="jdsj">接单时间</string>
+    <string name="gsjl">公司距离</string>
+    <string name="bxsj">报修时间</string>
+    <string name="jxbx">继续报修</string>
+    <string name="qxyy">取消原因</string>
 
 
     <string-array name="tab_name">

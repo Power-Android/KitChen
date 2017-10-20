@@ -102,10 +102,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="北京市海淀区"
-            android:layout_toLeftOf="@+id/iv_01"
+            android:singleLine="true"
+            android:layout_toLeftOf="@+id/adress_iv"
             style="@style/gary_textview"/>
         <ImageView
-            android:id="@+id/iv_01"
+            android:id="@+id/adress_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

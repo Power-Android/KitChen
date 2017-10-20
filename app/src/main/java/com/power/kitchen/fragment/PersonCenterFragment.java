@@ -91,6 +91,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.my_head_iv://头像
+
                 break;
             case R.id.into_set_iv://进入设置
                 startActivity(new Intent(getActivity(),SettingActivity.class));
