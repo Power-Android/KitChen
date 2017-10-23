@@ -1,23 +1,25 @@
 package com.power.kitchen.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.google.gson.Gson;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.JsonBean;
 import com.power.kitchen.utils.GetJsonDataUtil;
+import com.suke.widget.SwitchButton;
 
 import org.json.JSONArray;
 import org.zackratos.ultimatebar.UltimateBar;
@@ -27,27 +29,19 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * 个人资料
- * power
- */
-
-public class SettingActivity extends BaseActivity {
+public class AdressBianJiActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
-    @BindView(R.id.username_tv) TextView usernameTv;
-    @BindView(R.id.username_rl) RelativeLayout usernameRl;
-    @BindView(R.id.canting_tv) TextView cantingTv;
-    @BindView(R.id.canting_rl) RelativeLayout cantingRl;
-    @BindView(R.id.telnum_tv) TextView telnumTv;
-    @BindView(R.id.telnum_rl) RelativeLayout telnumRl;
+    @BindView(R.id.title_right_tv) TextView titleRightTv;
+    @BindView(R.id.username_tv) EditText usernameEt;
+    @BindView(R.id.telnum_tv) EditText telnumEt;
     @BindView(R.id.adress_tv) TextView adressTv;
-    @BindView(R.id.adress_rl) RelativeLayout adressRl;
-    @BindView(R.id.detailadress_tv) TextView detailadressTv;
-    @BindView(R.id.detailadress_rl) RelativeLayout detailadressRl;
-    @BindView(R.id.adressmanage_rl) RelativeLayout adressmanageRl;
     @BindView(R.id.adress_iv) ImageView adressIv;
+    @BindView(R.id.location_iv) ImageView locationIv;
+    @BindView(R.id.detailadress_tv) EditText detailadressEt;
+    @BindView(R.id.moren_switchBtn) SwitchButton morenSwitchBtn;
+    @BindView(R.id.delete_btn) Button deleteBtn;
 
     private UltimateBar ultimateBar;
     private ArrayList<JsonBean> options1Items = new ArrayList<>();
@@ -57,6 +51,7 @@ public class SettingActivity extends BaseActivity {
     private static final int MSG_LOAD_DATA = 0x0001;
     private static final int MSG_LOAD_SUCCESS = 0x0002;
     private static final int MSG_LOAD_FAILED = 0x0003;
+
     private boolean isLoaded = false;
     private OptionsPickerView pvOptions;
 
@@ -69,23 +64,21 @@ public class SettingActivity extends BaseActivity {
          */
         ultimateBar = new UltimateBar(this);
         ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_adress_bian_ji);
         ButterKnife.bind(this);
-        initView();
+        initViewAndListener();
     }
 
-    private void initView() {
-        contentTv.setText("个人资料");
-        initJsonData();//解析json数据
-
+    private void initViewAndListener() {
+        contentTv.setText("地址管理");
+        titleRightTv.setText("保存");
+        titleRightTv.setVisibility(View.VISIBLE);
+        initJsonData();
         backIv.setOnClickListener(this);
-        usernameRl.setOnClickListener(this);
-        cantingRl.setOnClickListener(this);
-        telnumRl.setOnClickListener(this);
-        adressRl.setOnClickListener(this);
-        detailadressRl.setOnClickListener(this);
-        adressmanageRl.setOnClickListener(this);
+        titleRightTv.setOnClickListener(this);
+        deleteBtn.setOnClickListener(this);
         adressIv.setOnClickListener(this);
+        locationIv.setOnClickListener(this);
     }
 
     @Override
@@ -95,19 +88,17 @@ public class SettingActivity extends BaseActivity {
             case R.id.back_iv:
                 finish();
                 break;
-            case R.id.username_rl:
+            case R.id.title_right_tv:
+                finish();
                 break;
-            case R.id.canting_rl:
+            case R.id.adress_iv:
+                ShowPickerView();
                 break;
-            case R.id.telnum_rl:
+            case R.id.location_iv:
+                finish();
                 break;
-            case R.id.adress_rl:
-                showPickerView();
-                break;
-            case R.id.detailadress_rl:
-                break;
-            case R.id.adressmanage_rl:
-                startActivity(new Intent(SettingActivity.this,AdressManageActivity.class));
+            case R.id.delete_btn:
+                finish();
                 break;
         }
     }
@@ -115,7 +106,7 @@ public class SettingActivity extends BaseActivity {
     /**
      * 地址选择器
      */
-    private void showPickerView() {
+    private void ShowPickerView() {
 
         //返回的分别是三个级别的选中位置
         //ImageView ivCancel = (ImageView) v.findViewById(R.id.iv_cancel);

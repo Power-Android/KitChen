@@ -53,11 +53,6 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.txbxd_layout) LinearLayout txbxdLayout;
     Unbinder unbinder;
     private CommonPopupWindow popupWindow;
-    private static final int WRITE_SD_CODE = 1;
-    private static final int READ_SD_CODE = 2;
-    private String image_from_sd_paizhao_or_xianche__path;//图片sd路径
-    private boolean isuploadImage;//标记用户是否上传图片
-    private String path; //sd卡路径
     private List<LocalMedia> selectList = new ArrayList<>();
 
     @Nullable

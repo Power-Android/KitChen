@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="50dp">
-
-    <include layout="@layout/item_title_layout" />
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.power.kitchen.activity.CommentActivity">
+    <include layout="@layout/item_title_layout"/>
     <android.support.design.widget.TabLayout
-        android:id="@+id/bxjl_tablayout"
+        android:id="@+id/comment_tablayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:tabTextColor="@color/text_color01"
@@ -17,9 +16,10 @@
         app:tabIndicatorHeight="1.5dp"
         app:tabSelectedTextColor="@color/green01"
         app:tabTextAppearance="@style/MyCustomTabTextAppearance"/>
-
     <com.power.kitchen.utils.NoScrollViewPager
-        android:id="@+id/bxjl_viewpager"
+        android:id="@+id/comment_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </com.power.kitchen.utils.NoScrollViewPager>
 </LinearLayout>

@@ -13,6 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.power.kitchen.R;
+import com.power.kitchen.activity.AboutUsActivity;
+import com.power.kitchen.activity.CommentActivity;
+import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.activity.SetPwdActivity;
 import com.power.kitchen.activity.SettingActivity;
 import com.power.kitchen.view.CircleImageView;
@@ -91,21 +94,23 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.my_head_iv://头像
-
                 break;
             case R.id.into_set_iv://进入设置
                 startActivity(new Intent(getActivity(),SettingActivity.class));
                 break;
             case R.id.my_msg_iv://消息页面
+                startActivity(new Intent(getActivity(),MyMessageActivity.class));
                 break;
             case R.id.my_setpwd_layout://密码设置
                 startActivity(new Intent(getActivity(),SetPwdActivity.class));
                 break;
             case R.id.my_pj_layout://评价页面
+                startActivity(new Intent(getActivity(),CommentActivity.class));
                 break;
             case R.id.my_location_iv://定位
                 break;
             case R.id.my_gywm_layout://关于我们
+                startActivity(new Intent(getActivity(),AboutUsActivity.class));
                 break;
             case R.id.exit_login_layout://退出
                 break;

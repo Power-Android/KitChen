@@ -285,7 +285,7 @@
                     android:layout_toRightOf="@+id/tv_05"
                     android:singleLine="true"
                     android:background="@null"
-                    android:text="请填写设备型号" />
+                    android:hint="请填写设备型号" />
 
             </RelativeLayout>
 

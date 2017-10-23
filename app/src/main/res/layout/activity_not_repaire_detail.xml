@@ -85,6 +85,7 @@
             </LinearLayout>
             <!--未完成界面-->
             <LinearLayout
+                android:id="@+id/weiwancheng_view01"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -122,6 +123,7 @@
             </LinearLayout>
             <!--未完成界面-->
             <LinearLayout
+                android:id="@+id/weiwancheng_view02"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

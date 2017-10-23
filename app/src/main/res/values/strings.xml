@@ -64,6 +64,11 @@
     <string name="bxsj">报修时间</string>
     <string name="jxbx">继续报修</string>
     <string name="qxyy">取消原因</string>
+    <string name="swmr">设为默认</string>
+    <string name="scdz">删除地址</string>
+    <string name="qsrxm">请输入姓名</string>
+    <string name="qsrlxdh">请输入联系电话</string>
+    <string name="qsrndxxdz">请输入您的详细地址</string>
 
 
     <string-array name="tab_name">

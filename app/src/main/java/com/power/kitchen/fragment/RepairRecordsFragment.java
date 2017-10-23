@@ -1,11 +1,11 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.power.kitchen.R;
+import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.adapter.RepaireTabAdapter;
+import com.power.kitchen.utils.NoScrollViewPager;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -33,10 +35,11 @@ import butterknife.Unbinder;
 public class RepairRecordsFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.bxjl_tablayout) TabLayout bxjlTablayout;
-    @BindView(R.id.bxjl_viewpager) ViewPager bxjlViewpager;
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
     @BindView(R.id.title_msg) ImageView titleMsg;
+    @BindView(R.id.bxjl_viewpager) NoScrollViewPager bxjlViewpager;
+
     Unbinder unbinder;
 
     private List<Fragment> fragmentList;
@@ -116,7 +119,6 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
     }
 
     private void initListener() {
-        backIv.setOnClickListener(this);
         titleMsg.setOnClickListener(this);
     }
 
@@ -160,8 +162,9 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.title_msg:
+                startActivity(new Intent(getActivity(), MyMessageActivity.class));
                 break;
         }
     }
