@@ -19,9 +19,12 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 //        setTranslucentStatus();
+
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
     }
+
+
 
     @Override
     public void onClick(View view) {

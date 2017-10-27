@@ -14,13 +14,9 @@
         <item name="android:windowAnimationStyle">@style/activityAnimation</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
-    <style name="AppThemes" parent="android:Theme.Light">
-        <!-- Customize your theme here. -->
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/back_ground</item>
+    <style name="AppThemes" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 设置activity切换动画 -->
         <item name="android:windowAnimationStyle">@style/activityAnimation</item>
-        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="white_textview">

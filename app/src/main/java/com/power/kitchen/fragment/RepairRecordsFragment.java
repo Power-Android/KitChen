@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.power.kitchen.R;
 import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.adapter.RepaireTabAdapter;
 import com.power.kitchen.utils.NoScrollViewPager;
+
+import org.zackratos.ultimatebar.UltimateBar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,6 +51,12 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        /**
+         * GitHub：导航栏
+         * https://github.com/Zackratos/UltimateBar
+         */
+        UltimateBar ultimateBar = new UltimateBar(getActivity());
+        ultimateBar.setColorBar(ContextCompat.getColor(getActivity(), R.color.green01));
         View view = inflater.inflate(R.layout.fragment_repair_records, container, false);
         unbinder = ButterKnife.bind(this, view);
         initView();

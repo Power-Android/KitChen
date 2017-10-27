@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.view.Window;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.lzy.okgo.request.base.Request;
 import com.power.kitchen.R;
 import com.power.kitchen.utils.LoadingDialog;
 
 import java.lang.reflect.Type;
+
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Created by Administrator on 2017/10/11.
@@ -17,13 +22,23 @@ import java.lang.reflect.Type;
 public abstract class DialogCallback<T> extends JsonCallback<T> {
 
     private LoadingDialog dialog;
+    private Class<T> clazz;
+    private Type type;
+
 
     private void initDialog(Activity activity) {
         dialog = new LoadingDialog(activity, R.style.dialog);
     }
 
-    public DialogCallback(Activity activity) {
+    public DialogCallback(Activity activity,Class<T> clazz) {
         super();
+        this.clazz = clazz;
+        initDialog(activity);
+    }
+
+    public DialogCallback(Activity activity,Type type) {
+        super();
+        this.type = type;
         initDialog(activity);
     }
 
@@ -40,6 +55,19 @@ public abstract class DialogCallback<T> extends JsonCallback<T> {
         /*request.headers("header1", "HeaderValue1")//
                 .params("params1", "ParamsValue1")//
                 .params("token", "3215sdf13ad1f65asd4f3ads1f");*/
+    }
+
+    @Override
+    public T convertResponse(Response response) throws Throwable {
+        ResponseBody body = response.body();
+        if (body == null) return null;
+
+        T data = null;
+        Gson gson = new Gson();
+        JsonReader jsonReader = new JsonReader(body.charStream());
+        if (type != null) data = gson.fromJson(jsonReader,type);
+        if (clazz != null) data = gson.fromJson(jsonReader,clazz);
+        return data;
     }
 
     @Override

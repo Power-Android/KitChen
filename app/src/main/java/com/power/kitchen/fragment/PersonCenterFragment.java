@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.AboutUsActivity;
+import com.power.kitchen.activity.ChangeFaceActivity;
 import com.power.kitchen.activity.CommentActivity;
 import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.activity.SetPwdActivity;
 import com.power.kitchen.activity.SettingActivity;
 import com.power.kitchen.view.CircleImageView;
 import com.suke.widget.SwitchButton;
+
+import org.zackratos.ultimatebar.UltimateBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +56,12 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        /**
+         * GitHub：导航栏
+         * https://github.com/Zackratos/UltimateBar
+         */
+        UltimateBar ultimateBar = new UltimateBar(getActivity());
+        ultimateBar.setColorBar(ContextCompat.getColor(getActivity(), R.color.green01));
         View view = inflater.inflate(R.layout.fragment_person_center, container, false);
         unbinder = ButterKnife.bind(this, view);
         setSwitchBtn();
@@ -94,6 +106,8 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.my_head_iv://头像
+                Intent intent = new Intent(getActivity(),ChangeFaceActivity.class);
+                startActivityForResult(intent,102);
                 break;
             case R.id.into_set_iv://进入设置
                 startActivity(new Intent(getActivity(),SettingActivity.class));
@@ -114,6 +128,17 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.exit_login_layout://退出
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 102){
+            String cutPath = data.getStringExtra("cutPath");
+            Glide.with(getActivity())
+                    .load(cutPath)
+                    .into(myHeadIv);
         }
     }
 }

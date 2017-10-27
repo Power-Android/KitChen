@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,12 +10,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.app.MyApplication;
 import com.power.kitchen.fragment.PersonCenterFragment;
 import com.power.kitchen.fragment.RepairFragment;
 import com.power.kitchen.fragment.RepairRecordsFragment;
+import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import org.zackratos.ultimatebar.UltimateBar;
 import butterknife.BindView;
@@ -38,17 +42,11 @@ public class MainActivity extends BaseActivity {
     private RepairRecordsFragment repairRecordsFragment;
     private RepairFragment repairFragment;
     private PersonCenterFragment personCenterFragment;
-    private UltimateBar ultimateBar;
     private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /**
-         * GitHub：导航栏
-         * https://github.com/Zackratos/UltimateBar
-         */
-        ultimateBar = new UltimateBar(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initListener();
@@ -79,18 +77,14 @@ public class MainActivity extends BaseActivity {
                 }else {
                     transaction.show(repairRecordsFragment);
                 }
-                ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
                 break;
             case 1:
-                tabBaoxiuIv.setImageResource(R.mipmap.kc_baoxiu_click);
-                tabBaoxiuTv.setTextColor(getResources().getColor(R.color.green01));
                 if (repairFragment == null){
                     repairFragment = new RepairFragment();
                     transaction.add(R.id.tab_content,repairFragment);
                 }else {
                     transaction.show(repairFragment);
                 }
-                ultimateBar.setImmersionBar();
                 break;
             case 2:
                 tabGrzxIv.setImageResource(R.mipmap.kc_mine_click);
@@ -101,7 +95,6 @@ public class MainActivity extends BaseActivity {
                 }else {
                     transaction.show(personCenterFragment);
                 }
-                ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
                 break;
             default:
                 break;
@@ -137,7 +130,8 @@ public class MainActivity extends BaseActivity {
                 setTabSelection(0);
                 break;
             case R.id.tab_baoxiu_layout:
-                setTabSelection(1);
+//                setTabSelection(1);
+                startActivity(new Intent(MainActivity.this,DeviceDetailsActivity.class));
                 break;
             case R.id.tab_grzx_layout:
                 setTabSelection(2);

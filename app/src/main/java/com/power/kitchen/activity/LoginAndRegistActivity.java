@@ -3,8 +3,8 @@ package com.power.kitchen.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,10 +12,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.bean.LoginBean;
+import com.power.kitchen.bean.TokenBean;
+import com.power.kitchen.callback.DialogCallback;
+import com.power.kitchen.callback.JsonCallback;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
 
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,10 +78,12 @@ public class LoginAndRegistActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         ultimateBar = new UltimateBar(this);
-        ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
+        ultimateBar.setImmersionBar();
         setContentView(R.layout.activity_login_and_regist);
         ButterKnife.bind(this);
+        SPUtils.getInstance().putString("app_id","android-user_20170808");
         initListener();
+        requestToken();
     }
 
     private void initListener() {
@@ -115,7 +133,10 @@ public class LoginAndRegistActivity extends BaseActivity {
             case R.id.login_yzm_iv://请求登录验证码图片
                 break;
             case R.id.login_btn://登录
-                startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
+                //TODO 记得打开注释
+//                if (validate()){
+                    requestLogin();
+//                }
                 break;
             case R.id.foget_pwd_tv://忘记密码
                 startActivity(new Intent(LoginAndRegistActivity.this,PwdRetrievalActivity.class));
@@ -176,4 +197,97 @@ public class LoginAndRegistActivity extends BaseActivity {
         }
     };
 
+    private boolean validate() {
+        if (TextUtils.isEmpty(loginPhoneEt.getText().toString()) && TextUtils.isEmpty(loginPwdEt.getText().toString())) {
+            TUtils.showShort(getApplicationContext(), "手机号或密码不能为空！");
+            return false;
+        }
+        if (loginPhoneEt.getText().toString().trim().length() != 11){
+            TUtils.showShort(getApplicationContext(), "手机号码格式不正确！");
+            return false;
+        }
+        if (TextUtils.isEmpty(loginYzmEt.getText().toString())){
+            TUtils.showShort(getApplicationContext(), "验证码不能为空！");
+            return false;
+        }
+        if (ispsd(loginPwdEt.getText().toString()) == false){
+            TUtils.showShort(getApplicationContext(), "密码格式不正确！");
+            return false;
+        }
+        if (loginPwdEt.getText().toString().trim().length() < 6 && loginPwdEt.getText().toString().trim().length() > 20){
+            TUtils.showShort(getApplicationContext(), "请输入6-20位组合密码！");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 是否是纯数字或者纯英文
+     * @param psd
+     * @return
+     */
+    public static boolean ispsd(String psd) {
+        Pattern p = Pattern
+                .compile("^[a-zA-Z].*[0-9]|.*[0-9].*[a-zA-Z]");
+        Matcher m = p.matcher(psd);
+
+        return m.matches();
+    }
+
+    private void requestToken() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id","android-user_20170808");
+        map.put("app_key","enet360");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<TokenBean>post(Urls.get_token)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<TokenBean>(TokenBean.class) {
+                    @Override
+                    public void onSuccess(Response<TokenBean> response) {
+                        TokenBean tokenBean = response.body();
+                        String status = tokenBean.getStatus();
+                        if (TextUtils.equals("1",status)){
+                            String token = tokenBean.getData().getToken();
+                            SPUtils.getInstance().putString("token",token);
+                        }else {
+                            TUtils.showShort(getApplicationContext(),response.body().getInfo());
+                        }
+                    }
+                });
+    }
+
+    private void requestLogin() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id","android-user_20170808");
+        map.put("token",SPUtils.getInstance().getString("token",""));
+//        map.put("mobile",loginPhoneEt.getText().toString().trim());
+//        map.put("password",loginPwdEt.getText().toString().trim());
+        map.put("mobile","18515885055");
+        map.put("password","a123456");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<LoginBean>post(Urls.login)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<LoginBean>(this,LoginBean.class) {
+                    @Override
+                    public void onSuccess(Response<LoginBean> response) {
+                        LoginBean loginBean = response.body();
+                        if (TextUtils.equals("1",loginBean.getStatus())){
+                            SPUtils.getInstance().putString("id",loginBean.getData().getId());
+                            SPUtils.getInstance().putString("face",loginBean.getData().getFace());
+                            SPUtils.getInstance().putString("mobile",loginBean.getData().getMobile());
+                            startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
+                        }else {
+                            TUtils.showShort(getApplicationContext(),loginBean.getInfo());
+                        }
+                    }
+                });
+    }
 }

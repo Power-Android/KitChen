@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#00000000"
     android:orientation="vertical"
     tools:context="com.power.kitchen.activity.NotRepaireDetailActivity">
     <include layout="@layout/item_title_layout"/>
@@ -26,228 +27,440 @@
     </RelativeLayout>
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
-
-        <LinearLayout
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none">
 
-            <TextView
-                android:id="@+id/title_reason_tv"
-                style="@style/black_smtextview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="20dp"
-                android:text="未完成的原因在此显示（如设备停产，没有合适的零件可用等）" />
-            <!--已取消界面-->
             <LinearLayout
-                android:id="@+id/quxiao_view01"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:orientation="vertical">
+
                 <TextView
-                    android:id="@+id/textView2"
-                    style="@style/black_textview"
+                    android:id="@+id/title_reason_tv"
+                    style="@style/black_smtextview"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/gary01"
-                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
-                    android:text="@string/qxyy" />
-
-                <RelativeLayout
+                    android:paddingTop="20dp" />
+                <!--已取消界面-->
+                <LinearLayout
+                    android:id="@+id/quxiao_view01"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
-                        android:id="@+id/qx_reason_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        style="@style/gary_textview"
+                        android:id="@+id/textView2"
+                        style="@style/black_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/gary01"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:text="@string/qxyy" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/qx_reason_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:singleLine="true" />
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/qx_view02"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
                         android:layout_marginLeft="10dp"
-                        android:singleLine="true"
-                        android:text="设备故障已修好" />
-                </RelativeLayout>
-                <View
-                    android:id="@+id/qx_view02"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+                </LinearLayout>
+                <!--未完成界面-->
+                <LinearLayout
+                    android:id="@+id/weiwancheng_view01"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/hint"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"/>
-            </LinearLayout>
-            <!--未完成界面-->
-            <LinearLayout
-                android:id="@+id/weiwancheng_view01"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <View
-                    android:id="@+id/view01"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <View
+                        android:id="@+id/view01"
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:background="@color/gary01" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_07"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/bxdh" />
+
+                        <TextView
+                            android:id="@+id/device_txm_et"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:singleLine="true" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+                <!--已维修界面-->
+                <LinearLayout
+                    android:id="@+id/yiwancheng_view01"
                     android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/gary01" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/gary01"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/zfxx" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_12"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/zfje" />
+
+                        <TextView
+                            android:id="@+id/pay_money_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/yellow01"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/zffs" />
+
+                        <TextView
+                            android:id="@+id/pay_fangshi_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_13"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/zfsj" />
+
+                        <TextView
+                            android:id="@+id/pay_time_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+                <!--未完成界面-->
+                <LinearLayout
+                    android:id="@+id/weiwancheng_view02"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/gary01"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/jdxx" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_01"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/sfxm" />
+
+                        <TextView
+                            android:id="@+id/date_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/lxdh" />
+
+                        <TextView
+                            android:id="@+id/shifu_phone"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_03"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/gsmc" />
+
+                        <TextView
+                            android:id="@+id/shifu_gs_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_04"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/jdsj" />
+
+                        <TextView
+                            android:id="@+id/jiedan_time_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/tv_05"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/gsjl" />
+
+                        <TextView
+                            android:id="@+id/gs_juli_tv"
+                            style="@style/gary_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/red01" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:background="@color/gary01" />
+                </LinearLayout>
+
+
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
                     <TextView
-                        android:id="@+id/tv_07"
+                        android:id="@+id/tv_06"
                         style="@style/black_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:text="@string/bxdh" />
+                        android:text="@string/bxsj" />
 
                     <TextView
-                        android:id="@+id/device_txm_et"
+                        android:id="@+id/bx_time"
+                        style="@style/gary_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        style="@style/gary_textview"
-                        android:singleLine="true"
-                        android:text="123456789"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="10dp"/>
-
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
                 </RelativeLayout>
-            </LinearLayout>
-            <!--未完成界面-->
-            <LinearLayout
-                android:id="@+id/weiwancheng_view02"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+
                 <TextView
+                    android:id="@+id/textView"
                     style="@style/black_textview"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:gravity="center_vertical"
                     android:background="@color/gary01"
+                    android:gravity="center_vertical"
                     android:paddingBottom="10dp"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
-                    android:text="@string/jdxx" />
+                    android:text="@string/sbxx" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
                     <TextView
-                        android:id="@+id/tv_01"
+                        android:id="@+id/tv_08"
                         style="@style/black_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:text="@string/sfxm" />
+                        android:text="@string/txm" />
 
                     <TextView
-                        android:id="@+id/date_tv"
-                        style="@style/gary_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="李师傅"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"/>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/hint" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp">
-                    <TextView
-                        android:id="@+id/tv_02"
-                        style="@style/black_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:text="@string/lxdh" />
-                    <TextView
-                        style="@style/gary_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="17611225393"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"/>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/hint" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp">
-
-                    <TextView
-                        android:id="@+id/tv_03"
-                        style="@style/black_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:text="@string/gsmc" />
-
-                    <TextView
+                        android:id="@+id/txm_tv"
                         style="@style/gary_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
-                        android:text="广州家厨维修有限公司" />
-
-                </RelativeLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/hint" />
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp">
-                    <TextView
-                        android:id="@+id/tv_04"
-                        style="@style/black_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:text="@string/jdsj" />
-                    <TextView
-                        style="@style/gary_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="2017-10-20  14:23:31"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"/>
+                        android:ellipsize="end"
+                        android:maxLength="15" />
                 </RelativeLayout>
 
                 <View
@@ -262,423 +475,416 @@
                     android:layout_height="50dp">
 
                     <TextView
-                        android:id="@+id/tv_05"
+                        android:id="@+id/tv_09"
                         style="@style/black_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:text="@string/gsjl" />
+                        android:text="@string/gmrq" />
+
                     <TextView
+                        android:id="@+id/goumai_time_tv"
                         style="@style/gary_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:textColor="@color/red01"
-                        android:text="5.0KM"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"/>
+                        android:layout_marginRight="10dp" />
                 </RelativeLayout>
+
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/gary01" />
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:id="@+id/tv_10"
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:singleLine="true"
+                        android:text="@string/pp" />
+
+                    <TextView
+                        android:id="@+id/pinpai_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:id="@+id/tv_11"
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/bxq" />
+
+                    <TextView
+                        android:id="@+id/bxq_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/lx" />
+
+                    <TextView
+                        android:id="@+id/type_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/xh" />
+
+                    <TextView
+                        android:id="@+id/xinghao_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
+                </RelativeLayout>
+
+                <TextView
+                    style="@style/black_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/gary01"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="@string/lxxx" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/xm" />
+
+                    <TextView
+                        android:id="@+id/name_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_alignBaseline="@+id/textView3"
+                        android:layout_alignBottom="@+id/textView3"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/sjh" />
+
+                    <TextView
+                        android:id="@+id/phone_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/ctmc" />
+
+                    <TextView
+                        android:id="@+id/cantingname_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:ellipsize="end"
+                        android:maxLength="15" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/szqy" />
+
+                    <TextView
+                        android:id="@+id/adress_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/hint" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/xxdz" />
+
+                    <TextView
+                        android:id="@+id/detail_adress_tv"
+                        style="@style/gary_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:ellipsize="end"
+                        android:maxLength="15" />
+                </RelativeLayout>
+
+                <TextView
+                    style="@style/black_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/gary01"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="@string/wtms" />
+
+                <TextView
+                    android:id="@+id/problem_device_et"
+                    style="@style/gary_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:minLines="7"
+                    android:padding="10dp"
+                    android:textSize="14sp" />
+                <LinearLayout
+                    android:id="@+id/shebeitupian_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/gary01"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="20dp"
+                        android:text="@string/sbtp" />
+
+                    <com.power.kitchen.view.MyGridView
+                        android:id="@+id/gridview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/gary01"
+                        android:numColumns="3"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:verticalSpacing="3dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/pingjia_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/gary01">
+                        <TextView
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="20dp"
+                            android:text="@string/pj" />
+                        <TextView
+                            android:id="@+id/pingjia_chengdu_tv"
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:text="满意"
+                            android:textColor="@color/yellow01"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/pingjia_miaoshu_tv"
+                        style="@style/gary_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="top"
+                        android:minLines="7"
+                        android:padding="10dp"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gary01"
+                    android:orientation="horizontal"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="30dp">
+
+                    <Button
+                        android:id="@+id/query_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/green01"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
+        </ScrollView>
 
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    android:id="@+id/tv_06"
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/bxsj" />
-
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:text="2017-10-20  14:23:31" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/textView"
-                style="@style/black_textview"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/gary01"
-                android:gravity="center_vertical"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/sbxx" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-                <TextView
-                    android:id="@+id/tv_08"
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/txm" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    style="@style/gary_textview"
-                    android:singleLine="true"
-                    android:text="123456789"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"/>
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-                <TextView
-                    android:id="@+id/tv_09"
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/gmrq" />
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:text="2017-10-20  14:23:31" />
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-                <TextView
-                    android:id="@+id/tv_10"
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:singleLine="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/pp" />
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="美的（Midea）"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"/>
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    android:id="@+id/tv_11"
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/bxq" />
-
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:text="保修期内" />
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/lx" />
-
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:text="空调" />
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/xh" />
-
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:text="KFGDLKA-AHASDKA-ADHKAD" />
-            </RelativeLayout>
-            <TextView
-                style="@style/black_textview"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/gary01"
-                android:paddingLeft="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/lxxx" />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/xm" />
-
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="张先生"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"/>
-
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/sjh" />
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="17611225393"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"/>
-
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/ctmc" />
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="广州全新茶餐厅"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"/>
-
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/szqy" />
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="广州省 广州市 荔湾区"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"/>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/hint" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/xxdz" />
-                <TextView
-                    style="@style/gary_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="海淀区西三旗街道"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"/>
-            </RelativeLayout>
-            <TextView
-                style="@style/black_textview"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/gary01"
-                android:paddingLeft="10dp"
-                android:gravity="center_vertical"
-                android:text="@string/wtms" />
-            <TextView
-                android:id="@+id/problem_device_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minLines="7"
-                android:padding="10dp"
-                android:gravity="top"
-                style="@style/gary_hint"
-                android:textSize="14sp"
-                android:hint="故障设备信息"
-                android:background="@null"/>
-            <TextView
-                style="@style/black_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gary01"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="20dp"
-                android:text="@string/sbtp" />
-            <com.power.kitchen.view.MyGridView
-                android:id="@+id/gridview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/gary01"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:numColumns="3"
-                android:verticalSpacing="3dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/gary01"
-                android:paddingTop="30dp"
-                android:paddingBottom="20dp">
-                <Button
-                    android:id="@+id/query_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:background="@color/green01"
-                    android:text="@string/jxbx"/>
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+    <!--<Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentBottom ="true"
+        android:background="@color/green01"
+        android:text="@string/jxbx"
+        android:textColor="@color/white"
+        android:textSize="16sp" />-->
 </LinearLayout>

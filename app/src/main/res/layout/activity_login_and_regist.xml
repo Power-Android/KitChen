@@ -12,7 +12,7 @@
             <RelativeLayout
                 android:id="@+id/rl_01"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="230dp"
                 android:background="@mipmap/kc_login_background"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -24,21 +24,21 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:src="@mipmap/kc_login_shape"
-                    android:layout_marginTop="190dp"/>
+                    android:layout_marginTop="220dp"/>
                 <ImageView
                     android:id="@+id/rigist_iv"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:src="@mipmap/kc_login_shape"
-                    android:layout_marginTop="190dp"
+                    android:layout_marginTop="220dp"
                     android:visibility="invisible"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_01"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="200dp"
+                android:layout_marginTop="230dp"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/login_tv"
@@ -94,7 +94,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_01"
                         android:singleLine="true"
-                        android:password="true"
+                        android:phoneNumber="true"
                         android:background="@null"
                         android:hint="@string/dldqsjh"
                         style="@style/gary_hint" />

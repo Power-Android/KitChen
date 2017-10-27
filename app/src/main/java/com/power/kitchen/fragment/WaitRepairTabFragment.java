@@ -1,28 +1,38 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
-import com.orhanobut.logger.Logger;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.WaitRepaireDetailActivity;
 import com.power.kitchen.adapter.WaitRepairAdapter;
-import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.callback.LoadingCallback;
-import com.power.kitchen.callback.PostUtil;
 import com.power.kitchen.callback.TimeoutCallback;
-
-import java.util.ArrayList;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
+import org.json.JSONObject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,9 +48,10 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
 
     @BindView(R.id.wait_list) ListView waitList;
     Unbinder unbinder;
-    private List<WaiteRepairBean> list;
+    private List<OrderListBean.DataBean.ListsBean> list;
     private LoadService loadService;
     private View view;
+    private int p = 1;
 
     @Nullable
     @Override
@@ -49,7 +60,52 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
         unbinder = ButterKnife.bind(this, view);
         initLoad();
         initView();
+        requestOrderList();
         return loadService.getLoadLayout();
+    }
+
+    private void requestOrderList() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id","android-user_20170808");
+        map.put("token", SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("p","1");
+        map.put("type","1");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<OrderListBean>post(Urls.order_lists)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<OrderListBean>(OrderListBean.class) {
+                    @Override
+                    public void onSuccess(Response<OrderListBean> response) {
+                        OrderListBean orderListBean = response.body();
+                        if (TextUtils.equals("1",orderListBean.getStatus())){
+                            list = orderListBean.getData().getLists();
+                            if (TextUtils.equals("0",list.size()+"")){
+                                loadService.showCallback(EmptyCallback.class);
+                            }else {
+                                WaitRepairAdapter adapter = new WaitRepairAdapter(getActivity(),list);
+                                waitList.setAdapter(adapter);
+                                loadService.showSuccess();
+                                waitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        String oid = list.get(position).getOid();
+                                        Intent intent = new Intent(getActivity(),WaitRepaireDetailActivity.class);
+                                        intent.putExtra("oid",oid);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+                        }else {
+                            TUtils.showShort(getActivity().getApplicationContext(),orderListBean.getInfo());
+                            loadService.showCallback(ErrorCallback.class);
+                        }
+                    }
+                });
     }
 
     private void initLoad() {
@@ -58,33 +114,20 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
                 .addCallback(new ErrorCallback())
                 .addCallback(new TimeoutCallback())
                 .addCallback(new LoadingCallback())
-                .setDefaultCallback(EmptyCallback.class)
+                .setDefaultCallback(LoadingCallback.class)
                 .build();
         loadService = loadSir.register(view, new Callback.OnReloadListener() {
             @Override
             public void onReload(View v) {
                 //重新加载逻辑
-                loadService.showSuccess();
+                loadService.showCallback(LoadingCallback.class);
+                requestOrderList();
             }
-
         });
     }
 
     private void initView() {
-        list = new ArrayList<>();
-        for (int i = 0;i < 10;i++){
-            WaiteRepairBean waiteRepairBean = new WaiteRepairBean();
-            waiteRepairBean.setName("美的（Midea）");
-            waiteRepairBean.setBianhao("123456789");
-            waiteRepairBean.setIs_baoxiu("保修期外"+i);
-            waiteRepairBean.setIs_jiedan("已接单"+i);
-            waiteRepairBean.setLeixing("空调"+i);
-            waiteRepairBean.setShijian("2017年9月20日 19:53:09");
-            waiteRepairBean.setXinghao("KDF-57SJSFLGH");
-            list.add(waiteRepairBean);
-        }
-        WaitRepairAdapter adapter = new WaitRepairAdapter(getActivity(),list);
-        waitList.setAdapter(adapter);
+
     }
 
     @Override
