@@ -1,10 +1,16 @@
 package com.power.kitchen.fragment;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.AboutUsActivity;
@@ -22,10 +31,20 @@ import com.power.kitchen.activity.CommentActivity;
 import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.activity.SetPwdActivity;
 import com.power.kitchen.activity.SettingActivity;
+import com.power.kitchen.bean.EditFaceBean;
+import com.power.kitchen.callback.JsonCallback;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.Urls;
 import com.power.kitchen.view.CircleImageView;
 import com.suke.widget.SwitchButton;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +71,9 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     @BindView(R.id.my_fwrx_layout) RelativeLayout myFwrxLayout;
     @BindView(R.id.exit_login_layout) LinearLayout exitLoginLayout;
     Unbinder unbinder;
+    private String cutPath;
+    private Uri uri;
+    private File file;
 
     @Nullable
     @Override
@@ -135,10 +157,40 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 102){
-            String cutPath = data.getStringExtra("cutPath");
-            Glide.with(getActivity())
-                    .load(cutPath)
-                    .into(myHeadIv);
+            if (data != null){
+                cutPath = data.getStringExtra("cutPath");
+                file = new File(cutPath);
+                uri = Uri.fromFile(file);
+                Glide.with(getActivity())
+                        .load(cutPath)
+                        .into(myHeadIv);
+                requestFace();//修改头像
+            }
         }
     }
+
+    private void requestFace() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("face","data:image/png;base64,"+cutPath);
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<EditFaceBean>post(Urls.edit_face)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<EditFaceBean>(EditFaceBean.class) {
+                    @Override
+                    public void onSuccess(Response<EditFaceBean> response) {
+                        EditFaceBean body = response.body();
+                        if (!TextUtils.isEmpty(body.getData().getFace())){
+                            Logger.e(body.getData().getFace());
+                        }
+                    }
+                });
+    }
+
 }

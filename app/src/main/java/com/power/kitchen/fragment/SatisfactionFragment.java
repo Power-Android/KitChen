@@ -3,6 +3,7 @@ package com.power.kitchen.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +12,30 @@ import android.widget.ListView;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.SatisfactionAdapter;
+import com.power.kitchen.bean.CommentListBean;
+import com.power.kitchen.bean.LoginBean;
+import com.power.kitchen.bean.TokenBean;
 import com.power.kitchen.bean.WaiteRepairBean;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.callback.LoadingCallback;
 import com.power.kitchen.callback.TimeoutCallback;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +52,7 @@ public class SatisfactionFragment extends Fragment {
     Unbinder unbinder;
     private LoadService loadService;
     private View view;
-    List<WaiteRepairBean> list;
+    List<CommentListBean.DataBean.ListsBean> list;
 
 
 
@@ -49,8 +64,44 @@ public class SatisfactionFragment extends Fragment {
 
         initLoad();
         initView();
+        requestCommentList();
 
         return loadService.getLoadLayout();
+    }
+
+    private void requestCommentList() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("p","1");
+        map.put("level","1");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<CommentListBean>post(Urls.comment_lists)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<CommentListBean>(CommentListBean.class) {
+                    @Override
+                    public void onSuccess(Response<CommentListBean> response) {
+                        CommentListBean commentListBean = response.body();
+                        if (TextUtils.equals("1",commentListBean.getStatus())){
+                            list = commentListBean.getData().getLists();
+                            if (TextUtils.equals("0",list.size()+"")){
+                                loadService.showCallback(EmptyCallback.class);
+                            }else {
+                                SatisfactionAdapter adapter = new SatisfactionAdapter(getActivity(),list);
+                                satisfactionListView.setAdapter(adapter);
+                                loadService.showSuccess();
+                            }
+                        }else {
+                            TUtils.showShort(getActivity().getApplicationContext(),commentListBean.getInfo());
+                            loadService.showCallback(ErrorCallback.class);
+                        }
+                    }
+                });
     }
 
     /**
@@ -75,21 +126,12 @@ public class SatisfactionFragment extends Fragment {
 
 
     private void initView() {
-        list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            WaiteRepairBean waiteRepairBean = new WaiteRepairBean();
-            waiteRepairBean.setName("美的（Midea）");
-            waiteRepairBean.setBianhao("123456789");
-            waiteRepairBean.setIs_baoxiu("保修期外"+i);
-            waiteRepairBean.setIs_jiedan("已完成"+i);
-            waiteRepairBean.setLeixing("空调"+i);
-            waiteRepairBean.setShijian("2017年9月20日 19:53:09");
-            waiteRepairBean.setXinghao("KDF-57SJSFLGH");
-            list.add(waiteRepairBean);
-        }
+
         SatisfactionAdapter adapter = new SatisfactionAdapter(getActivity(),list);
         satisfactionListView.setAdapter(adapter);
     }
+
+
 
     @Override
     public void onDestroyView() {

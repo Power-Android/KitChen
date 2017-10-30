@@ -16,4 +16,8 @@ public class Urls {
     public static final String order_lists = api_url + "/Api/UserOrder/order_lists.html";
     //报修订单详情
     public static final String order_info = api_url + "/Api/UserOrder/order_info.html";
+    //普通用户修改头像
+    public static final String edit_face = api_url + "/Api/User/edit_face.html";
+    //评价列表
+    public static final String comment_lists = api_url + "/Api/UserComment/comment_lists.html";
 }

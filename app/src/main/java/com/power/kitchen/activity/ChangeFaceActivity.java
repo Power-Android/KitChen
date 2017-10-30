@@ -1,6 +1,5 @@
 package com.power.kitchen.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -16,14 +15,10 @@ import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
-import com.power.kitchen.fragment.RepairFragment;
 import com.power.kitchen.utils.CommonPopupWindow;
-
 import org.zackratos.ultimatebar.UltimateBar;
-
 import java.util.ArrayList;
 import java.util.List;
 

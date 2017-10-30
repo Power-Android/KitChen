@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.power.kitchen.R;
+import com.power.kitchen.bean.CommentListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
 
 import java.util.List;
@@ -24,10 +25,10 @@ import butterknife.ButterKnife;
 public class SatisfactionAdapter extends BaseAdapter {
 
     private Context context;
-    private List<WaiteRepairBean> list;
+    private List<CommentListBean.DataBean.ListsBean> list;
     private LayoutInflater inflater;
 
-    public SatisfactionAdapter(Context context, List<WaiteRepairBean> list){
+    public SatisfactionAdapter(Context context, List<CommentListBean.DataBean.ListsBean> list){
         this.context =context;
         this.list = list;
         inflater = LayoutInflater.from(context);
@@ -58,14 +59,14 @@ public class SatisfactionAdapter extends BaseAdapter {
         }else
             viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.bianhaoTv.setText(list.get(position).getBianhao());
-        viewHolder.leixingTv.setText(list.get(position).getLeixing());
-        viewHolder.nameTv.setText(list.get(position).getName());
-        viewHolder.isJiedanTv.setText(list.get(position).getIs_jiedan());
-        viewHolder.isBaoxiuTv.setText(list.get(position).getIs_baoxiu());
-        viewHolder.nameTv01.setText(list.get(position).getBianhao());
-        viewHolder.timeTv.setText(list.get(position).getShijian());
-        viewHolder.xinghaoTv.setText(list.get(position).getXinghao());
+        viewHolder.bianhaoTv.setText(list.get(position).getOid());
+        viewHolder.leixingTv.setText(list.get(position).getGoods_type_name());
+        viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
+//        viewHolder.isJiedanTv.setText(list.get(position).getIs_jiedan());
+//        viewHolder.isBaoxiuTv.setText(list.get(position).getIs_baoxiu());
+//        viewHolder.nameTv01.setText(list.get(position).getBianhao());
+//        viewHolder.timeTv.setText(list.get(position).getShijian());
+//        viewHolder.xinghaoTv.setText(list.get(position).getXinghao());
         return convertView;
     }
 
