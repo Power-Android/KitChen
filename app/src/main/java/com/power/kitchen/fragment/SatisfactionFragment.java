@@ -1,6 +1,7 @@
 package com.power.kitchen.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -12,10 +13,13 @@ import android.widget.ListView;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
+import com.liaoinstan.springview.widget.SpringView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
+import com.power.kitchen.adapter.MyFooter;
+import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.adapter.SatisfactionAdapter;
 import com.power.kitchen.bean.CommentListBean;
 import com.power.kitchen.bean.LoginBean;
@@ -46,9 +50,10 @@ import butterknife.Unbinder;
  * 满意
  */
 
-public class SatisfactionFragment extends Fragment {
+public class SatisfactionFragment extends Fragment implements SpringView.OnFreshListener{
 
     @BindView(R.id.satisfaction_listView) ListView satisfactionListView;
+    @BindView(R.id.springview) SpringView springView;
     Unbinder unbinder;
     private LoadService loadService;
     private View view;
@@ -67,6 +72,13 @@ public class SatisfactionFragment extends Fragment {
         requestCommentList();
 
         return loadService.getLoadLayout();
+    }
+
+    private void initView() {
+        springView.setType(SpringView.Type.FOLLOW);
+        springView.setListener(this);
+        springView.setHeader(new MyHeader(getActivity()));
+        springView.setFooter(new MyFooter(getActivity()));
     }
 
     private void requestCommentList() {
@@ -119,23 +131,35 @@ public class SatisfactionFragment extends Fragment {
             @Override
             public void onReload(View v) {
                 //重新加载逻辑
-                loadService.showSuccess();
+                loadService.showCallback(LoadingCallback.class);
+                requestCommentList();
             }
         });
     }
-
-
-    private void initView() {
-
-        SatisfactionAdapter adapter = new SatisfactionAdapter(getActivity(),list);
-        satisfactionListView.setAdapter(adapter);
-    }
-
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.onFinishFreshAndLoad();
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void onLoadmore() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.onFinishFreshAndLoad();
+            }
+        }, 1000);
     }
 }

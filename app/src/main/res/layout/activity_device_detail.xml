@@ -23,7 +23,7 @@
                 style="@style/black_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gary01"
+                android:background="@color/gary02"
                 android:paddingBottom="20dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="20dp"
@@ -198,7 +198,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="39dp"
-                    android:text="美的（Midea）"
                     android:layout_alignBaseline="@+id/tv_03"
                     android:layout_alignBottom="@+id/tv_03"
                     android:layout_toRightOf="@+id/tv_03"
@@ -242,8 +241,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="40dp"
-                    android:layout_toRightOf="@+id/tv_04"
-                    android:text="空调" />
+                    android:layout_toRightOf="@+id/tv_04" />
 
                 <ImageView
                     android:id="@+id/jump_leixing_iv"
@@ -293,7 +291,7 @@
                 style="@style/black_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gary01"
+                android:background="@color/gary02"
                 android:paddingBottom="20dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="20dp"
@@ -483,7 +481,7 @@
                 style="@style/black_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gary01"
+                android:background="@color/gary02"
                 android:paddingBottom="20dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="20dp"
@@ -503,7 +501,7 @@
                 style="@style/black_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gary01"
+                android:background="@color/gary02"
                 android:paddingLeft="10dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="20dp"
@@ -512,7 +510,7 @@
                 android:id="@+id/gridview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/gary01"
+                android:background="@color/gary02"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:numColumns="3"
@@ -522,7 +520,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@color/gary01"
+                android:background="@color/gary02"
                 android:paddingTop="30dp"
                 android:paddingBottom="20dp">
                 <Button

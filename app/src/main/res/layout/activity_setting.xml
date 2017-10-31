@@ -26,32 +26,8 @@
             android:id="@+id/username_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="孙尚香"
-            android:layout_alignParentRight="true"
-            style="@style/gary_textview"/>
-    </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gary02"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"/>
-    <RelativeLayout
-        android:id="@+id/canting_rl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ctmc"
-            style="@style/black_textview"/>
-        <TextView
-            android:id="@+id/canting_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="深渊峡谷"
+            android:singleLine="true"
+            android:maxLength="10"
             android:layout_alignParentRight="true"
             style="@style/gary_textview"/>
     </RelativeLayout>
@@ -76,7 +52,6 @@
             android:id="@+id/telnum_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="17611225393"
             android:layout_alignParentRight="true"
             style="@style/gary_textview"/>
     </RelativeLayout>
@@ -101,7 +76,6 @@
             android:id="@+id/adress_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="北京市海淀区"
             android:singleLine="true"
             android:layout_toLeftOf="@+id/adress_iv"
             style="@style/gary_textview"/>
@@ -114,31 +88,6 @@
             android:src="@mipmap/kc_arrowhead_gary"
             android:layout_alignParentRight="true"/>
 
-    </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gary02"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"/>
-    <RelativeLayout
-        android:id="@+id/detailadress_rl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="15dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/xxdz"
-            style="@style/black_textview"/>
-        <TextView
-            android:id="@+id/detailadress_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="中关村软件园"
-            android:layout_alignParentRight="true"
-            style="@style/gary_textview"/>
     </RelativeLayout>
     <View
         android:layout_width="match_parent"

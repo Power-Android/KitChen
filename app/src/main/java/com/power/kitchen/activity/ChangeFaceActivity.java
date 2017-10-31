@@ -2,6 +2,7 @@ package com.power.kitchen.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
@@ -18,6 +22,8 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.utils.CommonPopupWindow;
+import com.power.kitchen.utils.SPUtils;
+
 import org.zackratos.ultimatebar.UltimateBar;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +39,7 @@ public class ChangeFaceActivity extends BaseActivity {
     @BindView(R.id.tv_sc) TextView tvSy;
     private CommonPopupWindow popupWindow;
     private List<LocalMedia> selectList = new ArrayList<>();
+    private String cutPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,11 @@ public class ChangeFaceActivity extends BaseActivity {
     }
 
     private void initView() {
+        String face = SPUtils.getInstance().getString("face", "");
+        RequestOptions options = new RequestOptions();
+        options.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        Glide.with(this).load(face).apply(options).into(ivImgsHead);
+
         tvGh.setOnClickListener(this);
         tvSy.setOnClickListener(this);
     }
@@ -61,6 +73,14 @@ public class ChangeFaceActivity extends BaseActivity {
                 showPopup();
                 break;
             case R.id.tv_sc:
+                if (!TextUtils.isEmpty(cutPath)){
+                    Intent intent = new Intent();
+                    intent.putExtra("cutPath", cutPath);
+                    setResult(102,intent);
+                    finish();
+                }else {
+                    finish();
+                }
                 break;
         }
     }
@@ -146,8 +166,8 @@ public class ChangeFaceActivity extends BaseActivity {
                 .hideBottomControls(true)// 是否显示uCrop工具栏，默认不显示
                 .isGif(false)// 是否显示gif图片
                 .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
-                .circleDimmedLayer(true)// 是否圆形裁剪
-                .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                .circleDimmedLayer(false)// 是否圆形裁剪
+                .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                 .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
                 .openClickSound(false)// 是否开启点击声音
 //                .selectionMedia(list)// 是否传入已选图片
@@ -159,7 +179,7 @@ public class ChangeFaceActivity extends BaseActivity {
                 //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
                 //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                 //.rotateEnabled() // 裁剪是否可旋转图片
-                .scaleEnabled(true)// 裁剪是否可放大缩小图片
+                .scaleEnabled(false)// 裁剪是否可放大缩小图片
                 //.videoQuality()// 视频录制质量 0 or 1
                 //.videoSecond()//显示多少秒以内的视频or音频也可适用
                 //.recordVideoSecond()//录制视频秒数 默认60s
@@ -174,10 +194,10 @@ public class ChangeFaceActivity extends BaseActivity {
                 .compress(true)// 是否压缩
                 .compressMode(PictureConfig.SYSTEM_COMPRESS_MODE)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
                 .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
-                .circleDimmedLayer(true)// 是否圆形裁剪
-                .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                .circleDimmedLayer(false)// 是否圆形裁剪
+                .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                 .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                .scaleEnabled(true)// 裁剪是否可放大缩小图片
+                .scaleEnabled(false)// 裁剪是否可放大缩小图片
 //                .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
 //                .selectionMedia(list)// 是否传入已选图片
 //                .previewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
@@ -192,11 +212,9 @@ public class ChangeFaceActivity extends BaseActivity {
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
                     selectList = PictureSelector.obtainMultipleResult(data);
-                    String cutPath = selectList.get(0).getCutPath();
-                    Intent intent = new Intent();
-                    intent.putExtra("cutPath", cutPath);
-                    setResult(102,intent);
-                    finish();
+                    cutPath = selectList.get(0).getCutPath();
+                    SPUtils.getInstance().getString("face",cutPath);
+                    Glide.with(this).load(cutPath).into(ivImgsHead);
                     break;
             }
         }

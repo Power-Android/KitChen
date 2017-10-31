@@ -116,7 +116,8 @@
             android:name=".activity.WaitRepaireDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name=".activity.ChangeFaceActivity"/>
+        <activity android:name=".activity.ChangeFaceActivity" />
+        <activity android:name=".activity.EditNameActivity"></activity>
     </application>
 
 </manifest>

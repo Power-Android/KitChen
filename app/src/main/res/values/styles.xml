@@ -17,6 +17,8 @@
     <style name="AppThemes" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 设置activity切换动画 -->
         <item name="android:windowAnimationStyle">@style/activityAnimation</item>
+        <!--设置下划线颜色-->
+        <item name="colorAccent">@color/green01</item>
     </style>
 
     <style name="white_textview">

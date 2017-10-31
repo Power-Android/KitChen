@@ -4,10 +4,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ListView
-        android:id="@+id/repaire_listView"
+    <com.liaoinstan.springview.widget.SpringView
+        android:id="@+id/springview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/repaire_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </com.liaoinstan.springview.widget.SpringView>
 
-    </ListView>
 </LinearLayout>

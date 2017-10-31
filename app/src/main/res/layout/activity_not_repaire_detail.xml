@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00000000"
     android:orientation="vertical"
     tools:context="com.power.kitchen.activity.NotRepaireDetailActivity">
     <include layout="@layout/item_title_layout"/>
@@ -59,7 +58,7 @@
                         style="@style/black_textview"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:background="@color/gary01"
+                        android:background="@color/gary02"
                         android:gravity="center_vertical"
                         android:paddingLeft="10dp"
                         android:text="@string/qxyy" />
@@ -98,7 +97,7 @@
                         android:id="@+id/view01"
                         android:layout_width="match_parent"
                         android:layout_height="10dp"
-                        android:background="@color/gary01" />
+                        android:background="@color/gary02" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -137,7 +136,7 @@
                         style="@style/black_textview"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:background="@color/gary01"
+                        android:background="@color/gary02"
                         android:gravity="center_vertical"
                         android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
@@ -242,7 +241,7 @@
                         style="@style/black_textview"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:background="@color/gary01"
+                        android:background="@color/gary02"
                         android:gravity="center_vertical"
                         android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
@@ -398,7 +397,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="10dp"
-                        android:background="@color/gary01" />
+                        android:background="@color/gary02" />
                 </LinearLayout>
 
 
@@ -431,7 +430,7 @@
                     style="@style/black_textview"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@color/gary01"
+                    android:background="@color/gary02"
                     android:gravity="center_vertical"
                     android:paddingBottom="10dp"
                     android:paddingLeft="10dp"
@@ -616,7 +615,7 @@
                     style="@style/black_textview"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@color/gary01"
+                    android:background="@color/gary02"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="@string/lxxx" />
@@ -773,7 +772,7 @@
                     style="@style/black_textview"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@color/gary01"
+                    android:background="@color/gary02"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="@string/wtms" />
@@ -798,7 +797,7 @@
                         style="@style/black_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/gary01"
+                        android:background="@color/gary02"
                         android:paddingBottom="10dp"
                         android:paddingLeft="10dp"
                         android:paddingTop="20dp"
@@ -808,7 +807,7 @@
                         android:id="@+id/gridview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/gary01"
+                        android:background="@color/gary02"
                         android:numColumns="3"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
@@ -824,7 +823,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:background="@color/gary01">
+                        android:background="@color/gary02">
                         <TextView
                             style="@style/black_textview"
                             android:layout_width="wrap_content"
@@ -859,7 +858,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/gary01"
+                    android:background="@color/gary02"
                     android:orientation="horizontal"
                     android:paddingBottom="20dp"
                     android:paddingTop="30dp">

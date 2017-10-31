@@ -14,6 +14,7 @@
         app:tabTextColor="@color/text_color01"
         app:tabIndicatorColor="@color/green01"
         app:tabIndicatorHeight="1.5dp"
+        android:background="@color/back_ground"
         app:tabSelectedTextColor="@color/green01"
         app:tabTextAppearance="@style/MyCustomTabTextAppearance"/>
     <com.power.kitchen.utils.NoScrollViewPager

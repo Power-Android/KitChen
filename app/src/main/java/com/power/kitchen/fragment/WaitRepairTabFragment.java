@@ -2,8 +2,10 @@ package com.power.kitchen.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +16,17 @@ import android.widget.ListView;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
+import com.liaoinstan.springview.container.AliHeader;
+import com.liaoinstan.springview.container.DefaultFooter;
+import com.liaoinstan.springview.container.DefaultHeader;
+import com.liaoinstan.springview.widget.SpringView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.WaitRepaireDetailActivity;
+import com.power.kitchen.adapter.MyFooter;
+import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.adapter.WaitRepairAdapter;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.callback.EmptyCallback;
@@ -44,9 +52,10 @@ import butterknife.Unbinder;
  * 待维修
  */
 
-public class WaitRepairTabFragment extends Fragment implements View.OnClickListener {
+public class WaitRepairTabFragment extends Fragment implements View.OnClickListener, SpringView.OnFreshListener {
 
     @BindView(R.id.wait_list) ListView waitList;
+    @BindView(R.id.springview) SpringView springView;
     Unbinder unbinder;
     private List<OrderListBean.DataBean.ListsBean> list;
     private LoadService loadService;
@@ -62,6 +71,32 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
         initView();
         requestOrderList();
         return loadService.getLoadLayout();
+    }
+
+    private void initLoad() {
+        LoadSir loadSir = new LoadSir.Builder()
+                .addCallback(new EmptyCallback())
+                .addCallback(new ErrorCallback())
+                .addCallback(new TimeoutCallback())
+                .addCallback(new LoadingCallback())
+                .setDefaultCallback(LoadingCallback.class)
+                .build();
+        loadService = loadSir.register(view, new Callback.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                //重新加载逻辑
+                loadService.showCallback(LoadingCallback.class);
+                requestOrderList();
+            }
+        });
+    }
+
+    private void initView() {
+        springView.setType(SpringView.Type.FOLLOW);
+        springView.setListener(this);
+//        springView.setHeader(new AliHeader(getActivity(),R.mipmap.app_logo,true));
+        springView.setHeader(new MyHeader(getActivity()));
+        springView.setFooter(new MyFooter(getActivity()));
     }
 
     private void requestOrderList() {
@@ -108,28 +143,6 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
                 });
     }
 
-    private void initLoad() {
-        LoadSir loadSir = new LoadSir.Builder()
-                .addCallback(new EmptyCallback())
-                .addCallback(new ErrorCallback())
-                .addCallback(new TimeoutCallback())
-                .addCallback(new LoadingCallback())
-                .setDefaultCallback(LoadingCallback.class)
-                .build();
-        loadService = loadSir.register(view, new Callback.OnReloadListener() {
-            @Override
-            public void onReload(View v) {
-                //重新加载逻辑
-                loadService.showCallback(LoadingCallback.class);
-                requestOrderList();
-            }
-        });
-    }
-
-    private void initView() {
-
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -139,5 +152,25 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.onFinishFreshAndLoad();
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void onLoadmore() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.onFinishFreshAndLoad();
+            }
+        }, 1000);
     }
 }

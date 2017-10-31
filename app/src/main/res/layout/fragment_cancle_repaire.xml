@@ -5,9 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical">
-    <ListView
-        android:id="@+id/cancle_list"
+    <com.liaoinstan.springview.widget.SpringView
+        android:id="@+id/springview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
+        <ListView
+            android:id="@+id/cancle_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </com.liaoinstan.springview.widget.SpringView>
+
 </LinearLayout>

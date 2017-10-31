@@ -1,26 +1,43 @@
 package com.power.kitchen.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
+import com.liaoinstan.springview.widget.SpringView;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.MessageAdapter;
+import com.power.kitchen.adapter.MyFooter;
+import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.bean.MessageBean;
+import com.power.kitchen.bean.NoticeOrderListBean;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.callback.LoadingCallback;
 import com.power.kitchen.callback.TimeoutCallback;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.Urls;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,14 +48,16 @@ import butterknife.Unbinder;
  * 系统消息
  */
 
-public class SystemMessageFragment extends Fragment {
+public class SystemMessageFragment extends Fragment implements SpringView.OnFreshListener{
 
     @BindView(R.id.system_listView)
     ListView systemListView;
+    @BindView(R.id.springview)
+    SpringView springView;
     Unbinder unbinder;
     private View view;
     private LoadService loadService;
-    private List<MessageBean> list;
+    private List<NoticeOrderListBean.DataBean.ListsBean> list;
 
     @Nullable
     @Override
@@ -48,7 +67,15 @@ public class SystemMessageFragment extends Fragment {
 
         initLoad();
         initView();
-        return view;
+        requestNoticeSystemList();
+        return loadService.getLoadLayout();
+    }
+
+    private void initView() {
+        springView.setType(SpringView.Type.FOLLOW);
+        springView.setListener(this);
+        springView.setHeader(new MyHeader(getActivity()));
+        springView.setFooter(new MyFooter(getActivity()));
     }
 
     /**
@@ -66,27 +93,73 @@ public class SystemMessageFragment extends Fragment {
             @Override
             public void onReload(View v) {
                 //重新加载逻辑
-                loadService.showSuccess();
+                loadService.showCallback(LoadingCallback.class);
+                requestNoticeSystemList();
             }
         });
     }
 
-    private void initView() {
-        list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            MessageBean messageBean = new MessageBean();
-            messageBean.setContent("商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟," +
-                    "商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟");
-            messageBean.setTime("2017年10月23日 19:01:49");
-            list.add(messageBean);
-        }
-        MessageAdapter adapter = new MessageAdapter(getActivity(),list);
-        systemListView.setAdapter(adapter);
+    private void requestNoticeSystemList() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("p","1");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<NoticeOrderListBean>post(Urls.notice_system_list)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<NoticeOrderListBean>(NoticeOrderListBean.class) {
+                    @Override
+                    public void onSuccess(Response<NoticeOrderListBean> response) {
+                        NoticeOrderListBean noticeOrderListBean = response.body();
+                        if (TextUtils.equals("1",noticeOrderListBean.getStatus())){
+                            list = noticeOrderListBean.getData().getLists();
+                            if (TextUtils.equals("0",list.size()+"")){
+                                loadService.showCallback(EmptyCallback.class);
+                            }else {
+                                MessageAdapter adapter = new MessageAdapter(getActivity(),list);
+                                systemListView.setAdapter(adapter);
+                                loadService.showSuccess();
+                                systemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        //TODO 点进去的详情页
+
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.onFinishFreshAndLoad();
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void onLoadmore() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.onFinishFreshAndLoad();
+            }
+        }, 1000);
     }
 }

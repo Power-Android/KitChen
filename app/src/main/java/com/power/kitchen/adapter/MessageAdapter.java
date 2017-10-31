@@ -1,6 +1,7 @@
 package com.power.kitchen.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.power.kitchen.R;
 import com.power.kitchen.bean.MessageBean;
+import com.power.kitchen.bean.NoticeOrderListBean;
+import com.power.kitchen.utils.TimeUtils;
 
 import java.util.List;
 
@@ -22,10 +25,10 @@ import butterknife.ButterKnife;
 
 public class MessageAdapter extends BaseAdapter {
     private Context context;
-    private List<MessageBean> list;
+    private List<NoticeOrderListBean.DataBean.ListsBean> list;
     private LayoutInflater inflater;
 
-    public MessageAdapter(Context context, List<MessageBean> list) {
+    public MessageAdapter(Context context, List<NoticeOrderListBean.DataBean.ListsBean> list) {
         this.context = context;
         this.list = list;
         inflater = LayoutInflater.from(context);
@@ -57,8 +60,11 @@ public class MessageAdapter extends BaseAdapter {
         }else
             viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.contentTv.setText(list.get(position).getContent());
-        viewHolder.timeTv.setText(list.get(position).getTime());
+        viewHolder.contentTv.setText(list.get(position).getTitle());
+        viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));
+        if (TextUtils.equals("1",list.get(position).getStatus())){
+            viewHolder.ifLookIv.setVisibility(View.INVISIBLE);
+        }
 
         return convertView;
     }

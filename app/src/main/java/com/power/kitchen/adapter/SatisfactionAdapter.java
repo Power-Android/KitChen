@@ -1,6 +1,7 @@
 package com.power.kitchen.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.power.kitchen.R;
 import com.power.kitchen.bean.CommentListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.utils.TimeUtils;
 
 import java.util.List;
 
@@ -62,11 +64,16 @@ public class SatisfactionAdapter extends BaseAdapter {
         viewHolder.bianhaoTv.setText(list.get(position).getOid());
         viewHolder.leixingTv.setText(list.get(position).getGoods_type_name());
         viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
-//        viewHolder.isJiedanTv.setText(list.get(position).getIs_jiedan());
-//        viewHolder.isBaoxiuTv.setText(list.get(position).getIs_baoxiu());
-//        viewHolder.nameTv01.setText(list.get(position).getBianhao());
-//        viewHolder.timeTv.setText(list.get(position).getShijian());
-//        viewHolder.xinghaoTv.setText(list.get(position).getXinghao());
+        viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));
+        viewHolder.nameTv01.setText(list.get(position).getGoods_code());
+        viewHolder.leixingTv.setText(list.get(position).getGoods_model());
+        viewHolder.isJiedanTv.setText("已完成");
+        String goods_is_warranty = list.get(position).getGoods_is_warranty();
+        if (TextUtils.equals("1",goods_is_warranty)){
+            viewHolder.isBaoxiuTv.setText("保修期内");
+        }else {
+            viewHolder.isBaoxiuTv.setText("保修期外");
+        }
         return convertView;
     }
 
@@ -81,6 +88,7 @@ public class SatisfactionAdapter extends BaseAdapter {
         @BindView(R.id.name_tv_01) TextView nameTv01;
         @BindView(R.id.time_tv) TextView timeTv;
         @BindView(R.id.money_tv) TextView moneyTv;
+        @BindView(R.id.gone_rl) RelativeLayout goneRl;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

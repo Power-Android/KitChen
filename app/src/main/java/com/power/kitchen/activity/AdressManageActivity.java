@@ -3,20 +3,40 @@ package com.power.kitchen.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.kingja.loadsir.callback.Callback;
+import com.kingja.loadsir.core.LoadService;
+import com.kingja.loadsir.core.LoadSir;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.AdressManageAdapter;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.AdressManageBean;
+import com.power.kitchen.bean.AreaListBean;
+import com.power.kitchen.callback.EmptyCallback;
+import com.power.kitchen.callback.ErrorCallback;
+import com.power.kitchen.callback.JsonCallback;
+import com.power.kitchen.callback.LoadingCallback;
+import com.power.kitchen.callback.TimeoutCallback;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
 
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +50,8 @@ public class AdressManageActivity extends BaseActivity {
     @BindView(R.id.adress_list) ListView adressList;
 
     private UltimateBar ultimateBar;
-    List<AdressManageBean> list = new ArrayList<>();
+    List<AreaListBean.DataBean.ListsBean> list = new ArrayList<>();
+    private LoadService loadService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +64,30 @@ public class AdressManageActivity extends BaseActivity {
         ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_address_manage);
         ButterKnife.bind(this);
+        initLoad();
         initViewAndListener();
-        initAdapter();
+    }
+
+    /**
+     * 加载状态页
+     */
+    private void initLoad() {
+        LoadSir loadSir = new LoadSir.Builder()
+                .addCallback(new EmptyCallback())
+                .addCallback(new ErrorCallback())
+                .addCallback(new TimeoutCallback())
+                .addCallback(new LoadingCallback())
+                .setDefaultCallback(LoadingCallback.class)
+                .build();
+        //重新加载逻辑
+        loadService = loadSir.register(this, new Callback.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                //重新加载逻辑
+                loadService.showCallback(LoadingCallback.class);
+                requestAreaList();
+            }
+        });
     }
 
     private void initViewAndListener() {
@@ -53,19 +96,42 @@ public class AdressManageActivity extends BaseActivity {
         titleRightTv.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
         titleRightTv.setOnClickListener(this);
+        requestAreaList();
     }
 
-    private void initAdapter() {
-        list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            AdressManageBean adressManageBean = new AdressManageBean();
-            adressManageBean.setName("收货人"+i);
-            adressManageBean.setAddress("这是收货地址---------------"+i);
-            adressManageBean.setTelephone("17611225393");
-            list.add(adressManageBean);
-        }
-        AdressManageAdapter adapter = new AdressManageAdapter(AdressManageActivity.this,list);
-        adressList.setAdapter(adapter);
+    private void requestAreaList() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("p","1");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<AreaListBean>post(Urls.area_list)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<AreaListBean>(AreaListBean.class) {
+                    @Override
+                    public void onSuccess(Response<AreaListBean> response) {
+                        AreaListBean areaListBean = response.body();
+                        if (TextUtils.equals("1",areaListBean.getStatus())){
+                            list = areaListBean.getData().getLists();
+                            if (TextUtils.equals("0",list.size()+"")){
+                                loadService.showCallback(EmptyCallback.class);
+                            }else {
+                                AdressManageAdapter adapter = new AdressManageAdapter(AdressManageActivity.this,list);
+                                adressList.setAdapter(adapter);
+                                loadService.showSuccess();
+                            }
+                        }else {
+                            TUtils.showShort(getApplicationContext(),areaListBean.getInfo());
+                            loadService.showCallback(ErrorCallback.class);
+                        }
+
+                    }
+                });
     }
 
     @Override

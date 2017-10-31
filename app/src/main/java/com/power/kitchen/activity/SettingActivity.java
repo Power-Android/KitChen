@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,15 +15,28 @@ import android.widget.Toast;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.bean.AreaAllListsBean;
 import com.power.kitchen.bean.JsonBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.DialogCallback;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.GetJsonDataUtil;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.Urls;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,14 +52,10 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.content_tv) TextView contentTv;
     @BindView(R.id.username_tv) TextView usernameTv;
     @BindView(R.id.username_rl) RelativeLayout usernameRl;
-    @BindView(R.id.canting_tv) TextView cantingTv;
-    @BindView(R.id.canting_rl) RelativeLayout cantingRl;
     @BindView(R.id.telnum_tv) TextView telnumTv;
     @BindView(R.id.telnum_rl) RelativeLayout telnumRl;
     @BindView(R.id.adress_tv) TextView adressTv;
     @BindView(R.id.adress_rl) RelativeLayout adressRl;
-    @BindView(R.id.detailadress_tv) TextView detailadressTv;
-    @BindView(R.id.detailadress_rl) RelativeLayout detailadressRl;
     @BindView(R.id.adressmanage_rl) RelativeLayout adressmanageRl;
     @BindView(R.id.adress_iv) ImageView adressIv;
 
@@ -59,6 +69,7 @@ public class SettingActivity extends BaseActivity {
     private static final int MSG_LOAD_FAILED = 0x0003;
     private boolean isLoaded = false;
     private OptionsPickerView pvOptions;
+    private String true_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +83,45 @@ public class SettingActivity extends BaseActivity {
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
         initView();
+//        requestAdress();
+    }
+
+    private void requestAdress() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<AreaAllListsBean>post("http://shangchu.ip189.enet360.com/Api/Oauth/area_all_lists.html")
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<AreaAllListsBean>(AreaAllListsBean.class) {
+                    @Override
+                    public void onSuccess(Response<AreaAllListsBean> response) {
+                        Logger.e(response.body().toString());
+                    }
+                });
     }
 
     private void initView() {
         contentTv.setText("个人资料");
         initJsonData();//解析json数据
+        true_name = getIntent().getStringExtra("true_name");
+        String sheng_name = getIntent().getStringExtra("sheng_name");
+        String shi_name = getIntent().getStringExtra("shi_name");
+        String qu_name = getIntent().getStringExtra("qu_name");
+        String mobile = SPUtils.getInstance().getString("mobile", "");
+
+        usernameTv.setText(true_name);
+        telnumTv.setText(mobile);
+        adressTv.setText(sheng_name+ " "+shi_name+ " "+qu_name);
 
         backIv.setOnClickListener(this);
         usernameRl.setOnClickListener(this);
-        cantingRl.setOnClickListener(this);
         telnumRl.setOnClickListener(this);
         adressRl.setOnClickListener(this);
-        detailadressRl.setOnClickListener(this);
         adressmanageRl.setOnClickListener(this);
         adressIv.setOnClickListener(this);
     }
@@ -96,19 +134,29 @@ public class SettingActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.username_rl:
-                break;
-            case R.id.canting_rl:
+                Intent intent = new Intent(this,EditNameActivity.class);
+                intent.putExtra("true_name",true_name);
+                startActivityForResult(intent,103);
                 break;
             case R.id.telnum_rl:
                 break;
             case R.id.adress_rl:
                 showPickerView();
                 break;
-            case R.id.detailadress_rl:
-                break;
             case R.id.adressmanage_rl:
                 startActivity(new Intent(SettingActivity.this,AdressManageActivity.class));
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 103){
+            if (data != null){
+                String true_name = data.getStringExtra("true_name");
+                usernameTv.setText(true_name);
+            }
         }
     }
 
@@ -118,8 +166,6 @@ public class SettingActivity extends BaseActivity {
     private void showPickerView() {
 
         //返回的分别是三个级别的选中位置
-        //ImageView ivCancel = (ImageView) v.findViewById(R.id.iv_cancel);
-        //设置选中项文字颜色
         pvOptions = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
@@ -128,6 +174,7 @@ public class SettingActivity extends BaseActivity {
                         options2Items.get(options1).get(options2)+
                         options3Items.get(options1).get(options2).get(options3);
                 adressTv.setText(tx);
+                requestEditInfo();
             }
         })
                 .setLayoutRes(R.layout.pickerview_city_layout, new CustomListener() {
@@ -156,6 +203,28 @@ public class SettingActivity extends BaseActivity {
         pvOptions.show();
     }
 
+    private void requestEditInfo() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        //TODO 省市区id
+
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.edit_info)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+
+                    }
+                });
+    }
+
     /**
      * 解析数据
      */
@@ -164,7 +233,6 @@ public class SettingActivity extends BaseActivity {
         /**
          * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
          * 关键逻辑在于循环体
-         *
          * */
         String JsonData = new GetJsonDataUtil().getJson(this,"province.json");//获取assets目录下的json文件数据
 
@@ -193,10 +261,8 @@ public class SettingActivity extends BaseActivity {
                         ||jsonBean.get(i).getCityList().get(c).getArea().size()==0) {
                     City_AreaList.add("");
                 }else {
-
                     for (int d=0; d < jsonBean.get(i).getCityList().get(c).getArea().size(); d++) {//该城市对应地区所有数据
                         String AreaName = jsonBean.get(i).getCityList().get(c).getArea().get(d);
-
                         City_AreaList.add(AreaName);//添加该城市所有地区数据
                     }
                 }
