@@ -81,7 +81,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
          * https://github.com/Zackratos/UltimateBar
          */
         UltimateBar ultimateBar = new UltimateBar(getActivity());
-        ultimateBar.setColorBar(ContextCompat.getColor(getActivity(), R.color.green01));
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(getActivity(), R.color.green01));
         View view = inflater.inflate(R.layout.fragment_person_center, container, false);
         unbinder = ButterKnife.bind(this, view);
         String face = SPUtils.getInstance().getString("face", "");

@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -86,6 +87,7 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.pingjia_ll) LinearLayout pingjiaView;
     @BindView(R.id.pingjia_chengdu_tv) TextView pingjiaChengduTv;
     @BindView(R.id.pingjia_miaoshu_tv) TextView pingjiaMiaoshuTv;
+    @BindView(R.id.wentimiaoshu_ll) LinearLayout wentimiaoshuLl;
 
 
     private UltimateBar ultimateBar;
@@ -100,7 +102,7 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         ultimateBar = new UltimateBar(this);
-        ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_not_repaire_detail);
         ButterKnife.bind(this);
         initView();
@@ -113,8 +115,8 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
         weiwanchengView01.setVisibility(View.VISIBLE);
         weiwanchengView02.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
+        queryBtn.setOnClickListener(this);
         oid = getIntent().getStringExtra("oid");
-        scrollView.smoothScrollBy(0, 0);
         requestOrderInfo();
     }
 
@@ -194,7 +196,13 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                                     orderInfoBean.getData().getInfo().getContact_shi_name() + " " +
                                     orderInfoBean.getData().getInfo().getContact_qu_name());
                             detailAdressTv.setText(orderInfoBean.getData().getInfo().getContact_address());
-                            problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+                            if (TextUtils.isEmpty(orderInfoBean.getData().getInfo().getGoods_describe())){
+                                wentimiaoshuLl.setVisibility(View.GONE);
+                            }else {
+                                problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+                            }
+
+                            scrollView.smoothScrollBy(0, 0);
                         }
                     }
                 });
@@ -206,6 +214,11 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.back_iv:
                 finish();
+                break;
+            case R.id.query_btn:
+                Intent intent = new Intent(this,RepaireCommentActivity.class);
+                intent.putExtra("oid",oid);
+                startActivity(intent);
                 break;
         }
     }

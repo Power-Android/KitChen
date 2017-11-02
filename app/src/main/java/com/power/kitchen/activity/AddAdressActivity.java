@@ -60,7 +60,7 @@ public class AddAdressActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         ultimateBar = new UltimateBar(this);
-        ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_add_adress);
         ButterKnife.bind(this);
         initViewAndListener();

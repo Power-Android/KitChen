@@ -18,6 +18,10 @@ public class Urls {
     public static final String order_info = api_url + "/Api/UserOrder/order_info.html";
     //普通用户修改头像
     public static final String edit_face = api_url + "/Api/User/edit_face.html";
+    //维修评价选项
+    public static final String weixiu_comment_type = api_url + "/Api/Oauth/weixiu_comment_type.html";
+    //发布评价
+    public static final String comment_add = api_url + "/Api/UserComment/comment_add.html";
     //评价列表
     public static final String comment_lists = api_url + "/Api/UserComment/comment_lists.html";
     //普通用户查询个人信息

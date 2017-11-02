@@ -73,6 +73,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.detail_adress_tv) TextView detaileAdressTv;
     @BindView(R.id.scrollView) ScrollView scrollView;
     @BindView(R.id.shebeitupian_ll) LinearLayout shebeiTupianLL;
+    @BindView(R.id.wentimiaoshu_ll) LinearLayout wentimiaoshuLl;
 
 
     private UltimateBar ultimateBar;
@@ -86,7 +87,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         ultimateBar = new UltimateBar(this);
-        ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_not_repaire_detail);
         ButterKnife.bind(this);
         initView();
@@ -164,7 +165,11 @@ public class CancleRepaireDetailActivity extends BaseActivity {
                                 orderInfoBean.getData().getInfo().getContact_shi_name()+ " " +
                                     orderInfoBean.getData().getInfo().getContact_qu_name());
                             detaileAdressTv.setText(orderInfoBean.getData().getInfo().getContact_address());
-                            problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+                            if (TextUtils.isEmpty(orderInfoBean.getData().getInfo().getGoods_describe())){
+                                wentimiaoshuLl.setVisibility(View.GONE);
+                            }else {
+                                problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+                            }
                         }
                     }
                 });

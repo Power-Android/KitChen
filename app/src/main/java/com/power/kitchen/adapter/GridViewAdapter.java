@@ -6,10 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.MainActivity;
+import com.power.kitchen.activity.WaitRepaireDetailActivity;
 
 import java.io.File;
 import java.util.List;
@@ -59,7 +62,8 @@ public class GridViewAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MainActivity.al,MainActivity.al);
+        viewHolder.linearLayout.setLayoutParams(layoutParams);
         RequestOptions options = new RequestOptions()
                 .centerCrop()
                 .placeholder(R.color.green01);
@@ -74,6 +78,8 @@ public class GridViewAdapter extends BaseAdapter {
     static class ViewHolder {
         @BindView(R.id.iv_image)
         ImageView ivImage;
+        @BindView(R.id.ll)
+        LinearLayout linearLayout;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

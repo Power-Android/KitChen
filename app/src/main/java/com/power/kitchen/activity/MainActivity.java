@@ -43,10 +43,16 @@ public class MainActivity extends BaseActivity {
     private RepairFragment repairFragment;
     private PersonCenterFragment personCenterFragment;
     private long exitTime = 0;
+    private UltimateBar ultimateBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /**
+         * GitHub：导航栏
+         * https://github.com/Zackratos/UltimateBar
+         */
+        ultimateBar = new UltimateBar(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initListener();
@@ -152,5 +158,13 @@ public class MainActivity extends BaseActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public static int al = 0;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        al = getWindowManager().getDefaultDisplay().getWidth()/3 - 20;
     }
 }

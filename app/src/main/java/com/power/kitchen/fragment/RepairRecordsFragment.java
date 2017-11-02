@@ -51,13 +51,13 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_repair_records, container, false);
         /**
          * GitHub：导航栏
          * https://github.com/Zackratos/UltimateBar
          */
         UltimateBar ultimateBar = new UltimateBar(getActivity());
-        ultimateBar.setColorBar(ContextCompat.getColor(getActivity(), R.color.green01));
-        View view = inflater.inflate(R.layout.fragment_repair_records, container, false);
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(getActivity(),R.color.green01));
         unbinder = ButterKnife.bind(this, view);
         initView();
         initListener();

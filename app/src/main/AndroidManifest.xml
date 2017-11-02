@@ -117,7 +117,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".activity.ChangeFaceActivity" />
-        <activity android:name=".activity.EditNameActivity"></activity>
+        <activity android:name=".activity.EditNameActivity" />
+        <activity android:name=".activity.RepaireCommentActivity" />
+        <activity android:name=".activity.MessageDetailActivity"></activity>
     </application>
 
 </manifest>

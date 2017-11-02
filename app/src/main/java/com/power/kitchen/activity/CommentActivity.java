@@ -55,7 +55,7 @@ public class CommentActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         ultimateBar = new UltimateBar(this);
-        ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_comment);
         ButterKnife.bind(this);
         initViewAndListener();

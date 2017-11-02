@@ -44,7 +44,37 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="20dp" />
+                    android:paddingTop="20dp"
+                    android:visibility="gone"/>
+                <!--已接单界面-->
+                <LinearLayout
+                    android:id="@+id/yijiedan_view01"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/kc_yijiedan_icon"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="您的报修已成功提交"
+                        android:textColor="@color/yellow01"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/yijiedan"
+                        android:textColor="@color/text_color01"
+                        android:textSize="12sp"
+                        android:layout_margin="10dp"
+                        android:gravity="center"/>
+                </LinearLayout>
                 <!--已取消界面-->
                 <LinearLayout
                     android:id="@+id/quxiao_view01"
@@ -399,9 +429,12 @@
                         android:layout_height="10dp"
                         android:background="@color/gary02" />
                 </LinearLayout>
-
-
-
+                <View
+                    android:id="@+id/yijiedan_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:visibility="gone"
+                    android:background="@color/gary02" />
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
@@ -767,26 +800,33 @@
                         android:ellipsize="end"
                         android:maxLength="15" />
                 </RelativeLayout>
-
-                <TextView
-                    style="@style/black_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/gary02"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:text="@string/wtms" />
-
-                <TextView
-                    android:id="@+id/problem_device_et"
-                    style="@style/gary_hint"
+                <!--问题描述-->
+                <LinearLayout
+                    android:id="@+id/wentimiaoshu_ll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="top"
-                    android:minLines="7"
-                    android:padding="10dp"
-                    android:textSize="14sp" />
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/black_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/gary02"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:text="@string/wtms" />
+
+                    <TextView
+                        android:id="@+id/problem_device_et"
+                        style="@style/gary_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="top"
+                        android:minLines="7"
+                        android:padding="10dp"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/shebeitupian_ll"
                     android:layout_width="match_parent"
@@ -805,13 +845,12 @@
 
                     <com.power.kitchen.view.MyGridView
                         android:id="@+id/gridview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/gary02"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:numColumns="3"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:verticalSpacing="3dp" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:verticalSpacing="5dp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/pingjia_ll"

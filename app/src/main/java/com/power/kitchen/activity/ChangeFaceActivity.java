@@ -49,7 +49,7 @@ public class ChangeFaceActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         UltimateBar ultimateBar = new UltimateBar(this);
-        ultimateBar.setImmersionBar();
+        ultimateBar.setImmersionBar(false);
         setContentView(R.layout.activity_change_face);
         ButterKnife.bind(this);
         initView();

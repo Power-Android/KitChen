@@ -71,6 +71,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.jiedan_time_tv) TextView jiedanTimeTv;
     @BindView(R.id.gs_juli_tv) TextView gsJuliTv;
     @BindView(R.id.shebeitupian_ll) LinearLayout shebeiTupianLL;
+    @BindView(R.id.wentimiaoshu_ll) LinearLayout wentimiaoshuLl;
 
     private UltimateBar ultimateBar;
     private String oid;
@@ -83,7 +84,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
          * https://github.com/Zackratos/UltimateBar
          */
         ultimateBar = new UltimateBar(this);
-        ultimateBar.setColorBar(ContextCompat.getColor(this, R.color.green01));
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_not_repaire_detail);
         ButterKnife.bind(this);
         initView();
@@ -165,7 +166,11 @@ public class NotRepaireDetailActivity extends BaseActivity {
                                     orderInfoBean.getData().getInfo().getContact_shi_name()+ " " +
                                     orderInfoBean.getData().getInfo().getContact_qu_name());
                             detaileAdressTv.setText(orderInfoBean.getData().getInfo().getContact_address());
-                            problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+                            if (TextUtils.isEmpty(orderInfoBean.getData().getInfo().getGoods_describe())){
+                                wentimiaoshuLl.setVisibility(View.GONE);
+                            }else {
+                                problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+                            }
                         }
                     }
                 });

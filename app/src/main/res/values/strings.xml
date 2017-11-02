@@ -73,6 +73,8 @@
     <string name="qsrxm">请输入姓名</string>
     <string name="qsrlxdh">请输入联系电话</string>
     <string name="qsrndxxdz">请输入您的详细地址</string>
+    <string name="yijiedan">距离您最近的维修工作人员将尽快接单，并通过电话与您取得联系，请耐心等待，您也可以在接单前取消订单</string>
+    <string name="fuwupingjia">尊敬的客户您好，感谢您的支持和理解，请为本次服务做出评价！</string>
 
 
     <string-array name="tab_name">

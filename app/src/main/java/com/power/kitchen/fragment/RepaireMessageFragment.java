@@ -1,5 +1,6 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.MessageDetailActivity;
 import com.power.kitchen.adapter.MessageAdapter;
 import com.power.kitchen.adapter.MyFooter;
 import com.power.kitchen.adapter.MyHeader;
@@ -128,6 +130,9 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         //TODO 点进去的详情页
+                                        Intent intent = new Intent(getActivity(), MessageDetailActivity.class);
+                                        intent.putExtra("notice_id",list.get(position).getNotice_id());
+                                        startActivity(intent);
                                     }
                                 });
                             }

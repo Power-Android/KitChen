@@ -133,8 +133,8 @@
 
                     <RadioButton
                         android:id="@+id/bxqn_rbt"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="40dp"
                         android:button="@null"
                         android:checked="true"
@@ -150,8 +150,8 @@
                     <RadioButton
                         android:id="@+id/bxqw_rbt"
                         android:button="@null"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="50dp"
                         android:background="@drawable/radio_selector_style"
                         android:textColor="@color/text_color01" />

@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -62,7 +64,7 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         UltimateBar ultimateBar = new UltimateBar(getActivity());
-        ultimateBar.setImmersionBar();
+        ultimateBar.setImmersionBar(false);
         View view = inflater.inflate(R.layout.fragment_repair, container, false);
         unbinder = ButterKnife.bind(this, view);
         initListener();

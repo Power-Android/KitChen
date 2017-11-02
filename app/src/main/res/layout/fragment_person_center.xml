@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_marginBottom="50dp"
     android:background="@color/gary_background">
     <ScrollView
@@ -21,7 +22,7 @@
             android:background="@color/white">
             <View
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:background="@color/green01"/>
             <RelativeLayout
                 android:id="@+id/head_layout"
