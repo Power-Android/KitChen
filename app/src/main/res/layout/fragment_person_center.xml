@@ -197,6 +197,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <RelativeLayout
+                    android:id="@+id/dzgl_rl"
                     android:layout_width="match_parent"
                     android:layout_height="60dp">
                     <ImageView
@@ -213,27 +214,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_centerVertical="true"
-                        android:text="@string/wdwz"
+                        android:text="@string/dzgl"
                         style="@style/black_textview"/>
-                    <TextView
-                        android:id="@+id/my_location_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:layout_centerVertical="true"
-                        android:maxEms="10"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        style="@style/black_textview"
-                        android:layout_toLeftOf="@+id/my_location_iv"/>
+
                     <ImageView
-                        android:id="@+id/my_location_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="10dp"
-                        android:src="@mipmap/kc_dingwei_icon"
+                        android:src="@mipmap/kc_arrowhead_gary"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
@@ -242,7 +229,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
-                    android:background="@color/gary_background" />
+                    android:background="@color/gary01" />
                 <RelativeLayout
                     android:id="@+id/my_gywm_layout"
                     android:layout_width="match_parent"
@@ -299,6 +286,7 @@
                         android:text="@string/fwrx"
                         style="@style/black_textview"/>
                     <TextView
+                        android:id="@+id/call_phone_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/telnum"

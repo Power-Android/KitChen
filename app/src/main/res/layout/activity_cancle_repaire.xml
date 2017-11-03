@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gary02"
+    tools:context="com.power.kitchen.activity.CancleRepaireActivity">
+    <include layout="@layout/item_title_layout"/>
+    <TextView
+        android:id="@+id/text"
+        android:layout_below="@+id/include"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请选择报修取消的原因"
+        android:padding="10dp" />
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_below="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+    </RadioGroup>
+    <EditText
+        android:id="@+id/content_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radio_group"
+        android:background="@color/white"
+        android:hint="请输入其他取消报修的原因"
+        android:minLines="7"
+        android:padding="10dp"
+        style="@style/gary_hint"
+        android:textSize="14sp"
+        android:gravity="top"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gary02"
+        android:layout_alignParentBottom ="true"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp">
+
+        <Button
+            android:id="@+id/query_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="提交"
+            android:layout_weight="1"
+            android:background="@color/green01"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>

@@ -174,12 +174,11 @@
                         style="@style/gary_hint" />
                     <ImageView
                         android:id="@+id/login_yzm_iv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="200px"
+                        android:layout_height="70px"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:padding="10dp"
-                        android:src="@mipmap/kc_yzm" />
+                        android:layout_marginRight="10dp" />
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
@@ -405,12 +404,11 @@
                         style="@style/gary_hint" />
                     <ImageView
                         android:id="@+id/regist_yzm_iv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="200px"
+                        android:layout_height="70px"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:padding="10dp"
-                        android:src="@mipmap/kc_yzm" />
+                        android:layout_marginRight="10dp" />
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"

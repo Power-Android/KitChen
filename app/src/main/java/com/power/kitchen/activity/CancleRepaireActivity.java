@@ -1,6 +1,5 @@
 package com.power.kitchen.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.content.ContextCompat;
@@ -16,14 +15,12 @@ import android.widget.TextView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
-import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.CommetTypeBean;
 import com.power.kitchen.bean.ResultBean;
 import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.JsonCallback;
-import com.power.kitchen.fragment.RepairRecordsFragment;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
@@ -40,17 +37,23 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RepaireCommentActivity extends BaseActivity {
+/**
+ * power
+ * 2017年11月2日 16:27:03
+ * 取消报修
+ */
+public class CancleRepaireActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
+    @BindView(R.id.text) TextView text;
     @BindView(R.id.radio_group) RadioGroup radioGroup;
-    @BindView(R.id.query_btn) Button queryBtn;
     @BindView(R.id.content_id) EditText contentId;
-    private List<CommetTypeBean.DataBean> list;
-    private CommetTypeBean commetTypeBean;
-    private String commentId;
+    @BindView(R.id.query_btn) Button queryBtn;
     private String oid;
+    private CommetTypeBean commetTypeBean;
+    private List<CommetTypeBean.DataBean> list;
+    private String quxiaoId;
     private ResultBean resultBean;
 
     @Override
@@ -62,20 +65,20 @@ public class RepaireCommentActivity extends BaseActivity {
          */
         UltimateBar ultimateBar = new UltimateBar(this);
         ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
-        setContentView(R.layout.activity_reapire_comment);
+        setContentView(R.layout.activity_cancle_repaire);
         ButterKnife.bind(this);
         initView();
     }
 
     private void initView() {
-        contentTv.setText("为服务做出评价");
+        contentTv.setText("取消报修");
         backIv.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
         oid = getIntent().getStringExtra("oid");
-        requestCommentType();
+        requestQuxiaoTips();
     }
 
-    private void requestCommentType() {
+    private void requestQuxiaoTips() {
         Map<String, String> map = new HashMap<>();
         map.put("app_id", SPUtils.getInstance().getString("app_id", ""));
         map.put("token", SPUtils.getInstance().getString("token", ""));
@@ -83,20 +86,19 @@ public class RepaireCommentActivity extends BaseActivity {
         HttpParams params = new HttpParams();
         params.put("data", values.toString());
 
-        OkGo.<CommetTypeBean>post(Urls.weixiu_comment_type)
+        OkGo.<CommetTypeBean>post(Urls.quxiao_tips)
                 .tag(this)
                 .params(params)
                 .execute(new JsonCallback<CommetTypeBean>(CommetTypeBean.class) {
                     @Override
                     public void onSuccess(Response<CommetTypeBean> response) {
                         commetTypeBean = response.body();
-                        if (TextUtils.equals("1",commetTypeBean.getStatus())){
+                        if (TextUtils.equals("1", commetTypeBean.getStatus())){
                             list = commetTypeBean.getData();
                             initRadioButton();
                         }else {
-                            TUtils.showShort(getApplicationContext(),commetTypeBean.getInfo());
+                            TUtils.showShort(getApplicationContext(), commetTypeBean.getInfo());
                         }
-
                     }
                 });
     }
@@ -131,11 +133,10 @@ public class RepaireCommentActivity extends BaseActivity {
                 //通过checkedId找到控件，通过getId方法拿到选中状态radiobutton的id进行判断
                 RadioButton radioButton = (RadioButton) findViewById(checkedId);
                 int id = radioButton.getId();
-                commentId = id + "";
+                quxiaoId = id + "";
             }
         });
     }
-
 
     @Override
     public void onClick(View view) {
@@ -145,25 +146,23 @@ public class RepaireCommentActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.query_btn:
-                requestAddComment();
+                requestOrderClose();
                 break;
         }
     }
 
-    private void requestAddComment() {
+    private void requestOrderClose() {
         Map<String, String> map = new HashMap<>();
         map.put("app_id", SPUtils.getInstance().getString("app_id", ""));
         map.put("token", SPUtils.getInstance().getString("token", ""));
         map.put("id", SPUtils.getInstance().getString("id", ""));
         map.put("oid", oid);
-        map.put("content",contentId.getText().toString().trim());
-        map.put("level",commentId);
-
+        map.put("info",contentId.getText().toString().trim());
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data", values.toString());
 
-        OkGo.<ResultBean>post(Urls.comment_add)
+        OkGo.<ResultBean>post(Urls.order_close)
                 .tag(this)
                 .params(params)
                 .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
@@ -171,11 +170,7 @@ public class RepaireCommentActivity extends BaseActivity {
                     public void onSuccess(Response<ResultBean> response) {
                         resultBean = response.body();
                         showTips();
-                        /*if (TextUtils.equals("1", resultBean.getStatus())){
-                            startActivity(new Intent(RepaireCommentActivity.this,RepairRecordsFragment.class));
-                        }else {
-                            TUtils.showShort(getApplicationContext(), resultBean.getInfo());
-                        }*/
+
                     }
                 });
     }
@@ -200,5 +195,4 @@ public class RepaireCommentActivity extends BaseActivity {
                 .build()
                 .show();
     }
-
 }

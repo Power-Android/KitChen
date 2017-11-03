@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.AboutUsActivity;
+import com.power.kitchen.activity.AdressManageActivity;
 import com.power.kitchen.activity.ChangeFaceActivity;
 import com.power.kitchen.activity.CommentActivity;
 import com.power.kitchen.activity.MyMessageActivity;
@@ -64,11 +66,11 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     @BindView(R.id.my_pj_layout) LinearLayout myPjLayout;
     @BindView(R.id.voice_switchBtn) SwitchButton voiceSwitchBtn;
     @BindView(R.id.zd_switchBtn) SwitchButton zdSwitchBtn;
-    @BindView(R.id.my_location_tv) TextView myLocationTv;
-    @BindView(R.id.my_location_iv) ImageView myLocationIv;
     @BindView(R.id.my_gywm_layout) RelativeLayout myGywmLayout;
     @BindView(R.id.my_fwrx_layout) RelativeLayout myFwrxLayout;
     @BindView(R.id.exit_login_layout) LinearLayout exitLoginLayout;
+    @BindView(R.id.dzgl_rl) RelativeLayout dzglRl;
+    @BindView(R.id.call_phone_tv) TextView callPhoneTv;
     Unbinder unbinder;
     private String cutPath,url,true_name,sheng_name,shi_name,qu_name;
     private Intent intent;
@@ -84,6 +86,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
         ultimateBar.setColorStatusBar(ContextCompat.getColor(getActivity(), R.color.green01));
         View view = inflater.inflate(R.layout.fragment_person_center, container, false);
         unbinder = ButterKnife.bind(this, view);
+
         String face = SPUtils.getInstance().getString("face", "");
         RequestOptions options = new RequestOptions();
         options.diskCacheStrategy( DiskCacheStrategy.NONE )//禁用磁盘缓存
@@ -118,13 +121,9 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
                     public void onSuccess(Response<UserInfoBean> response) {
                         UserInfoBean userInfoBean = response.body();
                         true_name = userInfoBean.getData().getTrue_name();
-                        sheng_name = userInfoBean.getData().getSheng_name();
-                        shi_name = userInfoBean.getData().getShi_name();
-                        qu_name = userInfoBean.getData().getQu_name();
                         myNameTv.setText(true_name);
                         SPUtils.getInstance().putString("true_name",true_name);
                         myContentTv.setText(userInfoBean.getData().getMobile());
-                        myLocationTv.setText(sheng_name + " "+ shi_name + " "+ qu_name);
                     }
                 });
     }
@@ -151,9 +150,10 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
         myMsgIv.setOnClickListener(this);
         mySetpwdLayout.setOnClickListener(this);
         myPjLayout.setOnClickListener(this);
-        myLocationIv.setOnClickListener(this);
         myGywmLayout.setOnClickListener(this);
         exitLoginLayout.setOnClickListener(this);
+        dzglRl.setOnClickListener(this);
+        callPhoneTv.setOnClickListener(this);
     }
 
     @Override
@@ -186,10 +186,16 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
             case R.id.my_pj_layout://评价页面
                 startActivity(new Intent(getActivity(),CommentActivity.class));
                 break;
-            case R.id.my_location_iv://定位
+            case R.id.dzgl_rl://地址管理
+                startActivity(new Intent(getActivity(), AdressManageActivity.class));
                 break;
             case R.id.my_gywm_layout://关于我们
                 startActivity(new Intent(getActivity(),AboutUsActivity.class));
+                break;
+            case R.id.call_phone_tv://拨打电话
+                Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+callPhoneTv.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
             case R.id.exit_login_layout://退出
                 break;

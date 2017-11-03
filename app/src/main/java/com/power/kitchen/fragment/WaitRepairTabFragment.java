@@ -129,8 +129,12 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         String oid = list.get(position).getOid();
+                                        String order_accept_name = list.get(position).getOrder_accept_name();
+                                        String status_accept = list.get(position).getStatus_accept();
                                         Intent intent = new Intent(getActivity(),WaitRepaireDetailActivity.class);
                                         intent.putExtra("oid",oid);
+                                        intent.putExtra("order_accept_name",order_accept_name);
+                                        intent.putExtra("status_accept",status_accept);
                                         startActivity(intent);
                                     }
                                 });

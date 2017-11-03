@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -47,7 +49,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
-    @BindView(R.id.ggt_iv) ImageView ggtIv;
+    @BindView(R.id.ggt_iv) RelativeLayout ggtIv;
     @BindView(R.id.ggt_cancle_iv) ImageView ggtCancleIv;
     @BindView(R.id.title_reason_tv) TextView titleReasonTv;
     @BindView(R.id.qx_reason_tv) TextView qxReasonTv;
@@ -74,10 +76,12 @@ public class CancleRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.scrollView) ScrollView scrollView;
     @BindView(R.id.shebeitupian_ll) LinearLayout shebeiTupianLL;
     @BindView(R.id.wentimiaoshu_ll) LinearLayout wentimiaoshuLl;
+    @BindView(R.id.query_ll) LinearLayout queryLl;
 
 
     private UltimateBar ultimateBar;
     private String oid;
+    private OrderInfoBean orderInfoBean;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +98,8 @@ public class CancleRepaireDetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        oid = getIntent().getStringExtra("oid");
+        requestOrderInfo();
         contentTv.setText("已取消");
         weiwanchengView01.setVisibility(View.GONE);
         weiwanchengView02.setVisibility(View.GONE);
@@ -101,9 +107,8 @@ public class CancleRepaireDetailActivity extends BaseActivity {
         queryBtn.setText("重新报修");
         titleReasonTv.setText("报修已取消，若需要维修，请重新报修");
         backIv.setOnClickListener(this);
-        oid = getIntent().getStringExtra("oid");
+        queryBtn.setOnClickListener(this);
         scrollView.smoothScrollBy(0,0);
-        requestOrderInfo();
     }
 
     private void requestOrderInfo() {
@@ -122,8 +127,8 @@ public class CancleRepaireDetailActivity extends BaseActivity {
                 .execute(new DialogCallback<OrderInfoBean>(this,OrderInfoBean.class) {
                     @Override
                     public void onSuccess(Response<OrderInfoBean> response) {
-                        OrderInfoBean orderInfoBean = response.body();
-                        if (TextUtils.equals("1",orderInfoBean.getStatus())){
+                        orderInfoBean = response.body();
+                        if (TextUtils.equals("1", orderInfoBean.getStatus())){
                             qxReasonTv.setText(orderInfoBean.getData().getInfo().getQuxiao_info());
                             bxTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getCreate_time()));
                             txmTv.setText(orderInfoBean.getData().getInfo().getGoods_code());
@@ -138,7 +143,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
                             }
 
                             String goods_images = orderInfoBean.getData().getInfo().getGoods_images();
-                            if (goods_images != "[]"){
+                            if (!TextUtils.equals("[]",goods_images)){
                                 try {
                                     JSONArray good_images = new JSONArray(goods_images);
                                     List<String> list = new ArrayList<String>();
@@ -170,6 +175,8 @@ public class CancleRepaireDetailActivity extends BaseActivity {
                             }else {
                                 problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
                             }
+                            queryBtn.setText("重新报修");
+                            queryLl.setVisibility(View.VISIBLE);
                         }
                     }
                 });
@@ -182,6 +189,14 @@ public class CancleRepaireDetailActivity extends BaseActivity {
         switch (view.getId()){
             case R.id.back_iv:
                 finish();
+                break;
+            case R.id.query_btn:
+                Intent mIntent = DeviceDetailsActivity.newIntent(CancleRepaireDetailActivity.this,orderInfoBean);
+                startActivity(mIntent);
+                finish();
+                break;
+            case R.id.ggt_cancle_iv:
+                ggtIv.setVisibility(View.GONE);
                 break;
         }
     }

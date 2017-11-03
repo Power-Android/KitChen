@@ -60,7 +60,7 @@ public class BrandAndTypeActivity extends BaseActivity {
     @BindView(R.id.type_list) ListView typeList;
 
     private UltimateBar ultimateBar;
-    List<SortModel> leftList = new ArrayList<>();
+    List<SortModel> leftList;
     public static int POSITION_BRAND=0;
     private List<TypeBean> rightList = new ArrayList<>();
     private BrandListAdapter brandListAdapter;
@@ -77,6 +77,8 @@ public class BrandAndTypeActivity extends BaseActivity {
     private String type_name;
     private List<BrandListBean.DataBean> brandData;
     private List<TypeListBean.DataBean> typeData;
+    private String brand_id;
+    private String type_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +209,7 @@ public class BrandAndTypeActivity extends BaseActivity {
                 brandListAdapter.setSlectedPosition(position);
                 brandListAdapter.notifyDataSetChanged();
                 brand_name = leftList.get(position).getName();
-                String brand_id = leftList.get(position).getBrand_id();
+                brand_id = leftList.get(position).getBrand_id();
 
                 rightList.clear();
                 for (int i = 0; i < typeData.size(); i++) {
@@ -228,7 +230,7 @@ public class BrandAndTypeActivity extends BaseActivity {
                 position = (Integer) view.getTag();
                 typeListAdapter.setSlectedPosition(position);
                 type_name = rightList.get(position).getName();
-                String type_id = rightList.get(position).getId();
+                type_id = rightList.get(position).getId();
                 typeListAdapter.notifyDataSetChanged();
             }
         });
@@ -242,13 +244,19 @@ public class BrandAndTypeActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.title_right_tv:
-                if (TextUtils.isEmpty(type_name)){
-                    type_name = rightList.get(0).getName();
+
+                if (TextUtils.isEmpty(brand_name)){
+                    brand_name = leftList.get(0).getName();
+                    brand_id = leftList.get(0).getBrand_id();
+                }
+                if (rightList.size() == 0){
+                    type_name = "";
                 }
                 Intent intent = new Intent();
                 intent.putExtra("brandName",brand_name);
                 intent.putExtra("typeName",type_name);
-                Logger.e(brand_name+"-----"+type_name);
+                intent.putExtra("brandId",brand_id);
+                intent.putExtra("typeId",type_id);
                 setResult(101,intent);
                 finish();
                 break;

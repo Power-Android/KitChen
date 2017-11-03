@@ -133,12 +133,12 @@
 
                     <RadioButton
                         android:id="@+id/bxqn_rbt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginLeft="40dp"
                         android:button="@null"
                         android:checked="true"
-                        android:background="@drawable/radio_selector_style"
+                        android:background="@drawable/radio_selector1_style"
                         android:textColor="@color/text_color01" />
                     <TextView
                         android:layout_width="wrap_content"
@@ -149,12 +149,13 @@
 
                     <RadioButton
                         android:id="@+id/bxqw_rbt"
-                        android:button="@null"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginLeft="50dp"
-                        android:background="@drawable/radio_selector_style"
+                        android:background="@drawable/radio_selector1_style"
+                        android:button="@null"
                         android:textColor="@color/text_color01" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -394,7 +395,7 @@
                     android:background="@null"
                     android:layout_marginLeft="40dp"
                     android:layout_toRightOf="@+id/tv_09"
-                    android:hint="请填写餐厅名称"/>
+                    android:hint="请填写公司名称"/>
             </RelativeLayout>
             <View
                 android:layout_width="match_parent"

@@ -5,9 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +14,6 @@ import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.NoticeOrderInfoBean;
-import com.power.kitchen.bean.NoticeOrderListBean;
 import com.power.kitchen.bean.ResultBean;
 import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.utils.SPUtils;
@@ -33,14 +29,12 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AboutUsActivity extends BaseActivity {
+public class RegistXieYiActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
-//    @BindView(R.id.webView) WebView webView;
-    @BindView(R.id.about_contrent_tv) TextView aboutContentTv;
-
-    private UltimateBar ultimateBar;
+    @BindView(R.id.xieyi_title_tv) TextView xieyiTitleTv;
+    @BindView(R.id.xieyi_content_tv) TextView xieyiContentTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,53 +43,39 @@ public class AboutUsActivity extends BaseActivity {
          * GitHub：导航栏
          * https://github.com/Zackratos/UltimateBar
          */
-        ultimateBar = new UltimateBar(this);
+        UltimateBar ultimateBar = new UltimateBar(this);
         ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
-        setContentView(R.layout.activity_about_us);
+        setContentView(R.layout.activity_regist_xie_yi);
         ButterKnife.bind(this);
-        initViewAndListener();
+        initView();
     }
 
-    private void initViewAndListener() {
-        contentTv.setText("关于我们");
+    private void initView() {
+        contentTv.setText("用户协议");
         backIv.setOnClickListener(this);
-        requestAboutUs();
-       /* String weburl = "https://www.baidu.com";
-
-        WebSettings settings = webView.getSettings();
-        settings.setSupportZoom(true); // 支持缩放
-        settings.setBuiltInZoomControls(true); // 启用内置缩放装置
-        settings.setJavaScriptEnabled(true); // 启用JS脚本
-        settings.setDefaultTextEncodingName("utf-8");
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-        webView.loadUrl(weburl);*/
+        requestXieYi();
     }
 
-    private void requestAboutUs() {
+    private void requestXieYi() {
         Map<String, String> map = new HashMap<>();
-        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
-        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("app_id", SPUtils.getInstance().getString("app_id", ""));
+        map.put("token", SPUtils.getInstance().getString("token", ""));
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
-        params.put("data",values.toString());
+        params.put("data", values.toString());
 
-        OkGo.<NoticeOrderInfoBean>post(Urls.about_us)
+        OkGo.<NoticeOrderInfoBean>post(Urls.user_xieyi)
                 .tag(this)
                 .params(params)
-                .execute(new DialogCallback<NoticeOrderInfoBean>(this,NoticeOrderInfoBean.class) {
+                .execute(new DialogCallback<NoticeOrderInfoBean>(this, NoticeOrderInfoBean.class) {
                     @Override
                     public void onSuccess(Response<NoticeOrderInfoBean> response) {
-                        NoticeOrderInfoBean infoBean = response.body();
-                        if (TextUtils.equals("1",infoBean.getStatus())){
-                            aboutContentTv.setText(Html.fromHtml(infoBean.getData().getContent()));
+                        NoticeOrderInfoBean resultBean = response.body();
+                        if (TextUtils.equals("1", resultBean.getStatus())) {
+                            xieyiTitleTv.setText(Html.fromHtml(resultBean.getData().getTitle()));
+                            xieyiContentTv.setText(Html.fromHtml(resultBean.getData().getContent()));
                         }else {
-                            TUtils.showShort(getApplicationContext(),infoBean.getInfo());
+                            TUtils.showShort(getApplicationContext(),resultBean.getInfo());
                         }
                     }
                 });

@@ -43,7 +43,7 @@ public class OrderInfoBean implements Serializable {
         this.data = data;
     }
 
-    public static class DataBean {
+    public static class DataBean implements Serializable {
         /**
          * info : {"oid":"w20171017174947731607","m_u_id":"8","m_d_id":"1","m_w_id":"1","price":"360.00","no_weixiu_info":"","status":"9","is_baojia":"1","wx_time":"1508234175","wx_images":"","wx_info":"http://shangchuuser.ip189.enet360.comhttp://shangchuuser.ip189.enet360.comhttp://shangchuuser.ip189.enet360.comhttp://shangchuuser.ip189.enet360.com","km":"1470.051","km_info":"","km_price":"300.00","wx_type":"0","type_info":"","type_price":"10.00","wx_peijian":"[]","peijian_price":"50.00","is_del":"1","status_accept":"1","status_pay":"0","status_comment":"1","create_time":"1508233787","accept_time":"1508233888","pay_time":"0","pay_type_name":"0","pay_type":"0","pay_json":"","comment_time":"1508234287","contact_name":"哦破horn","contact_mobile":"13800138000","contact_company":"来到了","contact_sheng_id":"14","contact_shi_id":"158","contact_qu_id":"1613","contact_address":"咳咳Pro","contact_juli":"1470051","contact_lat":"27.055897","contact_lng":"119.656277","goods_date":"2016-02-02","goods_code":"","goods_is_warranty":"0","goods_brand":"2","goods_brand_name":"美的","goods_type":"6","goods_type_name":"空调","goods_model":"","goods_images":"[\"http:\\/\\/shangchu.ip189.enet360.com\\/Uploads\\/order\\/20171017\\/m_u_8_1712021508231522666.jpeg\"]","goods_info":"[]","goods_describe":"考虑考虑啦咯啦咯啦咯啦849461考虑考虑啦咯啦咯啦咯啦849461考虑考虑啦咯啦咯啦咯啦849461考虑考虑啦咯啦咯啦咯啦849461考虑考虑啦咯啦咯啦咯啦849461","quxiao_info":"","order_status_name":"已维修","order_accept_name":"已接单","order_pay_name":"未支付","order_comment_name":"已评论","contact_sheng_name":"福建省","contact_shi_name":"宁德市","contact_qu_name":"福安市"}
          * m_d_info : {"company_name":"联合代理公司","mobile":"13100000000"}
@@ -98,7 +98,7 @@ public class OrderInfoBean implements Serializable {
             this.log = log;
         }
 
-        public static class InfoBean {
+        public static class InfoBean implements Serializable{
             /**
              * oid : w20171017174947731607
              * m_u_id : 8
@@ -694,7 +694,7 @@ public class OrderInfoBean implements Serializable {
             }
         }
 
-        public static class MDInfoBean {
+        public static class MDInfoBean implements Serializable {
             /**
              * company_name : 联合代理公司
              * mobile : 13100000000
@@ -720,7 +720,7 @@ public class OrderInfoBean implements Serializable {
             }
         }
 
-        public static class MWInfoBean {
+        public static class MWInfoBean implements Serializable {
             /**
              * name : 测试
              * mobile : 13100000000
@@ -746,7 +746,7 @@ public class OrderInfoBean implements Serializable {
             }
         }
 
-        public static class CommentBean {
+        public static class CommentBean implements Serializable{
 
             private String level;
             private String content;
@@ -777,7 +777,7 @@ public class OrderInfoBean implements Serializable {
             }
         }
 
-        public static class LogBean {
+        public static class LogBean implements Serializable {
             /**
              * id : 282
              * m_u_id : 8

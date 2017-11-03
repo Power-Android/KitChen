@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,24 +33,40 @@ import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.GridViewAddImgesAdpter;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.bean.AreaListsBean;
 import com.power.kitchen.bean.JsonBean;
+import com.power.kitchen.bean.OrderInfoBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.CommonPopupWindow;
 import com.power.kitchen.utils.GetJsonDataUtil;
+import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.TimeUtils;
+import com.power.kitchen.utils.Urls;
 import com.power.kitchen.view.MyGridView;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,8 +124,11 @@ public class DeviceDetailsActivity extends BaseActivity {
     private TimePickerView pvCustomLunar;
     private ArrayList<String> listExtra;//拍照报修传过来的图片路径
     private Intent intent;
-    private String brandNme;
-    private String typeNme;
+    private String brandNme,typeNme,brandId,typeId,tx,tips;
+    private List<AreaListsBean.DataBean> province_list = new ArrayList<>();
+    private OrderInfoBean orderInfoBean;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,12 +142,20 @@ public class DeviceDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_device_detail);
         ButterKnife.bind(this);
         initView();
+        getData();
+    }
+
+    public static Intent newIntent(Context context,OrderInfoBean orderInfoBean){
+        Intent mIntent = new Intent(context,DeviceDetailsActivity.class);
+        mIntent.putExtra("bean",orderInfoBean);
+        return mIntent;
     }
 
     private void initView() {
         contentTv.setText("设备详情");
         initListener();
         getIntentData();//上级拍照返回来的数据----图片的path路径
+        requestAreaList();//省市区地址查询
         initJsonData();//解析json数据----地址选择器
         initLunarPicker();//初始化时间选择器
         /**
@@ -156,6 +185,15 @@ public class DeviceDetailsActivity extends BaseActivity {
             }
         });
 
+    }
+
+    /**
+     * 报修详情页传递过来的bean类
+     */
+    private void getData() {
+        if (orderInfoBean != null){
+            orderInfoBean = (OrderInfoBean) getIntent().getExtras().getSerializable("bean");
+        }
     }
 
     /**
@@ -209,13 +247,103 @@ public class DeviceDetailsActivity extends BaseActivity {
                 ShowPickerView();
                 break;
             case R.id.location_iv://定位
+                ShowPickerView();
                 break;
             case R.id.cancle_btn://取消报修
-
+                showTips();
                 break;
             case R.id.query_btn://确认报修
+                if (validate()){
+                    requestOrderAdd();
+                }
                 break;
         }
+    }
+
+    private boolean validate() {
+        tips = "";
+        if (TextUtils.isEmpty(brandId)){
+            tips = "请填写设备品牌";
+            showTipsValidate(tips);
+            return false;
+        }
+
+        if (TextUtils.isEmpty(deviceNameEt.getText().toString())){
+            tips = "请填写姓名";
+            showTipsValidate(tips);
+            return false;
+        }
+
+        if (TextUtils.isEmpty(deviceCtmcEt.getText().toString())){
+            tips = "请填写公司名称";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(tx)){
+            tips = "请填写所在区域";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(detailAdressEt.getText().toString())){
+            tips = "请填写详细地址";
+            showTipsValidate(tips);
+            return false;
+        }
+        return true;
+    }
+
+    private void showTipsValidate(String tips) {
+        new NormalAlertDialog.Builder(this).setHeight(0.23f)  //屏幕高度*0.23
+                .setWidth(0.65f)  //屏幕宽度*0.65
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText(tips)
+                .setContentTextColor(R.color.text_color02)
+                .setSingleMode(true).setSingleButtonText("确定")
+                .setSingleButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setSingleListener(new DialogInterface.OnSingleClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickSingleButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
+    }
+
+    private void showTips() {
+        new NormalAlertDialog.Builder(this)
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText("保修单未提交，是否退出？")
+                .setContentTextColor(R.color.text_color02)
+                .setLeftButtonText("退出")
+                .setLeftButtonTextColor(R.color.text_color01)
+                .setRightButtonText("不退出")
+                .setRightButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setOnclickListener(new DialogInterface.OnLeftAndRightClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickLeftButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                        finish();
+                    }
+
+                    @Override
+                    public void clickRightButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
+    }
+
+    /**
+     * 确认报修
+     */
+    private void requestOrderAdd() {
+
     }
 
     private void showPopup() {
@@ -354,6 +482,8 @@ public class DeviceDetailsActivity extends BaseActivity {
             if (data != null){
                 brandNme = data.getStringExtra("brandName");
                 typeNme = data.getStringExtra("typeName");
+                brandId = data.getStringExtra("brandId");
+                typeId = data.getStringExtra("typeId");
                 pinpaiTv.setText(brandNme);
                 leixingTv.setText(typeNme);
             }
@@ -367,13 +497,18 @@ public class DeviceDetailsActivity extends BaseActivity {
     private void initLunarPicker() {
         Calendar selectedDate = Calendar.getInstance();//系统当前时间
         Calendar startDate = Calendar.getInstance();
-        startDate.set(2014, 0, 1);
+        startDate.set(2000, 0, 1);
         Calendar endDate = Calendar.getInstance();
         endDate.set(2050, 11, 31);
         //时间选择器 ，自定义布局
         pvCustomLunar = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
+                Date nowDate = TimeUtils.getNowDate();
+                if (date.getTime() > nowDate.getTime()){
+                    TUtils.showShort(getApplicationContext(),"只能选择当前日期之前的日期");
+                    return;
+                }
                 dateTv.setText(getTime(date));
             }
         })
@@ -422,7 +557,7 @@ public class DeviceDetailsActivity extends BaseActivity {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
                 //返回的分别是三个级别的选中位置
-                String tx = options1Items.get(options1).getPickerViewText()+
+                tx = options1Items.get(options1).getPickerViewText()+
                         options2Items.get(options1).get(options2)+
                         options3Items.get(options1).get(options2).get(options3);
                 deviceAdressTv.setText(tx);
@@ -454,11 +589,36 @@ public class DeviceDetailsActivity extends BaseActivity {
         pvOptions.show();
     }
 
+    private void requestAreaList() {    //省列表
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("area_id","1");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<AreaListsBean>post(Urls.area_lists)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<AreaListsBean>(AreaListsBean.class) {
+                    @Override
+                    public void onSuccess(Response<AreaListsBean> response) {
+                        AreaListsBean areaListsBean = response.body();
+                        if (TextUtils.equals("1",areaListsBean.getStatus())){
+                            province_list = areaListsBean.getData();
+
+                        }else {
+                            TUtils.showShort(getApplicationContext(),"地址解析失败！");
+                        }
+                    }
+                });
+    }
+
     /**
      * 解析数据
      */
     private void initJsonData() {
-
         /**
          * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
          * 关键逻辑在于循环体

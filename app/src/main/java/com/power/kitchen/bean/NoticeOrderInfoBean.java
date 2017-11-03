@@ -14,15 +14,15 @@ public class NoticeOrderInfoBean implements Serializable {
      * data : {"notice_id":"47","title":"您维修的订单：w20171101115356748289已经被接单","info":"","status":"0","create_time":"1509508457","content":"您维修的订单：w20171101115356748289已经被接单，师傅姓名：测试电话：13100000000"}
      */
 
-    private int status;
+    private String status;
     private String info;
     private DataBean data;
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

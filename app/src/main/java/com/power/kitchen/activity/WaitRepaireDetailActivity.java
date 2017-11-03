@@ -1,13 +1,16 @@
 package com.power.kitchen.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -45,7 +48,7 @@ public class WaitRepaireDetailActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
-    @BindView(R.id.ggt_iv) ImageView ggtIv;
+    @BindView(R.id.ggt_iv) RelativeLayout ggtIv;
     @BindView(R.id.ggt_cancle_iv) ImageView ggtCancleIv;
     @BindView(R.id.title_reason_tv) TextView titleReasonTv;
     @BindView(R.id.yijiedan_view01) LinearLayout yijiedanView01;
@@ -86,8 +89,11 @@ public class WaitRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.pingjia_miaoshu_tv) TextView pingjiaMiaoshuTv;
     @BindView(R.id.pingjia_ll) LinearLayout pingjiaLl;
     @BindView(R.id.query_btn) Button queryBtn;
+    @BindView(R.id.query_ll) LinearLayout queryLl;
     @BindView(R.id.scrollView) ScrollView scrollView;
     @BindView(R.id.wentimiaoshu_ll) LinearLayout wentimiaoshuLl;
+    @BindView(R.id.if_jiedan_tv) TextView ifJieDanTv;
+    @BindView(R.id.if_jiedan_content_tv) TextView ifJieDanContentTv;
     private UltimateBar ultimateBar;
     private String oid;
 
@@ -106,8 +112,9 @@ public class WaitRepaireDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        contentTv.setText("已接单");
         backIv.setOnClickListener(this);
+        ggtCancleIv.setOnClickListener(this);
+        queryBtn.setOnClickListener(this);
         yijiedanView.setVisibility(View.GONE);
         yijiedanView01.setVisibility(View.VISIBLE);
         weiwanchengView01.setVisibility(View.VISIBLE);
@@ -115,10 +122,13 @@ public class WaitRepaireDetailActivity extends BaseActivity {
         quxiaoView01.setVisibility(View.GONE);
         yiwanchengView01.setVisibility(View.GONE);
         oid = getIntent().getStringExtra("oid");
-        requestOrderInfo();
+        String order_accept_name = getIntent().getStringExtra("order_accept_name");
+        contentTv.setText(order_accept_name);
+        String status_accept = getIntent().getStringExtra("status_accept");
+        requestOrderInfo(status_accept);
     }
 
-    private void requestOrderInfo() {
+    private void requestOrderInfo(final String status_accept) {
         Map<String, String> map = new HashMap<>();
         map.put("app_id", SPUtils.getInstance().getString("app_id", ""));
         map.put("token", SPUtils.getInstance().getString("token", ""));
@@ -136,7 +146,16 @@ public class WaitRepaireDetailActivity extends BaseActivity {
                     public void onSuccess(Response<OrderInfoBean> response) {
                         OrderInfoBean orderInfoBean = response.body();
                         if (TextUtils.equals("1", orderInfoBean.getStatus())) {
-                            queryBtn.setText("取消报修");
+                            //未接单
+                            if (TextUtils.equals("0",status_accept)){
+                                queryBtn.setText("取消报修");
+                                queryLl.setVisibility(View.VISIBLE);
+                            }else {
+                                ifJieDanTv.setText("您的报修已被接单");
+                                ifJieDanContentTv.setText("维修工作人员将会与您电话取得联系");
+                                ifJieDanContentTv.setGravity(Gravity.CENTER);
+                            }
+
                             payMoneyTv.setText(orderInfoBean.getData().getInfo().getPrice());
                             payFangshiTv.setText(orderInfoBean.getData().getInfo().getPay_type_name());
                             payTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getPay_time()));
@@ -177,13 +196,7 @@ public class WaitRepaireDetailActivity extends BaseActivity {
                                 shebeitupianLl.setVisibility(View.GONE);
                             }
 
-                            String status_comment = orderInfoBean.getData().getInfo().getStatus_comment();
-                            if (TextUtils.equals("1",status_comment)){
-                                pingjiaLl.setVisibility(View.VISIBLE);
-                                queryBtn.setVisibility(View.GONE);
-                                pingjiaChengduTv.setText(orderInfoBean.getData().getComment().getLevel_name());
-                                pingjiaMiaoshuTv.setText(orderInfoBean.getData().getComment().getContent());
-                            }
+
 
                             typeTv.setText(orderInfoBean.getData().getInfo().getGoods_type_name());
                             xinghaoTv.setText(orderInfoBean.getData().getInfo().getGoods_model());
@@ -206,5 +219,22 @@ public class WaitRepaireDetailActivity extends BaseActivity {
                 });
     }
 
-
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        switch (view.getId()){
+            case R.id.back_iv:
+                finish();
+                break;
+            case R.id.ggt_cancle_iv:
+                ggtIv.setVisibility(View.GONE);
+                break;
+            case R.id.query_btn:
+                Intent intent = new Intent(this,CancleRepaireActivity.class);
+                intent.putExtra("oid",oid);
+                startActivity(intent);
+                finish();
+                break;
+        }
+    }
 }

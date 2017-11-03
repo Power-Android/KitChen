@@ -73,6 +73,17 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
         return loadService.getLoadLayout();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                springView.callFresh();
+            }
+        }, 1000);
+    }
+
     private void initView() {
         springView.setType(SpringView.Type.FOLLOW);
         springView.setListener(this);
@@ -129,9 +140,9 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
                                 repaireListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        //TODO 点进去的详情页
                                         Intent intent = new Intent(getActivity(), MessageDetailActivity.class);
                                         intent.putExtra("notice_id",list.get(position).getNotice_id());
+                                        intent.putExtra("flag","repaire");
                                         startActivity(intent);
                                     }
                                 });
@@ -152,6 +163,7 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                requestNoticeOrderList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

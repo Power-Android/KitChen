@@ -1,11 +1,13 @@
 package com.power.kitchen.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
@@ -24,18 +27,23 @@ import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.LoginBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.bean.SendSmsBean;
 import com.power.kitchen.bean.TokenBean;
 import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,6 +83,10 @@ public class LoginAndRegistActivity extends BaseActivity {
     @BindView(R.id.regist_btn) Button registBtn;
     @BindView(R.id.regist_view) LinearLayout registView;
     private UltimateBar ultimateBar;
+    private int loginOrRegist = 1; //1是登录2是注册
+    private String yzmCode;
+    private String tips;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +99,7 @@ public class LoginAndRegistActivity extends BaseActivity {
          */
         ultimateBar = new UltimateBar(this);
         ultimateBar.setImmersionBar(false);
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }*/
+
         ButterKnife.bind(this);
         SPUtils.getInstance().putString("app_id","android-user_20170808");
         initListener();
@@ -130,6 +136,8 @@ public class LoginAndRegistActivity extends BaseActivity {
                 registTv.setTextColor(getResources().getColor(R.color.black));
                 loginTv.setBackgroundColor(getResources().getColor(R.color.white));
                 loginTv.setTextColor(getResources().getColor(R.color.green01));
+                loginOrRegist = 1;
+                requestVerifyImg();
                 break;
             case R.id.regist_tv://切换注册View
                 loginView.setVisibility(View.GONE);
@@ -140,23 +148,37 @@ public class LoginAndRegistActivity extends BaseActivity {
                 loginTv.setTextColor(getResources().getColor(R.color.black));
                 registTv.setBackgroundColor(getResources().getColor(R.color.white));
                 registTv.setTextColor(getResources().getColor(R.color.green01));
+                loginOrRegist = 2;
+                requestVerifyImg();
                 break;
             case R.id.look_login_iv://显示/隐藏登录密码
                 pwdShow(loginPwdEt,lookLoginIv);
                 break;
             case R.id.login_yzm_iv://请求登录验证码图片
+                loginOrRegist = 1;
+                requestVerifyImg();
                 break;
             case R.id.login_btn://登录
                 //TODO 记得打开注释
-//                if (validate()){
+//                if (loginValidate()){
                     requestLogin();
 //                }
                 break;
             case R.id.foget_pwd_tv://忘记密码
                 startActivity(new Intent(LoginAndRegistActivity.this,PwdRetrievalActivity.class));
                 break;
-            case R.id.get_yzm_tv://获取验证码
-                timer.start();
+            case R.id.get_yzm_tv://获取短信验证码
+                if (TextUtils.isEmpty(registPhoneEt.getText().toString())){
+                    tips = "请填写手机号！";
+                    showTipsValidate(tips);
+                    return;
+                }
+                if (registPhoneEt.getText().length() != 11){
+                    tips = "请输入正确手机号！";
+                    showTipsValidate(tips);
+                    return;
+                }
+                requestSendSms();
                 break;
             case R.id.look_rigitspwd_iv://注册密码
                 pwdShow(registPwdEt,lookRigitspwdIv);
@@ -165,11 +187,16 @@ public class LoginAndRegistActivity extends BaseActivity {
                 pwdShow(registQuerypwdEt,lookQuerypwdIv);
                 break;
             case R.id.regist_yzm_iv://请求注册验证码图片
+                loginOrRegist = 2;
+                requestVerifyImg();
                 break;
             case R.id.regist_xieyi_ll://注册协议
+                startActivity(new Intent(this,RegistXieYiActivity.class));
                 break;
             case R.id.regist_btn://注册
-                startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
+                if (registValidate()){
+                    requestRegist();
+                }
                 break;
         }
     }
@@ -211,29 +238,101 @@ public class LoginAndRegistActivity extends BaseActivity {
         }
     };
 
-    private boolean validate() {
-        if (TextUtils.isEmpty(loginPhoneEt.getText().toString()) && TextUtils.isEmpty(loginPwdEt.getText().toString())) {
-            TUtils.showShort(getApplicationContext(), "手机号或密码不能为空！");
+    private boolean loginValidate() {
+        String tips = "";
+        if (TextUtils.isEmpty(loginPhoneEt.getText().toString())) {
+            tips = "手机号不能为空！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(loginPwdEt.getText().toString())) {
+            tips = "密码不能为空！";
+            showTipsValidate(tips);
             return false;
         }
         if (loginPhoneEt.getText().toString().trim().length() != 11){
-            TUtils.showShort(getApplicationContext(), "手机号码格式不正确！");
+            tips = "手机号码格式不正确！";
+            showTipsValidate(tips);
             return false;
         }
         if (TextUtils.isEmpty(loginYzmEt.getText().toString())){
-            TUtils.showShort(getApplicationContext(), "验证码不能为空！");
+            tips = "验证码不能为空！";
+            showTipsValidate(tips);
             return false;
         }
-        if (ispsd(loginPwdEt.getText().toString()) == false){
-            TUtils.showShort(getApplicationContext(), "密码格式不正确！");
+        if (!ispsd(loginPwdEt.getText().toString())){
+            tips = "密码格式不正确！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.equals(loginYzmEt.getText().toString(),yzmCode)){
+            tips = "验证码错误！";
+            showTipsValidate(tips);
             return false;
         }
         if (loginPwdEt.getText().toString().trim().length() < 6 && loginPwdEt.getText().toString().trim().length() > 20){
-            TUtils.showShort(getApplicationContext(), "请输入6-20位组合密码！");
+            tips = "请输入6-20位组合密码！";
+            showTipsValidate(tips);
             return false;
         }
         return true;
     }
+
+    private boolean registValidate() {
+        tips = "";
+        if (TextUtils.isEmpty(registPhoneEt.getText().toString())) {
+            tips = "手机号不能为空！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(registPwdEt.getText().toString())) {
+            tips = "密码不能为空！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(registQuerypwdEt.getText().toString())){
+            tips = "确认密码不能为空！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (registPhoneEt.getText().toString().trim().length() != 11){
+            tips = "手机号码格式不正确！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(registYzmEt.getText().toString())){
+            tips = "短信验证码不能为空！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(registYzmivEt.getText().toString())){
+            tips = "验证码不能为空！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (!ispsd(loginPwdEt.getText().toString())){
+            tips = "密码格式不正确！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (loginPwdEt.getText().toString().trim().length() < 6 && loginPwdEt.getText().toString().trim().length() > 20){
+            tips = "请输入6-20位组合密码！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.equals(registYzmEt.getText().toString(),yzmCode)){
+            tips = "验证码错误！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (!TextUtils.equals(registPwdEt.getText().toString(),registQuerypwdEt.getText().toString())){
+            tips = "两次密码输入不一致！";
+            showTipsValidate(tips);
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * 是否是纯数字或者纯英文
@@ -246,6 +345,26 @@ public class LoginAndRegistActivity extends BaseActivity {
         Matcher m = p.matcher(psd);
 
         return m.matches();
+    }
+
+    private void showTipsValidate(String tips) {
+        new NormalAlertDialog.Builder(this).setHeight(0.23f)  //屏幕高度*0.23
+                .setWidth(0.65f)  //屏幕宽度*0.65
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText(tips)
+                .setContentTextColor(R.color.text_color02)
+                .setSingleMode(true).setSingleButtonText("确定")
+                .setSingleButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setSingleListener(new DialogInterface.OnSingleClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickSingleButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
     }
 
     private void requestToken() {
@@ -267,6 +386,8 @@ public class LoginAndRegistActivity extends BaseActivity {
                         if (TextUtils.equals("1",status)){
                             String token = tokenBean.getData().getToken();
                             SPUtils.getInstance().putString("token",token);
+                            loginOrRegist = 1;
+                            requestVerifyImg();
                         }else {
                             TUtils.showShort(getApplicationContext(),response.body().getInfo());
                         }
@@ -304,4 +425,115 @@ public class LoginAndRegistActivity extends BaseActivity {
                     }
                 });
     }
+
+    private void requestRegist() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("mobile",registPhoneEt.getText().toString());
+        map.put("password",registPwdEt.getText().toString());
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<LoginBean>post(Urls.register)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<LoginBean>(this,LoginBean.class) {
+                    @Override
+                    public void onSuccess(Response<LoginBean> response) {
+                        LoginBean registBean = response.body();
+                        if (TextUtils.equals("1",registBean.getStatus())){
+                            SPUtils.getInstance().putString("id",registBean.getData().getId());
+                            SPUtils.getInstance().putString("face",registBean.getData().getFace());
+                            SPUtils.getInstance().putString("mobile",registBean.getData().getMobile());
+                            startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
+                        }else {
+                            TUtils.showShort(getApplicationContext(),registBean.getInfo());
+                        }
+                    }
+                });
+    }
+
+    private void requestSendSms() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("mobile",registPhoneEt.getText().toString());
+        map.put("type","user_reg");
+        map.put("flag",getUUID(this));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<SendSmsBean>post(Urls.send_sms)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<SendSmsBean>(this,SendSmsBean.class) {
+                    @Override
+                    public void onSuccess(Response<SendSmsBean> response) {
+                        SendSmsBean sendSmsBean = response.body();
+                        if (TextUtils.equals("1",sendSmsBean.getStatus())){
+                            TUtils.showShort(getApplicationContext(),sendSmsBean.getInfo());
+                            timer.start();
+                        }else {
+                            TUtils.showShort(getApplicationContext(),sendSmsBean.getInfo());
+                        }
+                    }
+                });
+    }
+
+    private void requestVerifyImg() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("height","70");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<SendSmsBean>post(Urls.verify_img)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<SendSmsBean>(SendSmsBean.class) {
+                    @Override
+                    public void onSuccess(Response<SendSmsBean> response) {
+                        SendSmsBean verifyBean = response.body();
+                        if (TextUtils.equals("1",verifyBean.getStatus())){
+                            String src = verifyBean.getData().getSrc();
+                            if (loginOrRegist == 1){
+                                Glide.with(LoginAndRegistActivity.this)
+                                        .load(src)
+                                        .into(loginYzmIv);
+                            }else {
+                                Glide.with(LoginAndRegistActivity.this)
+                                        .load(src)
+                                        .into(registYzmIv);
+                            }
+
+                            yzmCode = verifyBean.getData().getCode();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 获取设备唯一标识
+     * @param context
+     * @return
+     */
+    public static String getUUID(Context context) {
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        final String tmDevice, tmSerial, tmPhone, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String uniqueId = deviceUuid.toString();
+
+        return uniqueId;
+    }
+
 }

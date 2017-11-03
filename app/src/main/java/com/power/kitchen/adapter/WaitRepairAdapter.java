@@ -66,6 +66,11 @@ public class WaitRepairAdapter extends BaseAdapter {
             viewHolder.leixingTv.setText(list.get(position).getGoods_type_name());
             viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
             viewHolder.isJiedanTv.setText(list.get(position).getOrder_accept_name());
+            if (TextUtils.equals("0",list.get(position).getStatus_accept())){
+                viewHolder.isJiedanTv.setTextColor(context.getResources().getColor(R.color.gary));
+            }else {
+                viewHolder.isJiedanTv.setTextColor(context.getResources().getColor(R.color.yellow01));
+            }
             String goods_is_warranty = list.get(position).getGoods_is_warranty();
             if (TextUtils.equals("1",goods_is_warranty)){
                 viewHolder.isBaoxiuTv.setText("保修期内");

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -48,7 +49,7 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
-    @BindView(R.id.ggt_iv) ImageView ggtIv;
+    @BindView(R.id.ggt_iv) RelativeLayout ggtIv;
     @BindView(R.id.ggt_cancle_iv) ImageView ggtCancleIv;
     @BindView(R.id.title_reason_tv) TextView titleReasonTv;
     @BindView(R.id.qx_view02) View qxView02;
@@ -139,6 +140,14 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                         OrderInfoBean orderInfoBean = response.body();
                         if (TextUtils.equals("1", orderInfoBean.getStatus())) {
                             queryBtn.setText("去评价");
+                            String status_comment = orderInfoBean.getData().getInfo().getStatus_comment();
+                            if (TextUtils.equals("1",status_comment)){
+                                pingjiaView.setVisibility(View.VISIBLE);
+                                pingjiaChengduTv.setText(orderInfoBean.getData().getComment().getLevel_name());
+                                pingjiaMiaoshuTv.setText(orderInfoBean.getData().getComment().getContent());
+                            }else {
+                                queryBtn.setVisibility(View.VISIBLE);
+                            }
                             payMoneyTv.setText(orderInfoBean.getData().getInfo().getPrice());
                             payFangshiTv.setText(orderInfoBean.getData().getInfo().getPay_type_name());
                             payTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getPay_time()));
@@ -179,13 +188,7 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                                 shebeiTupianLL.setVisibility(View.GONE);
                             }
 
-                            String status_comment = orderInfoBean.getData().getInfo().getStatus_comment();
-                            if (TextUtils.equals("1",status_comment)){
-                                pingjiaView.setVisibility(View.VISIBLE);
-                                queryBtn.setVisibility(View.GONE);
-                                pingjiaChengduTv.setText(orderInfoBean.getData().getComment().getLevel_name());
-                                pingjiaMiaoshuTv.setText(orderInfoBean.getData().getComment().getContent());
-                            }
+
 
                             typeTv.setText(orderInfoBean.getData().getInfo().getGoods_type_name());
                             xinghaoTv.setText(orderInfoBean.getData().getInfo().getGoods_model());
@@ -219,6 +222,10 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                 Intent intent = new Intent(this,RepaireCommentActivity.class);
                 intent.putExtra("oid",oid);
                 startActivity(intent);
+                finish();
+                break;
+            case R.id.ggt_cancle_iv:
+                ggtIv.setVisibility(View.GONE);
                 break;
         }
     }

@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -18,7 +20,9 @@ import com.power.kitchen.R;
 import com.power.kitchen.adapter.GridViewAdapter;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.OrderInfoBean;
+import com.power.kitchen.bean.ResultBean;
 import com.power.kitchen.callback.DialogCallback;
+import com.power.kitchen.fragment.WaitRepairTabFragment;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TimeUtils;
 import com.power.kitchen.utils.Urls;
@@ -41,7 +45,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
-    @BindView(R.id.ggt_iv) ImageView ggtIv;
+    @BindView(R.id.ggt_iv) RelativeLayout ggtIv;
     @BindView(R.id.ggt_cancle_iv) ImageView ggtCancleIv;
     @BindView(R.id.title_reason_tv) TextView titleReasonTv;
     @BindView(R.id.qx_reason_tv) TextView qxReasonTv;
@@ -72,9 +76,11 @@ public class NotRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.gs_juli_tv) TextView gsJuliTv;
     @BindView(R.id.shebeitupian_ll) LinearLayout shebeiTupianLL;
     @BindView(R.id.wentimiaoshu_ll) LinearLayout wentimiaoshuLl;
+    @BindView(R.id.query_ll) LinearLayout queryLl;
 
     private UltimateBar ultimateBar;
     private String oid;
+    private OrderInfoBean orderInfoBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +102,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
         weiwanchengView01.setVisibility(View.VISIBLE);
         weiwanchengView02.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
+        queryBtn.setOnClickListener(this);
         oid = getIntent().getStringExtra("oid");
         scrollView.smoothScrollBy(0,0);
         requestOrderInfo();
@@ -117,8 +124,8 @@ public class NotRepaireDetailActivity extends BaseActivity {
                 .execute(new DialogCallback<OrderInfoBean>(this,OrderInfoBean.class) {
                     @Override
                     public void onSuccess(Response<OrderInfoBean> response) {
-                        OrderInfoBean orderInfoBean = response.body();
-                        if (TextUtils.equals("1",orderInfoBean.getStatus())){
+                        orderInfoBean = response.body();
+                        if (TextUtils.equals("1", orderInfoBean.getStatus())){
                             titleReasonTv.setText(orderInfoBean.getData().getInfo().getNo_weixiu_info());
                             deviceTxmEt.setText(orderInfoBean.getData().getInfo().getOid());
                             dateTv.setText(orderInfoBean.getData().getM_w_info().getName());
@@ -139,7 +146,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
                             }
 
                             String goods_images = orderInfoBean.getData().getInfo().getGoods_images();
-                            if (goods_images != "[]"){
+                            if (!TextUtils.equals("[]",goods_images)){
                                 try {
                                     JSONArray good_images = new JSONArray(goods_images);
                                     List<String> list = new ArrayList<String>();
@@ -171,6 +178,8 @@ public class NotRepaireDetailActivity extends BaseActivity {
                             }else {
                                 problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
                             }
+                            queryBtn.setText("继续报修");
+                            queryLl.setVisibility(View.VISIBLE);
                         }
                     }
                 });
@@ -184,6 +193,55 @@ public class NotRepaireDetailActivity extends BaseActivity {
             case R.id.back_iv:
                 finish();
                 break;
+            case R.id.query_btn:
+                Intent mIntent = DeviceDetailsActivity.newIntent(NotRepaireDetailActivity.this,orderInfoBean);
+                startActivity(mIntent);
+                finish();
+                break;
+            case R.id.ggt_cancle_iv:
+                ggtIv.setVisibility(View.GONE);
+                break;
         }
+    }
+
+    private void requestOrderAdd() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("name",orderInfoBean.getData().getInfo().getContact_name());
+        map.put("company",orderInfoBean.getData().getInfo().getContact_company());
+        map.put("mobile",orderInfoBean.getData().getInfo().getContact_mobile());
+        map.put("sheng_id",orderInfoBean.getData().getInfo().getContact_sheng_id());
+        map.put("shi_id",orderInfoBean.getData().getInfo().getContact_shi_id());
+        map.put("qu_id",orderInfoBean.getData().getInfo().getContact_qu_id());
+        map.put("address",orderInfoBean.getData().getInfo().getContact_address());
+        map.put("bd_lat",orderInfoBean.getData().getInfo().getContact_lat());
+        map.put("bd_lng",orderInfoBean.getData().getInfo().getContact_lng());
+        map.put("code",orderInfoBean.getData().getInfo().getGoods_code());
+        map.put("date",orderInfoBean.getData().getInfo().getGoods_date());
+        map.put("is_warranty",orderInfoBean.getData().getInfo().getGoods_is_warranty());
+        map.put("brand_id",orderInfoBean.getData().getInfo().getGoods_brand());
+        map.put("type_id",orderInfoBean.getData().getInfo().getGoods_type());
+        map.put("model",orderInfoBean.getData().getInfo().getGoods_model());
+        map.put("desc",orderInfoBean.getData().getInfo().getGoods_describe());
+        map.put("images",orderInfoBean.getData().getInfo().getGoods_images());
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.order_add)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+                        ResultBean resultBean = response.body();
+                        if (TextUtils.equals("1",resultBean.getStatus())){
+
+                        }
+                    }
+                });
+
     }
 }

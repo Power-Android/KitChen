@@ -12,6 +12,10 @@ public class Urls {
     public static final String get_token = api_url + "/Api/Oauth/get_token.html";
     //用户登录
     public static final String login = api_url + "/Api/User/login.html";
+    //普通用户注册
+    public static final String register = api_url + "/Api/User/register.html";
+    //用户协议
+    public static final String user_xieyi = api_url + "/Api/Oauth/user_xieyi.html";
     //报修订单列表
     public static final String order_lists = api_url + "/Api/UserOrder/order_lists.html";
     //报修订单详情
@@ -44,4 +48,22 @@ public class Urls {
     public static final String brand_list = api_url + "/Api/Oauth/brands_lists.html";
     //报修设备类型
     public static final String type_list = api_url + "/Api/Oauth/types_lists.html";
+    //公司简介
+    public static final String about_us = api_url + "/Api/Oauth/about.html";
+    //用户取消订单原因列表
+    public static final String quxiao_tips = api_url + "/Api/Oauth/quxiao_tips.html";
+    //报修订单取消
+    public static final String order_close = api_url + "/Api/UserOrder/order_close.html";
+    //发布报修订单
+    public static final String order_add = api_url + "/Api/UserOrder/order_add.html";
+    //省市区地区子查询接口
+    public static final String area_lists = api_url + "/Api/Oauth/area_lists.html";
+    //普通用户修改密码
+    public static final String edit_password = api_url + "/Api/User/edit_password.html";
+    //普通用户找回密码
+    public static final String resetpass = api_url + "/Api/User/resetpass.html";
+    //获取手机验证码
+    public static final String send_sms = api_url + "/Api/Oauth/send_sms.html";
+    //图形验证码
+    public static final String verify_img = api_url + "/Api/Oauth/verify_img.html";
 }
