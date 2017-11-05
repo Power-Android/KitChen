@@ -46,6 +46,7 @@ public abstract class DialogCallback<T> extends JsonCallback<T> {
     public void onStart(Request<T, ? extends Request> request) {
         if (dialog != null && !dialog.isShowing()) {
             dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
         }
         // 主要用于在所有请求之前添加公共的请求头或请求参数
         // 例如登录授权的 token

@@ -38,6 +38,8 @@ import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +59,8 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
     @BindView(R.id.wait_list) ListView waitList;
     @BindView(R.id.springview) SpringView springView;
     Unbinder unbinder;
-    private List<OrderListBean.DataBean.ListsBean> list;
+    private List<OrderListBean.DataBean.ListsBean> list = new ArrayList<>();
+    private List<OrderListBean.DataBean.ListsBean> listAll = new ArrayList<>();
     private LoadService loadService;
     private View view;
     private int p = 1;
@@ -104,7 +107,7 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
         map.put("app_id","android-user_20170808");
         map.put("token", SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         map.put("type","1");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -119,18 +122,19 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
                         OrderListBean orderListBean = response.body();
                         if (TextUtils.equals("1",orderListBean.getStatus())){
                             list = orderListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                WaitRepairAdapter adapter = new WaitRepairAdapter(getActivity(),list);
+                                WaitRepairAdapter adapter = new WaitRepairAdapter(getActivity(),listAll);
                                 waitList.setAdapter(adapter);
                                 loadService.showSuccess();
                                 waitList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        String oid = list.get(position).getOid();
-                                        String order_accept_name = list.get(position).getOrder_accept_name();
-                                        String status_accept = list.get(position).getStatus_accept();
+                                        String oid = listAll.get(position).getOid();
+                                        String order_accept_name = listAll.get(position).getOrder_accept_name();
+                                        String status_accept = listAll.get(position).getStatus_accept();
                                         Intent intent = new Intent(getActivity(),WaitRepaireDetailActivity.class);
                                         intent.putExtra("oid",oid);
                                         intent.putExtra("order_accept_name",order_accept_name);
@@ -138,6 +142,11 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
                                         startActivity(intent);
                                     }
                                 });
+                            }
+                            if (TextUtils.equals(list.toString(),"[]")){
+                                p = 1;
+                            }else {
+                                p = p + 1;
                             }
                         }else {
                             TUtils.showShort(getActivity().getApplicationContext(),orderListBean.getInfo());
@@ -163,6 +172,7 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                requestOrderList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -173,6 +183,7 @@ public class WaitRepairTabFragment extends Fragment implements View.OnClickListe
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                requestOrderList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

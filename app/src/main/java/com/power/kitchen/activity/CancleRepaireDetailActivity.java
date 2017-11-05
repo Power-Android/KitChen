@@ -82,6 +82,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
     private UltimateBar ultimateBar;
     private String oid;
     private OrderInfoBean orderInfoBean;
+    public static boolean flag = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -191,6 +192,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.query_btn:
+                flag = true;
                 Intent mIntent = DeviceDetailsActivity.newIntent(CancleRepaireDetailActivity.this,orderInfoBean);
                 startActivity(mIntent);
                 finish();

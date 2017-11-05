@@ -79,30 +79,54 @@ import butterknife.ButterKnife;
 
 public class DeviceDetailsActivity extends BaseActivity {
 
-    @BindView(R.id.gridview) MyGridView gridview;
-    @BindView(R.id.back_iv) ImageView backIv;
-    @BindView(R.id.content_tv) TextView contentTv;
-    @BindView(R.id.device_txm_et) EditText deviceTxmEt;
-    @BindView(R.id.date_tv) TextView dateTv;
-    @BindView(R.id.jump_date_iv) ImageView jumpDateIv;
-    @BindView(R.id.bxqn_rbt) RadioButton bxqnRbt;
-    @BindView(R.id.bxqw_rbt) RadioButton bxqwRbt;
-    @BindView(R.id.pinpai_tv) TextView pinpaiTv;
-    @BindView(R.id.jump_pinpai_iv) ImageView jumpPinpaiIv;
-    @BindView(R.id.leixing_tv) TextView leixingTv;
-    @BindView(R.id.jump_leixing_iv) ImageView jumpLeixingIv;
-    @BindView(R.id.xinghao_et) TextView xinghaoEt;
-    @BindView(R.id.device_name_et) EditText deviceNameEt;
-    @BindView(R.id.device_phone_et) EditText devicePhoneEt;
-    @BindView(R.id.device_ctmc_et) EditText deviceCtmcEt;
-    @BindView(R.id.device_adress_tv) TextView deviceAdressTv;
-    @BindView(R.id.jump_adress_iv) ImageView jumpAdressIv;
-    @BindView(R.id.location_iv) ImageView locationIv;
-    @BindView(R.id.detail_adress_et) EditText detailAdressEt;
-    @BindView(R.id.problem_device_et) EditText problemDeviceEt;
-    @BindView(R.id.cancle_btn) Button cancleBtn;
-    @BindView(R.id.query_btn) Button queryBtn;
-    @BindView(R.id.radiogroup) RadioGroup radiogroup;
+    @BindView(R.id.gridview)
+    MyGridView gridview;
+    @BindView(R.id.back_iv)
+    ImageView backIv;
+    @BindView(R.id.content_tv)
+    TextView contentTv;
+    @BindView(R.id.device_txm_et)
+    EditText deviceTxmEt;
+    @BindView(R.id.date_tv)
+    TextView dateTv;
+    @BindView(R.id.jump_date_iv)
+    ImageView jumpDateIv;
+    @BindView(R.id.bxqn_rbt)
+    RadioButton bxqnRbt;
+    @BindView(R.id.bxqw_rbt)
+    RadioButton bxqwRbt;
+    @BindView(R.id.pinpai_tv)
+    TextView pinpaiTv;
+    @BindView(R.id.jump_pinpai_iv)
+    ImageView jumpPinpaiIv;
+    @BindView(R.id.leixing_tv)
+    TextView leixingTv;
+    @BindView(R.id.jump_leixing_iv)
+    ImageView jumpLeixingIv;
+    @BindView(R.id.xinghao_et)
+    TextView xinghaoEt;
+    @BindView(R.id.device_name_et)
+    EditText deviceNameEt;
+    @BindView(R.id.device_phone_et)
+    EditText devicePhoneEt;
+    @BindView(R.id.device_ctmc_et)
+    EditText deviceCtmcEt;
+    @BindView(R.id.device_adress_tv)
+    TextView deviceAdressTv;
+    @BindView(R.id.jump_adress_iv)
+    ImageView jumpAdressIv;
+    @BindView(R.id.location_iv)
+    ImageView locationIv;
+    @BindView(R.id.detail_adress_et)
+    EditText detailAdressEt;
+    @BindView(R.id.problem_device_et)
+    EditText problemDeviceEt;
+    @BindView(R.id.cancle_btn)
+    Button cancleBtn;
+    @BindView(R.id.query_btn)
+    Button queryBtn;
+    @BindView(R.id.radiogroup)
+    RadioGroup radiogroup;
 
     private UltimateBar ultimateBar;
     private GridViewAddImgesAdpter addImgesAdpter;
@@ -124,11 +148,15 @@ public class DeviceDetailsActivity extends BaseActivity {
     private TimePickerView pvCustomLunar;
     private ArrayList<String> listExtra;//拍照报修传过来的图片路径
     private Intent intent;
-    private String brandNme,typeNme,brandId,typeId,tx,tips;
+    private String brandNme, typeNme, brandId, typeId, tx, tips;
     private List<AreaListsBean.DataBean> province_list = new ArrayList<>();
     private OrderInfoBean orderInfoBean;
 
-
+    public static Intent newIntent(Context context, OrderInfoBean orderInfoBean) {
+        Intent mIntent = new Intent(context, DeviceDetailsActivity.class);
+        mIntent.putExtra("bean", orderInfoBean);
+        return mIntent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,13 +170,6 @@ public class DeviceDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_device_detail);
         ButterKnife.bind(this);
         initView();
-        getData();
-    }
-
-    public static Intent newIntent(Context context,OrderInfoBean orderInfoBean){
-        Intent mIntent = new Intent(context,DeviceDetailsActivity.class);
-        mIntent.putExtra("bean",orderInfoBean);
-        return mIntent;
     }
 
     private void initView() {
@@ -175,7 +196,7 @@ public class DeviceDetailsActivity extends BaseActivity {
         radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.bxqn_rbt:
                         temp = "1";
                         break;
@@ -184,15 +205,40 @@ public class DeviceDetailsActivity extends BaseActivity {
                 }
             }
         });
-
+        getData();
     }
 
     /**
      * 报修详情页传递过来的bean类
      */
     private void getData() {
-        if (orderInfoBean != null){
+        if (NotRepaireDetailActivity.flag == true || CancleRepaireDetailActivity.flag == true){
             orderInfoBean = (OrderInfoBean) getIntent().getExtras().getSerializable("bean");
+            deviceTxmEt.setText(orderInfoBean.getData().getInfo().getGoods_code());
+            dateTv.setText(orderInfoBean.getData().getInfo().getGoods_date());
+            String goods_is_warranty = orderInfoBean.getData().getInfo().getGoods_is_warranty();
+            if (TextUtils.equals("1", goods_is_warranty)) {
+                bxqnRbt.setChecked(true);
+            } else {
+                bxqwRbt.setChecked(true);
+            }
+            pinpaiTv.setText(orderInfoBean.getData().getInfo().getGoods_brand_name());
+            leixingTv.setText(orderInfoBean.getData().getInfo().getGoods_type_name());
+            xinghaoEt.setText(orderInfoBean.getData().getInfo().getGoods_model());
+            deviceNameEt.setText(orderInfoBean.getData().getInfo().getContact_name());
+            devicePhoneEt.setText(orderInfoBean.getData().getInfo().getContact_mobile());
+            contentTv.setText(orderInfoBean.getData().getInfo().getContact_company());
+            deviceAdressTv.setText(orderInfoBean.getData().getInfo().getContact_sheng_name() + " " +
+                    orderInfoBean.getData().getInfo().getContact_shi_name() + " " +
+                    orderInfoBean.getData().getInfo().getContact_qu_name());
+            String contact_sheng_id = orderInfoBean.getData().getInfo().getContact_sheng_id();
+            String contact_shi_id = orderInfoBean.getData().getInfo().getContact_shi_id();
+            String contact_qu_id = orderInfoBean.getData().getInfo().getContact_qu_id();
+            detailAdressEt.setText(orderInfoBean.getData().getInfo().getContact_address());
+            problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
+            String goods_images = orderInfoBean.getData().getInfo().getGoods_images();
+            NotRepaireDetailActivity.flag = false;
+            CancleRepaireDetailActivity.flag = false;
         }
     }
 
@@ -202,13 +248,13 @@ public class DeviceDetailsActivity extends BaseActivity {
     private void getIntentData() {
         listExtra = getIntent().getStringArrayListExtra("list");
         LocalMedia localMedia = new LocalMedia();
-        if (listExtra != null){
-        for (int i = 0; i < listExtra.size(); i++) {
-            String path = listExtra.get(i);
-            localMedia.setPath(path);
-            list.add(localMedia);
-        }
-            addImgesAdpter = new GridViewAddImgesAdpter(list,this);
+        if (listExtra != null) {
+            for (int i = 0; i < listExtra.size(); i++) {
+                String path = listExtra.get(i);
+                localMedia.setPath(path);
+                list.add(localMedia);
+            }
+            addImgesAdpter = new GridViewAddImgesAdpter(list, this);
             gridview.setAdapter(addImgesAdpter);
         }
     }
@@ -236,12 +282,12 @@ public class DeviceDetailsActivity extends BaseActivity {
                 break;
             case R.id.jump_pinpai_iv://选择品牌
                 intent = new Intent();
-                intent.setClass(DeviceDetailsActivity.this,BrandAndTypeActivity.class);
-                startActivityForResult(intent,101);
+                intent.setClass(DeviceDetailsActivity.this, BrandAndTypeActivity.class);
+                startActivityForResult(intent, 101);
                 break;
             case R.id.jump_leixing_iv://选择类型
-                intent.setClass(DeviceDetailsActivity.this,BrandAndTypeActivity.class);
-                startActivityForResult(intent,101);
+                intent.setClass(DeviceDetailsActivity.this, BrandAndTypeActivity.class);
+                startActivityForResult(intent, 101);
                 break;
             case R.id.jump_adress_iv://选择所在区域
                 ShowPickerView();
@@ -253,7 +299,7 @@ public class DeviceDetailsActivity extends BaseActivity {
                 showTips();
                 break;
             case R.id.query_btn://确认报修
-                if (validate()){
+                if (validate()) {
                     requestOrderAdd();
                 }
                 break;
@@ -262,29 +308,29 @@ public class DeviceDetailsActivity extends BaseActivity {
 
     private boolean validate() {
         tips = "";
-        if (TextUtils.isEmpty(brandId)){
+        if (TextUtils.isEmpty(brandId)) {
             tips = "请填写设备品牌";
             showTipsValidate(tips);
             return false;
         }
 
-        if (TextUtils.isEmpty(deviceNameEt.getText().toString())){
+        if (TextUtils.isEmpty(deviceNameEt.getText().toString())) {
             tips = "请填写姓名";
             showTipsValidate(tips);
             return false;
         }
 
-        if (TextUtils.isEmpty(deviceCtmcEt.getText().toString())){
+        if (TextUtils.isEmpty(deviceCtmcEt.getText().toString())) {
             tips = "请填写公司名称";
             showTipsValidate(tips);
             return false;
         }
-        if (TextUtils.isEmpty(tx)){
+        if (TextUtils.isEmpty(tx)) {
             tips = "请填写所在区域";
             showTipsValidate(tips);
             return false;
         }
-        if (TextUtils.isEmpty(detailAdressEt.getText().toString())){
+        if (TextUtils.isEmpty(detailAdressEt.getText().toString())) {
             tips = "请填写详细地址";
             showTipsValidate(tips);
             return false;
@@ -478,8 +524,8 @@ public class DeviceDetailsActivity extends BaseActivity {
         /**
          * 选择品牌和类型返回的数据
          */
-        if (requestCode == 101){
-            if (data != null){
+        if (requestCode == 101) {
+            if (data != null) {
                 brandNme = data.getStringExtra("brandName");
                 typeNme = data.getStringExtra("typeName");
                 brandId = data.getStringExtra("brandId");
@@ -505,8 +551,8 @@ public class DeviceDetailsActivity extends BaseActivity {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 Date nowDate = TimeUtils.getNowDate();
-                if (date.getTime() > nowDate.getTime()){
-                    TUtils.showShort(getApplicationContext(),"只能选择当前日期之前的日期");
+                if (date.getTime() > nowDate.getTime()) {
+                    TUtils.showShort(getApplicationContext(), "只能选择当前日期之前的日期");
                     return;
                 }
                 dateTv.setText(getTime(date));
@@ -534,7 +580,7 @@ public class DeviceDetailsActivity extends BaseActivity {
                 .setDividerColor(getResources().getColor(R.color.hint))
                 .setTextColorOut(getResources().getColor(R.color.hint))
                 .setBgColor(getResources().getColor(R.color.white01))
-                .setLabel("","","","","","")//默认设置为年月日时分秒
+                .setLabel("", "", "", "", "", "")//默认设置为年月日时分秒
                 .setTextColorCenter(getResources().getColor(R.color.text_color01)) //设置选中项文字颜色
                 .build();
     }
@@ -557,8 +603,8 @@ public class DeviceDetailsActivity extends BaseActivity {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
                 //返回的分别是三个级别的选中位置
-                tx = options1Items.get(options1).getPickerViewText()+
-                        options2Items.get(options1).get(options2)+
+                tx = options1Items.get(options1).getPickerViewText() +
+                        options2Items.get(options1).get(options2) +
                         options3Items.get(options1).get(options2).get(options3);
                 deviceAdressTv.setText(tx);
             }
@@ -585,18 +631,18 @@ public class DeviceDetailsActivity extends BaseActivity {
 
         /*pvOptions.setPicker(options1Items);//一级选择器
         pvOptions.setPicker(options1Items, options2Items);//二级选择器*/
-        pvOptions.setPicker(options1Items, options2Items,options3Items);//三级选择器
+        pvOptions.setPicker(options1Items, options2Items, options3Items);//三级选择器
         pvOptions.show();
     }
 
     private void requestAreaList() {    //省列表
-        Map<String,String> map = new HashMap<>();
-        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
-        map.put("token",SPUtils.getInstance().getString("token",""));
-        map.put("area_id","1");
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id", ""));
+        map.put("token", SPUtils.getInstance().getString("token", ""));
+        map.put("area_id", "1");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
-        params.put("data",values.toString());
+        params.put("data", values.toString());
 
         OkGo.<AreaListsBean>post(Urls.area_lists)
                 .tag(this)
@@ -605,11 +651,11 @@ public class DeviceDetailsActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<AreaListsBean> response) {
                         AreaListsBean areaListsBean = response.body();
-                        if (TextUtils.equals("1",areaListsBean.getStatus())){
+                        if (TextUtils.equals("1", areaListsBean.getStatus())) {
                             province_list = areaListsBean.getData();
 
-                        }else {
-                            TUtils.showShort(getApplicationContext(),"地址解析失败！");
+                        } else {
+                            TUtils.showShort(getApplicationContext(), "地址解析失败！");
                         }
                     }
                 });
@@ -624,7 +670,7 @@ public class DeviceDetailsActivity extends BaseActivity {
          * 关键逻辑在于循环体
          *
          * */
-        String JsonData = new GetJsonDataUtil().getJson(this,"province.json");//获取assets目录下的json文件数据
+        String JsonData = new GetJsonDataUtil().getJson(this, "province.json");//获取assets目录下的json文件数据
 
         ArrayList<JsonBean> jsonBean = parseData(JsonData);//用Gson 转成实体
 
@@ -636,11 +682,11 @@ public class DeviceDetailsActivity extends BaseActivity {
          */
         options1Items = jsonBean;
 
-        for (int i=0;i<jsonBean.size();i++){//遍历省份
+        for (int i = 0; i < jsonBean.size(); i++) {//遍历省份
             ArrayList<String> CityList = new ArrayList<>();//该省的城市列表（第二级）
             ArrayList<ArrayList<String>> Province_AreaList = new ArrayList<>();//该省的所有地区列表（第三极）
 
-            for (int c=0; c<jsonBean.get(i).getCityList().size(); c++){//遍历该省份的所有城市
+            for (int c = 0; c < jsonBean.get(i).getCityList().size(); c++) {//遍历该省份的所有城市
                 String CityName = jsonBean.get(i).getCityList().get(c).getName();
                 CityList.add(CityName);//添加城市
 
@@ -648,11 +694,11 @@ public class DeviceDetailsActivity extends BaseActivity {
 
                 //如果无地区数据，建议添加空字符串，防止数据为null 导致三个选项长度不匹配造成崩溃
                 if (jsonBean.get(i).getCityList().get(c).getArea() == null
-                        ||jsonBean.get(i).getCityList().get(c).getArea().size()==0) {
+                        || jsonBean.get(i).getCityList().get(c).getArea().size() == 0) {
                     City_AreaList.add("");
-                }else {
+                } else {
 
-                    for (int d=0; d < jsonBean.get(i).getCityList().get(c).getArea().size(); d++) {//该城市对应地区所有数据
+                    for (int d = 0; d < jsonBean.get(i).getCityList().get(c).getArea().size(); d++) {//该城市对应地区所有数据
                         String AreaName = jsonBean.get(i).getCityList().get(c).getArea().get(d);
 
                         City_AreaList.add(AreaName);//添加该城市所有地区数据
@@ -696,7 +742,7 @@ public class DeviceDetailsActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_LOAD_DATA:
-                    if (thread==null){//如果已创建就不再重新创建子线程了
+                    if (thread == null) {//如果已创建就不再重新创建子线程了
                         thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -711,7 +757,7 @@ public class DeviceDetailsActivity extends BaseActivity {
                     isLoaded = true;
                     break;
                 case MSG_LOAD_FAILED:
-                    Toast.makeText(getApplicationContext(),"地址选择器解析数据失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "地址选择器解析数据失败", Toast.LENGTH_SHORT).show();
                     break;
 
             }

@@ -81,6 +81,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
     private UltimateBar ultimateBar;
     private String oid;
     private OrderInfoBean orderInfoBean;
+    public static boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +195,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.query_btn:
+                flag = true;
                 Intent mIntent = DeviceDetailsActivity.newIntent(NotRepaireDetailActivity.this,orderInfoBean);
                 startActivity(mIntent);
                 finish();
