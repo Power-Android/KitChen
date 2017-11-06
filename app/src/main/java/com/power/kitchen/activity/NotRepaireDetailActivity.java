@@ -206,44 +206,4 @@ public class NotRepaireDetailActivity extends BaseActivity {
         }
     }
 
-    private void requestOrderAdd() {
-        Map<String,String> map = new HashMap<>();
-        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
-        map.put("token",SPUtils.getInstance().getString("token",""));
-        map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("name",orderInfoBean.getData().getInfo().getContact_name());
-        map.put("company",orderInfoBean.getData().getInfo().getContact_company());
-        map.put("mobile",orderInfoBean.getData().getInfo().getContact_mobile());
-        map.put("sheng_id",orderInfoBean.getData().getInfo().getContact_sheng_id());
-        map.put("shi_id",orderInfoBean.getData().getInfo().getContact_shi_id());
-        map.put("qu_id",orderInfoBean.getData().getInfo().getContact_qu_id());
-        map.put("address",orderInfoBean.getData().getInfo().getContact_address());
-        map.put("bd_lat",orderInfoBean.getData().getInfo().getContact_lat());
-        map.put("bd_lng",orderInfoBean.getData().getInfo().getContact_lng());
-        map.put("code",orderInfoBean.getData().getInfo().getGoods_code());
-        map.put("date",orderInfoBean.getData().getInfo().getGoods_date());
-        map.put("is_warranty",orderInfoBean.getData().getInfo().getGoods_is_warranty());
-        map.put("brand_id",orderInfoBean.getData().getInfo().getGoods_brand());
-        map.put("type_id",orderInfoBean.getData().getInfo().getGoods_type());
-        map.put("model",orderInfoBean.getData().getInfo().getGoods_model());
-        map.put("desc",orderInfoBean.getData().getInfo().getGoods_describe());
-        map.put("images",orderInfoBean.getData().getInfo().getGoods_images());
-        JSONObject values = new JSONObject(map);
-        HttpParams params = new HttpParams();
-        params.put("data",values.toString());
-
-        OkGo.<ResultBean>post(Urls.order_add)
-                .tag(this)
-                .params(params)
-                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
-                    @Override
-                    public void onSuccess(Response<ResultBean> response) {
-                        ResultBean resultBean = response.body();
-                        if (TextUtils.equals("1",resultBean.getStatus())){
-
-                        }
-                    }
-                });
-
-    }
 }

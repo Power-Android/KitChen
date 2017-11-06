@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
 
 /**
@@ -78,6 +79,9 @@ public class MyApplication extends Application {
         setLogger();//Logger---第三方日志打印
         initLocation();//百度地图定位
         mLocationClient.start();
+
+        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);     		// 初始化 JPush
     }
 
     private void initLocation() {

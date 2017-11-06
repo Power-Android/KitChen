@@ -58,6 +58,9 @@ public class Urls {
     public static final String order_add = api_url + "/Api/UserOrder/order_add.html";
     //省市区地区子查询接口
     public static final String area_lists = api_url + "/Api/Oauth/area_lists.html";
+    //
+    public static final String area_all_lists = api_url + "/Api/Oauth/area_all_lists.html";
+
     //普通用户修改密码
     public static final String edit_password = api_url + "/Api/User/edit_password.html";
     //普通用户找回密码

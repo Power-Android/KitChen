@@ -62,9 +62,12 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
     @BindView(R.id.not_list) ListView notList;
     @BindView(R.id.springview) SpringView springView;
     Unbinder unbinder;
-    private List<OrderListBean.DataBean.ListsBean> list;
+    private List<OrderListBean.DataBean.ListsBean> list = new ArrayList<>();
+    private List<OrderListBean.DataBean.ListsBean> listAll = new ArrayList<>();
+    private int p = 1;
     private View view;
     private LoadService loadService;
+    private NotRepaireAdapter adapter;
 
     @Nullable
     @Override
@@ -108,7 +111,7 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
         map.put("app_id","android-user_20170808");
         map.put("token", SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         map.put("type","3");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -123,16 +126,17 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
                         OrderListBean orderListBean = response.body();
                         if (TextUtils.equals("1",orderListBean.getStatus())){
                             list = orderListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                NotRepaireAdapter adapter = new NotRepaireAdapter(getActivity(),list);
+                                adapter = new NotRepaireAdapter(getActivity(),listAll);
                                 notList.setAdapter(adapter);
                                 loadService.showSuccess();
                                 notList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        String oid = list.get(position).getOid();
+                                        String oid = listAll.get(position).getOid();
                                         Intent intent = new Intent(getActivity(),NotRepaireDetailActivity.class);
                                         intent.putExtra("oid",oid);
                                         startActivity(intent);
@@ -158,6 +162,13 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (TextUtils.equals(list.toString(),"[]")){
+                    p = 1;
+                    adapter.notifyDataSetChanged();
+                }else {
+                    p = p + 1;
+                    requestOrderList();
+                }
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -168,6 +179,13 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (TextUtils.equals(list.toString(),"[]")){
+                    p = 1;
+                    adapter.notifyDataSetChanged();
+                }else {
+                    p = p + 1;
+                    requestOrderList();
+                }
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

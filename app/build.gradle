@@ -49,6 +49,7 @@ dependencies {
     compile 'com.lai.weavey:dialog:2.0.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile files('libs/jcore-android-1.1.7.jar')
 }
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->

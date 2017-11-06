@@ -36,6 +36,8 @@ import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +56,12 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
     @BindView(R.id.cancle_list) ListView cancleList;
     @BindView(R.id.springview) SpringView springView;
     Unbinder unbinder;
-    private List<OrderListBean.DataBean.ListsBean> list;
+    private List<OrderListBean.DataBean.ListsBean> list = new ArrayList<>();
+    private List<OrderListBean.DataBean.ListsBean> listAll = new ArrayList<>();
+    private int p = 1;
     private View view;
     private LoadService loadService;
+    private CancleRepaireAdapter adapter;
 
 
     @Nullable
@@ -101,7 +106,7 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
         map.put("app_id","android-user_20170808");
         map.put("token", SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         map.put("type","4");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -116,16 +121,17 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
                         OrderListBean orderListBean = response.body();
                         if (TextUtils.equals("1",orderListBean.getStatus())){
                             list = orderListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                CancleRepaireAdapter adapter = new CancleRepaireAdapter(getActivity(),list);
+                                adapter = new CancleRepaireAdapter(getActivity(),listAll);
                                 cancleList.setAdapter(adapter);
                                 loadService.showSuccess();
                                 cancleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        String oid = list.get(position).getOid();
+                                        String oid = listAll.get(position).getOid();
                                         Intent intent = new Intent(getActivity(),CancleRepaireDetailActivity.class);
                                         intent.putExtra("oid",oid);
                                         startActivity(intent);
@@ -151,6 +157,13 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (TextUtils.equals(list.toString(),"[]")){
+                    p = 1;
+                    adapter.notifyDataSetChanged();
+                }else {
+                    p = p + 1;
+                    requestOrderList();
+                }
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -161,6 +174,13 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (TextUtils.equals(list.toString(),"[]")){
+                    p = 1;
+                    adapter.notifyDataSetChanged();
+                }else {
+                    p = p + 1;
+                    requestOrderList();
+                }
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

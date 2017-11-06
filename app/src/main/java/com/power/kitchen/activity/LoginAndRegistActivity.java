@@ -2,17 +2,12 @@ package com.power.kitchen.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,11 +18,10 @@ import com.bumptech.glide.Glide;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
-import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.bean.AreaListsBean;
 import com.power.kitchen.bean.LoginBean;
-import com.power.kitchen.bean.ResultBean;
 import com.power.kitchen.bean.SendSmsBean;
 import com.power.kitchen.bean.TokenBean;
 import com.power.kitchen.callback.DialogCallback;
@@ -49,6 +43,7 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
 
 /**
  *登录注册
@@ -418,6 +413,10 @@ public class LoginAndRegistActivity extends BaseActivity {
                             SPUtils.getInstance().putString("id",loginBean.getData().getId());
                             SPUtils.getInstance().putString("face",loginBean.getData().getFace());
                             SPUtils.getInstance().putString("mobile",loginBean.getData().getMobile());
+
+                            //极光推送
+                            JPushInterface.setAlias(LoginAndRegistActivity.this, 1, loginBean.getData().getId());
+
                             startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
                         }else {
                             TUtils.showShort(getApplicationContext(),loginBean.getInfo());

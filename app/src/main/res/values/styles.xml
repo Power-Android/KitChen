@@ -151,6 +151,21 @@
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/orange_oval</item>
     </style>
+    <!--极光开始-->
+    <style name="push_style">
+        <item name="android:hint">@string/style_hint</item>
+        <item name="android:inputType">number</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="push_alias">
+        <item name="android:hint">@string/alias_hint</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="push_tag">
+        <item name="android:hint">@string/tag_hint</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <!--极光结束-->
 
 
 </resources>

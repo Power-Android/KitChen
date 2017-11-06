@@ -61,9 +61,13 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
     @BindView(R.id.already_list) ListView alreadyList;
     @BindView(R.id.springview) SpringView springView;
     Unbinder unbinder;
-    List<OrderListBean.DataBean.ListsBean> list;
+    List<OrderListBean.DataBean.ListsBean> list = new ArrayList<>();
+    private List<OrderListBean.DataBean.ListsBean> listAll = new ArrayList<>();
+    private int p = 1;
+
     private LoadService loadService;
     private View view;
+    private AlreadyRepaireAdapter adapter;
 
     @Nullable
     @Override
@@ -111,7 +115,7 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
         map.put("app_id","android-user_20170808");
         map.put("token", SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         map.put("type","2");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -126,16 +130,17 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
                         OrderListBean orderListBean = response.body();
                         if (TextUtils.equals("1",orderListBean.getStatus())){
                             list = orderListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                AlreadyRepaireAdapter adapter = new AlreadyRepaireAdapter(getActivity(),list);
+                                adapter = new AlreadyRepaireAdapter(getActivity(),listAll);
                                 alreadyList.setAdapter(adapter);
                                 loadService.showSuccess();
                                 alreadyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        String oid = list.get(position).getOid();
+                                        String oid = listAll.get(position).getOid();
                                         Intent intent = new Intent(getActivity(),AlreadyRepaireDetailActivity.class);
                                         intent.putExtra("oid",oid);
                                         startActivity(intent);
@@ -161,6 +166,13 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (TextUtils.equals(list.toString(),"[]")){
+                    p = 1;
+                    adapter.notifyDataSetChanged();
+                }else {
+                    p = p + 1;
+                    requestOrderList();
+                }
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -171,6 +183,13 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (TextUtils.equals(list.toString(),"[]")){
+                    p = 1;
+                    adapter.notifyDataSetChanged();
+                }else {
+                    p = p + 1;
+                    requestOrderList();
+                }
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
