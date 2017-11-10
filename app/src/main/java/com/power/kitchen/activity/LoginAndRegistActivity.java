@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.AreaListsBean;
@@ -81,6 +82,7 @@ public class LoginAndRegistActivity extends BaseActivity {
     private int loginOrRegist = 1; //1是登录2是注册
     private String yzmCode;
     private String tips;
+    private String registrationID;
 
 
     @Override
@@ -99,6 +101,8 @@ public class LoginAndRegistActivity extends BaseActivity {
         SPUtils.getInstance().putString("app_id","android-user_20170808");
         initListener();
         requestToken();
+        registrationID = JPushInterface.getRegistrationID(LoginAndRegistActivity.this);
+
     }
 
     private void initListener() {
@@ -398,6 +402,10 @@ public class LoginAndRegistActivity extends BaseActivity {
 //        map.put("password",loginPwdEt.getText().toString().trim());
         map.put("mobile","18515885055");
         map.put("password","a123456");
+//        map.put("android_tag",getUUID(this));
+//        Logger.e(getUUID(this));
+        map.put("android_tag",registrationID);
+        Logger.e(registrationID);
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
@@ -416,7 +424,6 @@ public class LoginAndRegistActivity extends BaseActivity {
 
                             //极光推送
                             JPushInterface.setAlias(LoginAndRegistActivity.this, 1, loginBean.getData().getId());
-
                             startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
                         }else {
                             TUtils.showShort(getApplicationContext(),loginBean.getInfo());

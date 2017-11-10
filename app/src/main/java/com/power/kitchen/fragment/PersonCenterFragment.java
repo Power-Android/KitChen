@@ -172,9 +172,6 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
             case R.id.into_set_iv://进入设置
                 intent = new Intent(getActivity(),SettingActivity.class);
                 intent.putExtra("true_name",true_name);
-                intent.putExtra("sheng_name",sheng_name);
-                intent.putExtra("shi_name",shi_name);
-                intent.putExtra("qu_name",qu_name);
                 startActivity(intent);
                 break;
             case R.id.my_msg_iv://消息页面

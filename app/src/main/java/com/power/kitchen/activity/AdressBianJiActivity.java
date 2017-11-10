@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,16 +16,29 @@ import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.JsonBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.utils.GetJsonDataUtil;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
 import com.suke.widget.SwitchButton;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +56,7 @@ public class AdressBianJiActivity extends BaseActivity {
     @BindView(R.id.detailadress_tv) EditText detailadressEt;
     @BindView(R.id.moren_switchBtn) SwitchButton morenSwitchBtn;
     @BindView(R.id.delete_btn) Button deleteBtn;
+    @BindView(R.id.gsmc_tv) EditText gsmcEt;
 
     private UltimateBar ultimateBar;
     private ArrayList<JsonBean> options1Items = new ArrayList<>();
@@ -54,6 +69,9 @@ public class AdressBianJiActivity extends BaseActivity {
 
     private boolean isLoaded = false;
     private OptionsPickerView pvOptions;
+    private int temp = 0;
+    private String area_id;
+    private String tips;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +97,37 @@ public class AdressBianJiActivity extends BaseActivity {
         deleteBtn.setOnClickListener(this);
         adressIv.setOnClickListener(this);
         locationIv.setOnClickListener(this);
+        area_id = getIntent().getStringExtra("area_id");
+        String name = getIntent().getStringExtra("name");
+        String phone = getIntent().getStringExtra("phone");
+        String company_name = getIntent().getStringExtra("company_name");
+        String sheng_name = getIntent().getStringExtra("sheng_name");
+        String sheng_id = getIntent().getStringExtra("sheng_id");
+        String shi_name = getIntent().getStringExtra("shi_name");
+        String shi_id = getIntent().getStringExtra("shi_id");
+        String qu_name = getIntent().getStringExtra("qu_name");
+        String qu_id = getIntent().getStringExtra("qu_id");
+        String adress = getIntent().getStringExtra("adress");
+        String is_def = getIntent().getStringExtra("is_def");
+
+        usernameEt.setText(name);
+        telnumEt.setText(phone);
+        gsmcEt.setText(company_name);
+        adressTv.setText(sheng_name + " " + shi_name + " " + qu_name);
+        detailadressEt.setText(adress);
+        if (TextUtils.equals("1",is_def)){
+            morenSwitchBtn.setChecked(true);
+        }else {
+            morenSwitchBtn.setChecked(false);
+        }
+        morenSwitchBtn.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                if (morenSwitchBtn.isChecked()){
+                    temp = 1;
+                }
+            }
+        });
     }
 
     @Override
@@ -89,18 +138,157 @@ public class AdressBianJiActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.title_right_tv:
-                finish();
+                if (validate()){
+                    requestAreaEdit();
+                }
                 break;
             case R.id.adress_iv:
                 ShowPickerView();
                 break;
             case R.id.location_iv:
-                finish();
+                ShowPickerView();
                 break;
             case R.id.delete_btn:
-                finish();
+                showTips();
                 break;
         }
+    }
+
+    private boolean validate() {
+        tips = "";
+        if (TextUtils.isEmpty(usernameEt.getText().toString())) {
+            tips = "请填写姓名！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(telnumEt.getText().toString())) {
+            tips = "请填写联系电话！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (telnumEt.getText().toString().length() != 11){
+            tips = "请输入正确的手机号！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(gsmcEt.getText().toString())){
+            tips = "请填写公司名称！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(detailadressEt.getText().toString())){
+            tips = "请填写详细地址！";
+            showTipsValidate(tips);
+            return false;
+        }
+        return true;
+    }
+
+    private void showTipsValidate(String tips) {
+        new NormalAlertDialog.Builder(this).setHeight(0.23f)  //屏幕高度*0.23
+                .setWidth(0.65f)  //屏幕宽度*0.65
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText(tips)
+                .setContentTextColor(R.color.text_color02)
+                .setSingleMode(true).setSingleButtonText("确定")
+                .setSingleButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setSingleListener(new DialogInterface.OnSingleClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickSingleButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
+    }
+
+    private void showTips() {
+        new NormalAlertDialog.Builder(this)
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText("确定要删除吗？")
+                .setContentTextColor(R.color.text_color02)
+                .setLeftButtonText("取消")
+                .setLeftButtonTextColor(R.color.text_color01)
+                .setRightButtonText("确定")
+                .setRightButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setOnclickListener(new DialogInterface.OnLeftAndRightClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickLeftButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void clickRightButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                        requestAreaDel();
+                    }
+                })
+                .build()
+                .show();
+    }
+
+    private void requestAreaEdit() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("area_id",area_id);
+        map.put("name",usernameEt.getText().toString());
+        map.put("company_name",gsmcEt.getText().toString());
+        map.put("tel",telnumEt.getText().toString());
+        //TODO 省市区ID 没有传 记得加上
+        map.put("address",detailadressEt.getText().toString());
+        map.put("is_def",temp + "");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.area_edit)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+                        ResultBean resultBean = response.body();
+                        if (!TextUtils.equals("1",resultBean.getStatus())){
+                            tips = resultBean.getInfo();
+                            showTipsValidate(tips);
+                        }else {
+                            finish();
+                        }
+                    }
+                });
+    }
+
+    private void requestAreaDel() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("area_id",area_id);
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.area_del)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+                        ResultBean resultBean = response.body();
+                        if (TextUtils.equals("1",resultBean.getStatus())){
+                            TUtils.showShort(getApplicationContext(),"地址删除成功！");
+                            finish();
+                        }else {
+                            TUtils.showShort(getApplicationContext(),resultBean.getInfo());
+                        }
+                    }
+                });
     }
 
     /**

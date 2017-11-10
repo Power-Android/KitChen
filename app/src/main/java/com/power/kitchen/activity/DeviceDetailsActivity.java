@@ -1,7 +1,10 @@
 package com.power.kitchen.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,30 +33,48 @@ import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.StringUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.GridViewAddImgesAdpter;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.AreaListsBean;
 import com.power.kitchen.bean.CitysBean;
 import com.power.kitchen.bean.CitysJsonBean;
+import com.power.kitchen.bean.EditFaceBean;
 import com.power.kitchen.bean.JsonBean;
 import com.power.kitchen.bean.OrderInfoBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.bean.UpLoadImgBean;
+import com.power.kitchen.callback.DialogCallback;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.CommonPopupWindow;
 import com.power.kitchen.utils.GetJsonDataUtil;
+import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.TimeUtils;
+import com.power.kitchen.utils.Urls;
 import com.power.kitchen.view.MyGridView;
 import com.wevey.selector.dialog.DialogInterface;
 import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,61 +87,25 @@ import butterknife.ButterKnife;
 
 public class DeviceDetailsActivity extends BaseActivity {
 
-    @BindView(R.id.gridview)
-    MyGridView gridview;
-    @BindView(R.id.back_iv)
-    ImageView backIv;
-    @BindView(R.id.content_tv)
-    TextView contentTv;
-    @BindView(R.id.device_txm_et)
-    EditText deviceTxmEt;
-    @BindView(R.id.date_tv)
-    TextView dateTv;
-    @BindView(R.id.jump_date_iv)
-    ImageView jumpDateIv;
-    @BindView(R.id.bxqn_rbt)
-    RadioButton bxqnRbt;
-    @BindView(R.id.bxqw_rbt)
-    RadioButton bxqwRbt;
-    @BindView(R.id.pinpai_tv)
-    TextView pinpaiTv;
-    @BindView(R.id.jump_pinpai_iv)
-    ImageView jumpPinpaiIv;
-    @BindView(R.id.leixing_tv)
-    TextView leixingTv;
-    @BindView(R.id.jump_leixing_iv)
-    ImageView jumpLeixingIv;
-    @BindView(R.id.xinghao_et)
-    TextView xinghaoEt;
-    @BindView(R.id.device_name_et)
-    EditText deviceNameEt;
-    @BindView(R.id.device_phone_et)
-    EditText devicePhoneEt;
-    @BindView(R.id.device_ctmc_et)
-    EditText deviceCtmcEt;
-    @BindView(R.id.device_adress_tv)
-    TextView deviceAdressTv;
-    @BindView(R.id.jump_adress_iv)
-    ImageView jumpAdressIv;
-    @BindView(R.id.location_iv)
-    ImageView locationIv;
-    @BindView(R.id.detail_adress_et)
-    EditText detailAdressEt;
-    @BindView(R.id.problem_device_et)
-    EditText problemDeviceEt;
-    @BindView(R.id.cancle_btn)
-    Button cancleBtn;
-    @BindView(R.id.query_btn)
-    Button queryBtn;
-    @BindView(R.id.radiogroup)
-    RadioGroup radiogroup;
+    @BindView(R.id.gridview) MyGridView gridview;@BindView(R.id.back_iv) ImageView backIv;
+    @BindView(R.id.content_tv) TextView contentTv;@BindView(R.id.device_txm_et) EditText deviceTxmEt;
+    @BindView(R.id.date_tv) TextView dateTv;@BindView(R.id.jump_date_iv) ImageView jumpDateIv;
+    @BindView(R.id.bxqn_rbt) RadioButton bxqnRbt;@BindView(R.id.bxqw_rbt) RadioButton bxqwRbt;
+    @BindView(R.id.pinpai_tv) TextView pinpaiTv;@BindView(R.id.jump_pinpai_iv) ImageView jumpPinpaiIv;
+    @BindView(R.id.leixing_tv) TextView leixingTv;@BindView(R.id.jump_leixing_iv) ImageView jumpLeixingIv;
+    @BindView(R.id.xinghao_et) TextView xinghaoEt;@BindView(R.id.device_name_et) EditText deviceNameEt;
+    @BindView(R.id.device_phone_et) EditText devicePhoneEt;@BindView(R.id.device_ctmc_et) EditText deviceCtmcEt;
+    @BindView(R.id.device_adress_tv) TextView deviceAdressTv;@BindView(R.id.jump_adress_iv) ImageView jumpAdressIv;
+    @BindView(R.id.location_iv) ImageView locationIv;@BindView(R.id.detail_adress_et) EditText detailAdressEt;
+    @BindView(R.id.problem_device_et) EditText problemDeviceEt;@BindView(R.id.cancle_btn) Button cancleBtn;
+    @BindView(R.id.query_btn) Button queryBtn;@BindView(R.id.radiogroup) RadioGroup radiogroup;
 
     private UltimateBar ultimateBar;
     private GridViewAddImgesAdpter addImgesAdpter;
     private CommonPopupWindow popupWindow;
     private List<LocalMedia> selectList = new ArrayList<>();
     List<LocalMedia> list = new ArrayList<>();
-    String temp = "1";//默认，保修期内“1”，保修期外“2”
+    String temp = "1";//默认，保修期内“1”，保修期外“0”
 
     private ArrayList<JsonBean> options1Items = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
@@ -138,12 +123,28 @@ public class DeviceDetailsActivity extends BaseActivity {
     private String brandNme, typeNme, brandId, typeId, tx, tips;
     private List<AreaListsBean.DataBean> province_list = new ArrayList<>();
     private OrderInfoBean orderInfoBean;
+    private List<String> srcList = new ArrayList<>();
+    private int size = 0;
 
     public static Intent newIntent(Context context, OrderInfoBean orderInfoBean) {
         Intent mIntent = new Intent(context, DeviceDetailsActivity.class);
         mIntent.putExtra("bean", orderInfoBean);
         return mIntent;
     }
+
+    Handler handler = new Handler() {
+        @SuppressLint("HandlerLeak")
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                size = size + 1;
+                requestUploadImg();
+            } else{
+                Logger.e(srcList.toString());
+                requestOrderAdd();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,7 +188,7 @@ public class DeviceDetailsActivity extends BaseActivity {
                         temp = "1";
                         break;
                     case R.id.bxqw_rbt:
-                        temp = "2";
+                        temp = "0";
                 }
             }
         });
@@ -286,9 +287,49 @@ public class DeviceDetailsActivity extends BaseActivity {
                 break;
             case R.id.query_btn://确认报修
                 if (validate()) {
-                    requestOrderAdd();
+                    requestUploadImg();
                 }
                 break;
+        }
+    }
+    private String src;
+    private void requestUploadImg() {
+        if (list.size() != 0){
+            int listSize = list.size();
+            if (size <= listSize - 1){
+                String path = list.get(size).getPath();
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,80,bos);
+                byte[] byteArray = bos.toByteArray();
+                byte[] encode = it.sauronsoftware.base64.Base64.encode(byteArray);
+                String url = new String(encode);
+                Map<String, String> map = new HashMap<>();
+                map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+                map.put("token",SPUtils.getInstance().getString("token",""));
+                map.put("id",SPUtils.getInstance().getString("id",""));
+                map.put("img","data:image/jpg;base64," + url);
+                JSONObject values = new JSONObject(map);
+                HttpParams params = new HttpParams();
+                params.put("data",values.toString());
+
+                OkGo.<UpLoadImgBean>post(Urls.uploads_img)
+                        .tag(this)
+                        .params(params)
+                        .execute(new JsonCallback<UpLoadImgBean>(UpLoadImgBean.class) {
+                            @Override
+                            public void onSuccess(Response<UpLoadImgBean> response) {
+                                UpLoadImgBean upLoadImgBean = response.body();
+                                if (TextUtils.equals("1",upLoadImgBean.getStatus())){
+                                    src = upLoadImgBean.getData().getSrc();
+                                    srcList.add(src);
+                                    handler.sendEmptyMessage(1);
+                                }
+                            }
+                        });
+            }else {
+                handler.sendEmptyMessage(2);
+            }
         }
     }
 
@@ -375,7 +416,45 @@ public class DeviceDetailsActivity extends BaseActivity {
      * 确认报修
      */
     private void requestOrderAdd() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("name",deviceNameEt.getText().toString());
+        map.put("company",deviceCtmcEt.getText().toString());
+        map.put("mobile",devicePhoneEt.getText().toString());
+        //TODO 省市区ID 记得更换
+        map.put("sheng_id","2");
+        map.put("shi_id","33");
+        map.put("qu_id","378");
+        map.put("address",detailAdressEt.getText().toString());
+        map.put("bd_lat",SPUtils.getInstance().getString("latitude",""));
+        map.put("bd_lng",SPUtils.getInstance().getString("longitude",""));
+        map.put("code",deviceTxmEt.getText().toString());
+        map.put("date",dateTv.getText().toString());
+        map.put("is_warranty",temp);
+        map.put("brand_id",brandId);
+        map.put("type_id",typeId);
+        map.put("model",xinghaoEt.getText().toString());
+        map.put("desc",problemDeviceEt.getText().toString());
 
+        String imgs1 = srcList.toString().substring(1, srcList.toString().length() - 1);
+        Logger.e(imgs1);
+
+        map.put("images",imgs1);
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.order_add)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+
+                    }
+                });
     }
 
     private void showPopup() {
@@ -690,22 +769,22 @@ public class DeviceDetailsActivity extends BaseActivity {
     /**
      * 解析数据
      */
-    private void initJsonData1() {
-        /**
+    /*private void initJsonData1() {
+        *//**
          * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
          * 关键逻辑在于循环体
          *
-         * */
+         * *//*
         String JsonData = new GetJsonDataUtil().getJson(this, "citys.json");//获取assets目录下的json文件数据
 
         ArrayList<CitysBean> jsonBean = parseData1(JsonData);//用Gson 转成实体
 
-        /**
+        *//**
          * 添加省份数据
          *
          * 注意：如果是添加的JavaBean实体，则实体类需要实现 IPickerViewData 接口，
          * PickerView会通过getPickerViewText方法获取字符串显示出来。
-         */
+         *//*
         options1Items1 = jsonBean;
 
         for (int i = 0; i < jsonBean.size(); i++) {//遍历省份
@@ -729,20 +808,20 @@ public class DeviceDetailsActivity extends BaseActivity {
                 Province_AreaList.addAll(CityList);//添加该省所有地区数据
             }
 
-            /**
+            *//**
              * 添加城市数据
-             */
+             *//*
             options2Items1.addAll(CityList);
 
-            /**
+            *//**
              * 添加地区数据
-             */
+             *//*
             options3Items1.addAll(CityList);
         }
 
         mHandler.sendEmptyMessage(MSG_LOAD_SUCCESS);
 
-    }
+    }*/
 
     public ArrayList<JsonBean> parseData(String result) {//Gson 解析
         ArrayList<JsonBean> detail = new ArrayList<>();
@@ -760,7 +839,7 @@ public class DeviceDetailsActivity extends BaseActivity {
         return detail;
     }
 
-    public ArrayList<CitysBean> parseData1(String result) {//Gson 解析
+    /*public ArrayList<CitysBean> parseData1(String result) {//Gson 解析
         ArrayList<CitysBean> detail = new ArrayList<>();
         try {
             JSONArray data = new JSONArray(result);
@@ -774,7 +853,7 @@ public class DeviceDetailsActivity extends BaseActivity {
             mHandler.sendEmptyMessage(MSG_LOAD_FAILED);
         }
         return detail;
-    }
+    }*/
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {

@@ -92,7 +92,6 @@ public class MyReceiver extends BroadcastReceiver {
 					Logger.i("This message has no Extra data");
 					continue;
 				}
-
 				try {
 					JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
 					Iterator<String> it =  json.keys();

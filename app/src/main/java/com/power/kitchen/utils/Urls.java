@@ -28,6 +28,8 @@ public class Urls {
     public static final String comment_add = api_url + "/Api/UserComment/comment_add.html";
     //评价列表
     public static final String comment_lists = api_url + "/Api/UserComment/comment_lists.html";
+    //查询评价详情
+    public static final String comment_info = api_url + "/Api/UserComment/comment_info.html";
     //普通用户查询个人信息
     public static final String user_info = api_url + "/Api/User/user_info.html";
     //普通用户修改个人资料
@@ -36,6 +38,10 @@ public class Urls {
     public static final String area_list = api_url + "/Api/UserAdd/area_lists.html";
     //添加用户地址
     public static final String area_add = api_url + "/Api/UserAdd/area_add.html";
+    //修改用户地址
+    public static final String area_edit = api_url + "/Api/UserAdd/area_edit.html";
+    //删除用户地址
+    public static final String area_del = api_url + "/Api/UserAdd/area_del.html";
     //订单通知
     public static final String notice_order_list = api_url + "/Api/UserNotice/notice_order_lists.html";
     //订单通知 详情
@@ -56,11 +62,12 @@ public class Urls {
     public static final String order_close = api_url + "/Api/UserOrder/order_close.html";
     //发布报修订单
     public static final String order_add = api_url + "/Api/UserOrder/order_add.html";
+    //报修上传图片接口
+    public static final String uploads_img = api_url + "/Api/Oauth/uploads_img.html";
     //省市区地区子查询接口
     public static final String area_lists = api_url + "/Api/Oauth/area_lists.html";
-    //
+    //所有地区
     public static final String area_all_lists = api_url + "/Api/Oauth/area_all_lists.html";
-
     //普通用户修改密码
     public static final String edit_password = api_url + "/Api/User/edit_password.html";
     //普通用户找回密码

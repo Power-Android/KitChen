@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,16 +14,29 @@ import android.widget.Toast;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.JsonBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.utils.GetJsonDataUtil;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.Urls;
 import com.suke.widget.SwitchButton;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +53,7 @@ public class AddAdressActivity extends BaseActivity {
     @BindView(R.id.location_iv) ImageView locationIv;
     @BindView(R.id.detailadress_tv) EditText detailadressTv;
     @BindView(R.id.moren_switchBtn) SwitchButton morenSwitchBtn;
+    @BindView(R.id.gsmc_tv) EditText gsmcTv;
 
     private UltimateBar ultimateBar;
     private ArrayList<JsonBean> options1Items = new ArrayList<>();
@@ -51,6 +66,8 @@ public class AddAdressActivity extends BaseActivity {
 
     private boolean isLoaded = false;
     private OptionsPickerView pvOptions;
+    private int temp = 0;
+    private String tips;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +92,19 @@ public class AddAdressActivity extends BaseActivity {
         titleRightTv.setOnClickListener(this);
         adressIv.setOnClickListener(this);
         locationIv.setOnClickListener(this);
+        setSwitchBtn();
+    }
+
+    private void setSwitchBtn() {
+        morenSwitchBtn.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                if (morenSwitchBtn.isChecked()){
+                    temp = 1;
+                    Logger.e(temp+"");
+                }
+            }
+        });
     }
 
     @Override
@@ -85,15 +115,104 @@ public class AddAdressActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.title_right_tv:
-                finish();
+                if (validate()){
+                    requestAreaAdd();
+                }
                 break;
             case R.id.adress_iv:
                 ShowPickerView();
                 break;
             case R.id.location_iv:
+                ShowPickerView();
                 break;
         }
     }
+
+    private void requestAreaAdd() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("name",usernameTv.getText().toString());
+        map.put("company_name",gsmcTv.getText().toString());
+        map.put("tel",telnumTv.getText().toString());
+        map.put("sheng_id","2");
+        map.put("shi_id","33");
+        map.put("qu_id","378");
+        map.put("address",detailadressTv.getText().toString());
+        map.put("is_def",temp + "");
+        Logger.e(temp+"--------");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.area_add)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+                        ResultBean resultBean = response.body();
+                        if (!TextUtils.equals("1",resultBean.getStatus())){
+                            tips = resultBean.getInfo();
+                            showTipsValidate(tips);
+                        }else {
+                            finish();
+                        }
+                    }
+                });
+    }
+
+    private boolean validate() {
+        tips = "";
+        if (TextUtils.isEmpty(usernameTv.getText().toString())) {
+            tips = "请填写姓名！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(telnumTv.getText().toString())) {
+            tips = "请填写联系电话！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (telnumTv.getText().toString().length() != 11){
+            tips = "请输入正确的手机号！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(gsmcTv.getText().toString())){
+            tips = "请填写公司名称！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (TextUtils.isEmpty(detailadressTv.getText().toString())){
+            tips = "请填写详细地址！";
+            showTipsValidate(tips);
+            return false;
+        }
+        return true;
+    }
+
+    private void showTipsValidate(String tips) {
+        new NormalAlertDialog.Builder(this).setHeight(0.23f)  //屏幕高度*0.23
+                .setWidth(0.65f)  //屏幕宽度*0.65
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText(tips)
+                .setContentTextColor(R.color.text_color02)
+                .setSingleMode(true).setSingleButtonText("确定")
+                .setSingleButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setSingleListener(new DialogInterface.OnSingleClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickSingleButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
+    }
+
 
     /**
      * 地址选择器

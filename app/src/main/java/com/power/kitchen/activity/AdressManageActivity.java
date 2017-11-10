@@ -21,6 +21,8 @@ import com.power.kitchen.adapter.AdressManageAdapter;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.AdressManageBean;
 import com.power.kitchen.bean.AreaListBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
 import com.power.kitchen.callback.JsonCallback;
@@ -29,6 +31,8 @@ import com.power.kitchen.callback.TimeoutCallback;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
@@ -41,7 +45,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AdressManageActivity extends BaseActivity {
+public class AdressManageActivity extends BaseActivity implements AdressManageAdapter.onItemDeleteListener{
 
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
@@ -52,6 +56,7 @@ public class AdressManageActivity extends BaseActivity {
     private UltimateBar ultimateBar;
     List<AreaListBean.DataBean.ListsBean> list = new ArrayList<>();
     private LoadService loadService;
+    private AdressManageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,11 @@ public class AdressManageActivity extends BaseActivity {
         titleRightTv.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
         titleRightTv.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         requestAreaList();
     }
 
@@ -121,9 +131,10 @@ public class AdressManageActivity extends BaseActivity {
                             if (TextUtils.equals("0",list.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                AdressManageAdapter adapter = new AdressManageAdapter(AdressManageActivity.this,list);
+                                adapter = new AdressManageAdapter(AdressManageActivity.this,list);
                                 adressList.setAdapter(adapter);
                                 loadService.showSuccess();
+                                adapter.setOnItemDeleteClickListener(AdressManageActivity.this);
                             }
                         }else {
                             TUtils.showShort(getApplicationContext(),areaListBean.getInfo());
@@ -147,4 +158,66 @@ public class AdressManageActivity extends BaseActivity {
 
         }
     }
+    private int position;
+    @Override
+    public void onDeleteClick(int position) {
+        this.position = position;
+        showTips();
+    }
+
+    private void showTips() {
+        new NormalAlertDialog.Builder(this)
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText("确定要删除吗？")
+                .setContentTextColor(R.color.text_color02)
+                .setLeftButtonText("取消")
+                .setLeftButtonTextColor(R.color.text_color01)
+                .setRightButtonText("确定")
+                .setRightButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setOnclickListener(new DialogInterface.OnLeftAndRightClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickLeftButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void clickRightButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                        requestAreaDel();
+                    }
+                })
+                .build()
+                .show();
+    }
+
+    private void requestAreaDel() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("area_id",list.get(position).getArea_id());
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<ResultBean>post(Urls.area_del)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
+                    @Override
+                    public void onSuccess(Response<ResultBean> response) {
+                        ResultBean resultBean = response.body();
+                        if (TextUtils.equals("1",resultBean.getStatus())){
+                            onResume();
+                            TUtils.showShort(getApplicationContext(),"地址删除成功！");
+                        }else {
+                            TUtils.showShort(getApplicationContext(),resultBean.getInfo());
+                        }
+                    }
+                });
+    }
+
+
 }

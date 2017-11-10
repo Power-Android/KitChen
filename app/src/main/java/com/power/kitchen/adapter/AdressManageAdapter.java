@@ -11,12 +11,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.AdressBianJiActivity;
 import com.power.kitchen.bean.AdressManageBean;
 import com.power.kitchen.bean.AreaListBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.JsonCallback;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,25 +90,42 @@ public class AdressManageAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(context,AdressBianJiActivity.class);
+                intent.putExtra("area_id",list.get(position).getArea_id());
                 intent.putExtra("name",list.get(position).getName());
                 intent.putExtra("phone",list.get(position).getTel());
+                intent.putExtra("company_name",list.get(position).getCompany_name());
                 intent.putExtra("sheng_name",list.get(position).getSheng_name());
+                intent.putExtra("sheng_id",list.get(position).getSheng_id());
                 intent.putExtra("shi_name",list.get(position).getShi_name());
+                intent.putExtra("shi_id",list.get(position).getShi_id());
                 intent.putExtra("qu_name",list.get(position).getQu_name());
+                intent.putExtra("qu_id",list.get(position).getQu_id());
                 intent.putExtra("adress",list.get(position).getAddress());
                 intent.putExtra("is_def",list.get(position).getIs_def());
                 context.startActivity(intent);
             }
         });
-
         viewHolder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mOnItemDeleteListener.onDeleteClick(position);
             }
         });
 
         return convertView;
+    }
+
+    /**
+     * 删除按钮的监听接口
+     */
+    public interface onItemDeleteListener {
+        void onDeleteClick(int position);
+    }
+
+    private onItemDeleteListener mOnItemDeleteListener;
+
+    public void setOnItemDeleteClickListener(onItemDeleteListener mOnItemDeleteListener) {
+        this.mOnItemDeleteListener = mOnItemDeleteListener;
     }
 
     class ViewHolder {

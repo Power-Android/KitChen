@@ -83,40 +83,16 @@ public class SettingActivity extends BaseActivity {
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
         initView();
-//        requestAdress();
-    }
-
-    private void requestAdress() {
-        Map<String, String> map = new HashMap<>();
-        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
-        map.put("token",SPUtils.getInstance().getString("token",""));
-        JSONObject values = new JSONObject(map);
-        HttpParams params = new HttpParams();
-        params.put("data",values.toString());
-
-        OkGo.<AreaAllListsBean>post("http://shangchu.ip189.enet360.com/Api/Oauth/area_all_lists.html")
-                .tag(this)
-                .params(params)
-                .execute(new JsonCallback<AreaAllListsBean>(AreaAllListsBean.class) {
-                    @Override
-                    public void onSuccess(Response<AreaAllListsBean> response) {
-                        Logger.e(response.body().toString());
-                    }
-                });
     }
 
     private void initView() {
         contentTv.setText("个人资料");
         initJsonData();//解析json数据
         true_name = getIntent().getStringExtra("true_name");
-        String sheng_name = getIntent().getStringExtra("sheng_name");
-        String shi_name = getIntent().getStringExtra("shi_name");
-        String qu_name = getIntent().getStringExtra("qu_name");
         String mobile = SPUtils.getInstance().getString("mobile", "");
 
         usernameTv.setText(true_name);
         telnumTv.setText(mobile);
-        adressTv.setText(sheng_name+ " "+shi_name+ " "+qu_name);
 
         backIv.setOnClickListener(this);
         usernameRl.setOnClickListener(this);

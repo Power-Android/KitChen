@@ -1,5 +1,6 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
@@ -18,11 +20,14 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.AlreadyRepaireDetailActivity;
 import com.power.kitchen.adapter.MyFooter;
 import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.adapter.SatisfactionAdapter;
+import com.power.kitchen.bean.CommentInfoBean;
 import com.power.kitchen.bean.CommentListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
 import com.power.kitchen.callback.JsonCallback;
@@ -48,7 +53,7 @@ import butterknife.Unbinder;
  * 一般
  */
 
-public class CommonlyFragment extends Fragment implements SpringView.OnFreshListener{
+public class CommonlyFragment extends Fragment implements SpringView.OnFreshListener,AdapterView.OnItemClickListener{
 
     @BindView(R.id.commonly_listView)
     ListView commonlyListView;
@@ -125,6 +130,8 @@ public class CommonlyFragment extends Fragment implements SpringView.OnFreshList
                                 SatisfactionAdapter adapter = new SatisfactionAdapter(getActivity(),list);
                                 commonlyListView.setAdapter(adapter);
                                 loadService.showSuccess();
+                                commonlyListView.setOnItemClickListener(CommonlyFragment.this);
+
                             }
                         }else {
                             TUtils.showShort(getActivity().getApplicationContext(),commentListBean.getInfo());
@@ -158,5 +165,36 @@ public class CommonlyFragment extends Fragment implements SpringView.OnFreshList
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String coment_id = list.get(position).getComent_id();
+        requestCommentInfo(coment_id);
+    }
+
+    private void requestCommentInfo(String coment_id) {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("coment_id",coment_id);
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<CommentInfoBean>post(Urls.comment_info)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<CommentInfoBean>(getActivity(),CommentInfoBean.class) {
+                    @Override
+                    public void onSuccess(Response<CommentInfoBean> response) {
+                        CommentInfoBean commentInfoBean = response.body();
+                        String oid = commentInfoBean.getData().getOid();
+                        Intent intent = new Intent(getActivity(), AlreadyRepaireDetailActivity.class);
+                        intent.putExtra("comment_oid",oid);
+                        startActivity(intent);
+                    }
+                });
     }
 }

@@ -117,11 +117,16 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
         weiwanchengView02.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
-        oid = getIntent().getStringExtra("oid");
-        requestOrderInfo();
+        String commentOid = getIntent().getStringExtra("comment_oid");
+        if (!TextUtils.isEmpty(commentOid)){
+            requestOrderInfo(commentOid);
+        }else {
+            oid = getIntent().getStringExtra("oid");
+            requestOrderInfo(oid);
+        }
     }
 
-    private void requestOrderInfo() {
+    private void requestOrderInfo(String oid) {
         Map<String, String> map = new HashMap<>();
         map.put("app_id", SPUtils.getInstance().getString("app_id", ""));
         map.put("token", SPUtils.getInstance().getString("token", ""));
