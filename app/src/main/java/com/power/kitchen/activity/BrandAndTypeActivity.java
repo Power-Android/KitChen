@@ -251,10 +251,17 @@ public class BrandAndTypeActivity extends BaseActivity {
                 }
                 if (rightList.size() == 0){
                     type_name = "";
+                }else {
+                    if (TextUtils.isEmpty(type_name)){
+                        type_name = rightList.get(0).getName();
+                        type_id = rightList.get(0).getId();
+                    }
                 }
+
                 Intent intent = new Intent();
                 intent.putExtra("brandName",brand_name);
                 intent.putExtra("typeName",type_name);
+                Logger.e(type_name);
                 intent.putExtra("brandId",brand_id);
                 intent.putExtra("typeId",type_id);
                 setResult(101,intent);

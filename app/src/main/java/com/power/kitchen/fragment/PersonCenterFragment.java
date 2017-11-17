@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -74,6 +75,8 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     Unbinder unbinder;
     private String cutPath,url,true_name,sheng_name,shi_name,qu_name;
     private Intent intent;
+    private AudioManager audio;// 声音
+
 
     @Nullable
     @Override
@@ -88,6 +91,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
         unbinder = ButterKnife.bind(this, view);
 
         String face = SPUtils.getInstance().getString("face", "");
+        Logger.e(face);
         RequestOptions options = new RequestOptions();
         options.diskCacheStrategy( DiskCacheStrategy.NONE )//禁用磁盘缓存
                 .skipMemoryCache( true );//跳过内存缓存
@@ -102,6 +106,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
+        requestUserInfo();
     }
 
     private void requestUserInfo() {
@@ -122,8 +127,11 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
                         UserInfoBean userInfoBean = response.body();
                         true_name = userInfoBean.getData().getTrue_name();
                         myNameTv.setText(true_name);
+                        sheng_name = userInfoBean.getData().getSheng_name();
+                        shi_name = userInfoBean.getData().getShi_name();
+                        qu_name = userInfoBean.getData().getQu_name();
                         SPUtils.getInstance().putString("true_name",true_name);
-                        myContentTv.setText(userInfoBean.getData().getMobile());
+                        myContentTv.setText(sheng_name+" "+shi_name+" "+qu_name);
                     }
                 });
     }
@@ -132,16 +140,76 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
         voiceSwitchBtn.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                //TODO do job
+                if (isChecked){
+                    if (zdSwitchBtn.isChecked()){
+                        zhenandvoice();
+                    }else {
+                        voice();
+                    }
+                    SPUtils.getInstance().putBoolean("sound",true);
+                }else {
+                    if (zdSwitchBtn.isChecked()){
+                        zhen();
+                    }else {
+                        nozhenandvoice();
+                    }
+                    SPUtils.getInstance().putBoolean("sound",false);
+                }
             }
         });
         zdSwitchBtn.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                //TODO do job
+                if (isChecked){
+                    if (voiceSwitchBtn.isChecked()){
+                        zhenandvoice();
+                    }else {
+                        zhen();
+                    }
+                    SPUtils.getInstance().putBoolean("zhendong",true);
+                }else {
+                    if (voiceSwitchBtn.isChecked()){
+                        voice();
+                    }else {
+                        nozhenandvoice();
+                    }
+                    SPUtils.getInstance().putBoolean("zhendong",false);
+                }
             }
         });
 
+    }
+
+    private void voice() {
+        audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER,
+                AudioManager.VIBRATE_SETTING_OFF);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                AudioManager.VIBRATE_SETTING_OFF);
+    }
+
+    private void zhenandvoice() {
+        audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER,
+                AudioManager.VIBRATE_SETTING_ON);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                AudioManager.VIBRATE_SETTING_ON);
+    }
+
+    private void zhen() {
+        audio.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER,
+                AudioManager.VIBRATE_SETTING_ON);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                AudioManager.VIBRATE_SETTING_ON);
+    }
+
+    private void nozhenandvoice() {
+        audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER,
+                AudioManager.VIBRATE_SETTING_OFF);
+        audio.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION,
+                AudioManager.VIBRATE_SETTING_OFF);
     }
 
     private void initListener() {
@@ -172,6 +240,9 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
             case R.id.into_set_iv://进入设置
                 intent = new Intent(getActivity(),SettingActivity.class);
                 intent.putExtra("true_name",true_name);
+                intent.putExtra("sheng_name",sheng_name);
+                intent.putExtra("shi_name",shi_name);
+                intent.putExtra("qu_name",qu_name);
                 startActivity(intent);
                 break;
             case R.id.my_msg_iv://消息页面

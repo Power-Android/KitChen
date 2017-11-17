@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gary_background">
+    android:background="@color/gary_background1">
     <RelativeLayout
         android:id="@+id/layout_01"
         android:layout_width="match_parent"
@@ -30,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/gary_background"
         android:layout_below="@+id/layout_01">
         <RelativeLayout
             android:layout_width="match_parent"

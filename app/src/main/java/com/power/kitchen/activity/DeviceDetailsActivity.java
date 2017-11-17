@@ -15,12 +15,16 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +43,10 @@ import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
+import com.power.kitchen.adapter.GridViewAdapter;
 import com.power.kitchen.adapter.GridViewAddImgesAdpter;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.bean.Area;
 import com.power.kitchen.bean.AreaListsBean;
 import com.power.kitchen.bean.CitysBean;
 import com.power.kitchen.bean.CitysJsonBean;
@@ -54,6 +60,7 @@ import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.CommonPopupWindow;
 import com.power.kitchen.utils.GetJsonDataUtil;
 import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.SelectedAreaPop;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.TimeUtils;
 import com.power.kitchen.utils.Urls;
@@ -62,12 +69,14 @@ import com.wevey.selector.dialog.DialogInterface;
 import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,17 +94,17 @@ import butterknife.ButterKnife;
  * 2017年10月18日 13:17:32
  */
 
-public class DeviceDetailsActivity extends BaseActivity {
+public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaPop.AreaClickListener {
 
     @BindView(R.id.gridview) MyGridView gridview;@BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;@BindView(R.id.device_txm_et) EditText deviceTxmEt;
-    @BindView(R.id.date_tv) TextView dateTv;@BindView(R.id.jump_date_iv) ImageView jumpDateIv;
+    @BindView(R.id.date_tv) TextView dateTv;@BindView(R.id.jump_date_iv) RelativeLayout jumpDateIv;
     @BindView(R.id.bxqn_rbt) RadioButton bxqnRbt;@BindView(R.id.bxqw_rbt) RadioButton bxqwRbt;
-    @BindView(R.id.pinpai_tv) TextView pinpaiTv;@BindView(R.id.jump_pinpai_iv) ImageView jumpPinpaiIv;
-    @BindView(R.id.leixing_tv) TextView leixingTv;@BindView(R.id.jump_leixing_iv) ImageView jumpLeixingIv;
+    @BindView(R.id.pinpai_tv) TextView pinpaiTv;@BindView(R.id.jump_pinpai_iv) RelativeLayout jumpPinpaiIv;
+    @BindView(R.id.leixing_tv) TextView leixingTv;@BindView(R.id.jump_leixing_iv) RelativeLayout jumpLeixingIv;
     @BindView(R.id.xinghao_et) TextView xinghaoEt;@BindView(R.id.device_name_et) EditText deviceNameEt;
     @BindView(R.id.device_phone_et) EditText devicePhoneEt;@BindView(R.id.device_ctmc_et) EditText deviceCtmcEt;
-    @BindView(R.id.device_adress_tv) TextView deviceAdressTv;@BindView(R.id.jump_adress_iv) ImageView jumpAdressIv;
+    @BindView(R.id.device_adress_tv) TextView deviceAdressTv;@BindView(R.id.jump_adress_iv) RelativeLayout jumpAdressIv;
     @BindView(R.id.location_iv) ImageView locationIv;@BindView(R.id.detail_adress_et) EditText detailAdressEt;
     @BindView(R.id.problem_device_et) EditText problemDeviceEt;@BindView(R.id.cancle_btn) Button cancleBtn;
     @BindView(R.id.query_btn) Button queryBtn;@BindView(R.id.radiogroup) RadioGroup radiogroup;
@@ -105,22 +114,17 @@ public class DeviceDetailsActivity extends BaseActivity {
     private CommonPopupWindow popupWindow;
     private List<LocalMedia> selectList = new ArrayList<>();
     List<LocalMedia> list = new ArrayList<>();
+    List<LocalMedia> list1 = new ArrayList<>();
+    List<LocalMedia> list2 = new ArrayList<>();
+
+
     String temp = "1";//默认，保修期内“1”，保修期外“0”
+    private SelectedAreaPop selectedAreaPop;
 
-    private ArrayList<JsonBean> options1Items = new ArrayList<>();
-    private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
-    private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
-    private Thread thread;
-    private static final int MSG_LOAD_DATA = 0x0001;
-    private static final int MSG_LOAD_SUCCESS = 0x0002;
-    private static final int MSG_LOAD_FAILED = 0x0003;
-
-    private boolean isLoaded = false;
-    private OptionsPickerView pvOptions;
     private TimePickerView pvCustomLunar;
     private ArrayList<String> listExtra;//拍照报修传过来的图片路径
     private Intent intent;
-    private String brandNme, typeNme, brandId, typeId, tx, tips;
+    private String brandNme, typeNme, brandId, typeId = "", tx, tips,sheng_id="",shi_id="",qu_id="";
     private List<AreaListsBean.DataBean> province_list = new ArrayList<>();
     private OrderInfoBean orderInfoBean;
     private List<String> srcList = new ArrayList<>();
@@ -140,7 +144,6 @@ public class DeviceDetailsActivity extends BaseActivity {
                 size = size + 1;
                 requestUploadImg();
             } else{
-                Logger.e(srcList.toString());
                 requestOrderAdd();
             }
         }
@@ -161,10 +164,9 @@ public class DeviceDetailsActivity extends BaseActivity {
     }
 
     private void initView() {
-        contentTv.setText("设备详情");
+        contentTv.setText("报修详情");
         initListener();
         getIntentData();//上级拍照返回来的数据----图片的path路径
-        initJsonData();//解析json数据----地址选择器
         initLunarPicker();//初始化时间选择器
         /**
          * 添加照片adapter
@@ -210,20 +212,45 @@ public class DeviceDetailsActivity extends BaseActivity {
                 bxqwRbt.setChecked(true);
             }
             pinpaiTv.setText(orderInfoBean.getData().getInfo().getGoods_brand_name());
+            brandId = orderInfoBean.getData().getInfo().getGoods_brand();
             leixingTv.setText(orderInfoBean.getData().getInfo().getGoods_type_name());
             xinghaoEt.setText(orderInfoBean.getData().getInfo().getGoods_model());
             deviceNameEt.setText(orderInfoBean.getData().getInfo().getContact_name());
             devicePhoneEt.setText(orderInfoBean.getData().getInfo().getContact_mobile());
-            contentTv.setText(orderInfoBean.getData().getInfo().getContact_company());
+            deviceCtmcEt.setText(orderInfoBean.getData().getInfo().getContact_company());
             deviceAdressTv.setText(orderInfoBean.getData().getInfo().getContact_sheng_name() + " " +
                     orderInfoBean.getData().getInfo().getContact_shi_name() + " " +
                     orderInfoBean.getData().getInfo().getContact_qu_name());
-            String contact_sheng_id = orderInfoBean.getData().getInfo().getContact_sheng_id();
-            String contact_shi_id = orderInfoBean.getData().getInfo().getContact_shi_id();
-            String contact_qu_id = orderInfoBean.getData().getInfo().getContact_qu_id();
+            sheng_id = orderInfoBean.getData().getInfo().getContact_sheng_id();
+            shi_id = orderInfoBean.getData().getInfo().getContact_shi_id();
+            qu_id = orderInfoBean.getData().getInfo().getContact_qu_id();
             detailAdressEt.setText(orderInfoBean.getData().getInfo().getContact_address());
             problemDeviceEt.setText(orderInfoBean.getData().getInfo().getGoods_describe());
             String goods_images = orderInfoBean.getData().getInfo().getGoods_images();
+            try {
+                JSONArray good_images = new JSONArray(goods_images);
+                srcList = new ArrayList<String>();
+                for (int i = 0; i < good_images.length(); i++) {
+                    String s = (String) good_images.get(i);
+                    srcList.add(s);
+                }
+                Logger.e(srcList.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//            String imgs = goods_images.toString().substring(1, goods_images.toString().length() - 1);
+//            srcList = Arrays.asList(imgs.split(","));
+
+            for (int i = 0; i < srcList.size(); i++) {
+                LocalMedia localMedia = new LocalMedia();
+                localMedia.setPath(srcList.get(i));
+                Logger.e(srcList.get(i));
+                list1.add(localMedia);
+            }
+            list.addAll(list1);
+            addImgesAdpter = new GridViewAddImgesAdpter(list, this);
+            gridview.setAdapter(addImgesAdpter);
             NotRepaireDetailActivity.flag = false;
             CancleRepaireDetailActivity.flag = false;
         }
@@ -255,7 +282,44 @@ public class DeviceDetailsActivity extends BaseActivity {
         locationIv.setOnClickListener(this);
         cancleBtn.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
+        requestAreaProvice();
     }
+
+    private void requestAreaProvice() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("area_id","1");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<CitysBean>post(Urls.area_lists)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<CitysBean>(CitysBean.class) {
+                    @Override
+                    public void onSuccess(Response<CitysBean> response) {
+                        CitysBean citysBean = response.body();
+                        if (TextUtils.equals("1",citysBean.getStatus())){
+                            List<Area> areas = new ArrayList<Area>();
+                            for (int i = 0; i < citysBean.getData().size(); i++) {
+                                Area area = new Area();
+                                area.area_id = citysBean.getData().get(i).getArea_id();
+                                area.name = citysBean.getData().get(i).getName();
+                                area.up_id = citysBean.getData().get(i).getUp_id();
+                                areas.add(area);
+                            }
+
+                            selectedAreaPop = new SelectedAreaPop(DeviceDetailsActivity.this, R.layout.selected_area_pop,areas);
+                            selectedAreaPop.setOnAreaClickListener(DeviceDetailsActivity.this);
+                            selectedAreaPop.setOnDismissListener(onDismissListener);
+                        }
+                    }
+                });
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -273,64 +337,107 @@ public class DeviceDetailsActivity extends BaseActivity {
                 startActivityForResult(intent, 101);
                 break;
             case R.id.jump_leixing_iv://选择类型
+                intent = new Intent();
                 intent.setClass(DeviceDetailsActivity.this, BrandAndTypeActivity.class);
                 startActivityForResult(intent, 101);
                 break;
             case R.id.jump_adress_iv://选择所在区域
-                ShowPickerView();
+                if(selectedAreaPop!=null){
+                    setShowPop(selectedAreaPop, jumpAdressIv);
+                }
                 break;
             case R.id.location_iv://定位
-                ShowPickerView();
+                if(selectedAreaPop!=null){
+                    setShowPop(selectedAreaPop, locationIv);
+                }
                 break;
             case R.id.cancle_btn://取消报修
                 showTips();
                 break;
             case R.id.query_btn://确认报修
                 if (validate()) {
-                    requestUploadImg();
+                    if (list2.size() != 0){
+                        requestUploadImg();
+                    }else {
+                        requestOrderAdd();
+                    }
                 }
                 break;
         }
     }
+
+    public void setShowPop(PopupWindow popupWindow, View view){
+        if(popupWindow!=null&&popupWindow.isShowing()){
+            popupWindow.dismiss();
+        }else{
+            setWindowTranslucence(0.3);
+            popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+        }
+    }
+
+    //设置Window窗口的透明度
+    public void setWindowTranslucence(double d){
+
+        Window window = getWindow();
+
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.alpha=(float) d;
+        window.setAttributes(attributes);
+
+    }
+
+    private PopupWindow.OnDismissListener onDismissListener = new PopupWindow.OnDismissListener() {
+
+        @Override
+        public void onDismiss() {
+            // TODO Auto-generated method stub
+            setWindowTranslucence(1.0f);
+        }
+    };
+
     private String src;
     private void requestUploadImg() {
-        if (list.size() != 0){
-            int listSize = list.size();
-            if (size <= listSize - 1){
-                String path = list.get(size).getPath();
-                Bitmap bitmap = BitmapFactory.decodeFile(path);
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG,80,bos);
-                byte[] byteArray = bos.toByteArray();
-                byte[] encode = it.sauronsoftware.base64.Base64.encode(byteArray);
-                String url = new String(encode);
-                Map<String, String> map = new HashMap<>();
-                map.put("app_id",SPUtils.getInstance().getString("app_id",""));
-                map.put("token",SPUtils.getInstance().getString("token",""));
-                map.put("id",SPUtils.getInstance().getString("id",""));
-                map.put("img","data:image/jpg;base64," + url);
-                JSONObject values = new JSONObject(map);
-                HttpParams params = new HttpParams();
-                params.put("data",values.toString());
+//        if (list1.size() == 0){
+            if (list2.size() != 0){
+                int listSize = list2.size();
+                if (size <= listSize - 1){
+                    String path = list2.get(size).getPath();
+                    Logger.e(path);
+                    Bitmap bitmap = BitmapFactory.decodeFile(path);
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,80,bos);
+                    byte[] byteArray = bos.toByteArray();
+                    byte[] encode = it.sauronsoftware.base64.Base64.encode(byteArray);
+                    String url = new String(encode);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+                    map.put("token",SPUtils.getInstance().getString("token",""));
+                    map.put("id",SPUtils.getInstance().getString("id",""));
+                    map.put("img","data:image/jpg;base64," + url);
+                    JSONObject values = new JSONObject(map);
+                    HttpParams params = new HttpParams();
+                    params.put("data",values.toString());
 
-                OkGo.<UpLoadImgBean>post(Urls.uploads_img)
-                        .tag(this)
-                        .params(params)
-                        .execute(new JsonCallback<UpLoadImgBean>(UpLoadImgBean.class) {
-                            @Override
-                            public void onSuccess(Response<UpLoadImgBean> response) {
-                                UpLoadImgBean upLoadImgBean = response.body();
-                                if (TextUtils.equals("1",upLoadImgBean.getStatus())){
-                                    src = upLoadImgBean.getData().getSrc();
-                                    srcList.add(src);
-                                    handler.sendEmptyMessage(1);
+                    OkGo.<UpLoadImgBean>post(Urls.uploads_img)
+                            .tag(this)
+                            .params(params)
+                            .execute(new JsonCallback<UpLoadImgBean>(UpLoadImgBean.class) {
+                                @Override
+                                public void onSuccess(Response<UpLoadImgBean> response) {
+                                    UpLoadImgBean upLoadImgBean = response.body();
+                                    if (TextUtils.equals("1",upLoadImgBean.getStatus())){
+                                        src = upLoadImgBean.getData().getSrc();
+                                        srcList.add(src);
+                                        handler.sendEmptyMessage(1);
+                                    }
                                 }
-                            }
-                        });
-            }else {
-                handler.sendEmptyMessage(2);
+                            });
+                }else {
+                    handler.sendEmptyMessage(2);
+                }
             }
-        }
+//        }
+
     }
 
     private boolean validate() {
@@ -352,7 +459,7 @@ public class DeviceDetailsActivity extends BaseActivity {
             showTipsValidate(tips);
             return false;
         }
-        if (TextUtils.isEmpty(tx)) {
+        if (TextUtils.isEmpty(deviceAdressTv.getText().toString())) {
             tips = "请填写所在区域";
             showTipsValidate(tips);
             return false;
@@ -423,10 +530,9 @@ public class DeviceDetailsActivity extends BaseActivity {
         map.put("name",deviceNameEt.getText().toString());
         map.put("company",deviceCtmcEt.getText().toString());
         map.put("mobile",devicePhoneEt.getText().toString());
-        //TODO 省市区ID 记得更换
-        map.put("sheng_id","2");
-        map.put("shi_id","33");
-        map.put("qu_id","378");
+        map.put("sheng_id",sheng_id);
+        map.put("shi_id",shi_id);
+        map.put("qu_id",qu_id);
         map.put("address",detailAdressEt.getText().toString());
         map.put("bd_lat",SPUtils.getInstance().getString("latitude",""));
         map.put("bd_lng",SPUtils.getInstance().getString("longitude",""));
@@ -437,11 +543,12 @@ public class DeviceDetailsActivity extends BaseActivity {
         map.put("type_id",typeId);
         map.put("model",xinghaoEt.getText().toString());
         map.put("desc",problemDeviceEt.getText().toString());
+        if (srcList != null){
+            String imgs = srcList.toString().substring(1, srcList.toString().length() - 1);
+            Logger.e(imgs);
+            map.put("images",imgs);
+        }
 
-        String imgs1 = srcList.toString().substring(1, srcList.toString().length() - 1);
-        Logger.e(imgs1);
-
-        map.put("images",imgs1);
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
@@ -452,7 +559,13 @@ public class DeviceDetailsActivity extends BaseActivity {
                 .execute(new DialogCallback<ResultBean>(this,ResultBean.class) {
                     @Override
                     public void onSuccess(Response<ResultBean> response) {
-
+                        ResultBean body = response.body();
+                        if (TextUtils.equals("1",body.getStatus())){
+                            TUtils.showShort(getApplicationContext(),body.getInfo());
+                            finish();
+                        }else {
+                            showTipsValidate(body.getInfo());
+                        }
                     }
                 });
     }
@@ -522,8 +635,8 @@ public class DeviceDetailsActivity extends BaseActivity {
                 .imageSpanCount(4)// 每行显示个数
                 .selectionMode(PictureConfig.MULTIPLE)// 多选 or 单选 PictureConfig.SINGLE
                 .previewImage(true)// 是否可预览图片
-                .previewVideo(true)// 是否可预览视频
-                .enablePreviewAudio(true) // 是否可播放音频
+                .previewVideo(false)// 是否可预览视频
+                .enablePreviewAudio(false) // 是否可播放音频
                 .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
                 .isCamera(true)// 是否显示拍照按钮
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
@@ -580,8 +693,9 @@ public class DeviceDetailsActivity extends BaseActivity {
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
-                    list.addAll(selectList);
-                    addImgesAdpter.setList(list);
+                    list2.addAll(selectList);
+                    list1.addAll(list2);
+                    addImgesAdpter.setList(list1);
                     addImgesAdpter.notifyDataSetChanged();
                     break;
             }
@@ -608,9 +722,9 @@ public class DeviceDetailsActivity extends BaseActivity {
     private void initLunarPicker() {
         Calendar selectedDate = Calendar.getInstance();//系统当前时间
         Calendar startDate = Calendar.getInstance();
-        startDate.set(2000, 0, 1);
+        startDate.set(1980, 0, 1);
         Calendar endDate = Calendar.getInstance();
-        endDate.set(2050, 11, 31);
+        endDate.set(2030, 11, 31);
         //时间选择器 ，自定义布局
         pvCustomLunar = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
             @Override
@@ -656,228 +770,17 @@ public class DeviceDetailsActivity extends BaseActivity {
         return format.format(date);
     }
 
-    /**
-     * 地址选择器
-     */
-    private void ShowPickerView() {
-
-        //返回的分别是三个级别的选中位置
-        //ImageView ivCancel = (ImageView) v.findViewById(R.id.iv_cancel);
-        //设置选中项文字颜色
-        pvOptions = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                //返回的分别是三个级别的选中位置
-                tx = options1Items.get(options1).getPickerViewText() +
-                        options2Items.get(options1).get(options2) +
-                        options3Items.get(options1).get(options2).get(options3);
-                deviceAdressTv.setText(tx);
-            }
-        })
-                .setLayoutRes(R.layout.pickerview_city_layout, new CustomListener() {
-                    @Override
-                    public void customLayout(View v) {
-                        final TextView tvSubmit = (TextView) v.findViewById(R.id.tv_finish);
-                        tvSubmit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                pvOptions.returnData();
-                                pvOptions.dismiss();
-                            }
-                        });
-                    }
-                })
-                .setDividerColor(getResources().getColor(R.color.hint))
-                .setTextColorOut(getResources().getColor(R.color.hint))
-                .setBgColor(getResources().getColor(R.color.white01))
-                .setTextColorCenter(getResources().getColor(R.color.text_color01)) //设置选中项文字颜色
-                .setContentTextSize(16)
-                .build();
-
-        /*pvOptions.setPicker(options1Items);//一级选择器
-        pvOptions.setPicker(options1Items, options2Items);//二级选择器*/
-        pvOptions.setPicker(options1Items, options2Items, options3Items);//三级选择器
-        pvOptions.show();
+    @Override
+    public void onAreaClickListener(String areaName, String sheng_id, String shi_id, String qu_id) {
+        deviceAdressTv.setText(areaName);
+        this.sheng_id=sheng_id;
+        this.shi_id=shi_id;
+        this.qu_id=qu_id;
+        selectedAreaPop.dismiss();
     }
 
-    /**
-     * 解析数据
-     */
-    private void initJsonData() {
-        /**
-         * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
-         * 关键逻辑在于循环体
-         *
-         * */
-        String JsonData = new GetJsonDataUtil().getJson(this, "province.json");//获取assets目录下的json文件数据
-
-        ArrayList<JsonBean> jsonBean = parseData(JsonData);//用Gson 转成实体
-
-        /**
-         * 添加省份数据
-         *
-         * 注意：如果是添加的JavaBean实体，则实体类需要实现 IPickerViewData 接口，
-         * PickerView会通过getPickerViewText方法获取字符串显示出来。
-         */
-        options1Items = jsonBean;
-
-        for (int i = 0; i < jsonBean.size(); i++) {//遍历省份
-            ArrayList<String> CityList = new ArrayList<>();//该省的城市列表（第二级）
-            ArrayList<ArrayList<String>> Province_AreaList = new ArrayList<>();//该省的所有地区列表（第三极）
-
-            for (int c = 0; c < jsonBean.get(i).getCityList().size(); c++) {//遍历该省份的所有城市
-                String CityName = jsonBean.get(i).getCityList().get(c).getName();
-                CityList.add(CityName);//添加城市
-
-                ArrayList<String> City_AreaList = new ArrayList<>();//该城市的所有地区列表
-
-                //如果无地区数据，建议添加空字符串，防止数据为null 导致三个选项长度不匹配造成崩溃
-                if (jsonBean.get(i).getCityList().get(c).getArea() == null
-                        || jsonBean.get(i).getCityList().get(c).getArea().size() == 0) {
-                    City_AreaList.add("");
-                } else {
-
-                    for (int d = 0; d < jsonBean.get(i).getCityList().get(c).getArea().size(); d++) {//该城市对应地区所有数据
-                        String AreaName = jsonBean.get(i).getCityList().get(c).getArea().get(d);
-
-                        City_AreaList.add(AreaName);//添加该城市所有地区数据
-                    }
-                }
-                Province_AreaList.add(City_AreaList);//添加该省所有地区数据
-            }
-
-            /**
-             * 添加城市数据
-             */
-            options2Items.add(CityList);
-
-            /**
-             * 添加地区数据
-             */
-            options3Items.add(Province_AreaList);
-        }
-
-        mHandler.sendEmptyMessage(MSG_LOAD_SUCCESS);
-
+    @Override
+    public void onAreaClearListener() {
+        selectedAreaPop.dismiss();
     }
-
-    private ArrayList<CitysBean> options1Items1 = new ArrayList<>();
-    private ArrayList<CitysJsonBean> options2Items1 = new ArrayList<>();
-    private ArrayList<CitysJsonBean> options3Items1 = new ArrayList<>();
-
-
-    /**
-     * 解析数据
-     */
-    /*private void initJsonData1() {
-        *//**
-         * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
-         * 关键逻辑在于循环体
-         *
-         * *//*
-        String JsonData = new GetJsonDataUtil().getJson(this, "citys.json");//获取assets目录下的json文件数据
-
-        ArrayList<CitysBean> jsonBean = parseData1(JsonData);//用Gson 转成实体
-
-        *//**
-         * 添加省份数据
-         *
-         * 注意：如果是添加的JavaBean实体，则实体类需要实现 IPickerViewData 接口，
-         * PickerView会通过getPickerViewText方法获取字符串显示出来。
-         *//*
-        options1Items1 = jsonBean;
-
-        for (int i = 0; i < jsonBean.size(); i++) {//遍历省份
-            ArrayList<CitysJsonBean> CityList = new ArrayList<>();//该省的城市列表（第二级）
-            ArrayList<CitysJsonBean> Province_AreaList = new ArrayList<>();//该省的所有地区列表（第三极）
-
-            for (int c = 0; c < jsonBean.get(i).getSon_lists().size(); c++) {//遍历该省份的所有城市
-                CitysJsonBean citysJsonBean = new CitysJsonBean();
-                citysJsonBean.setName(jsonBean.get(i).getSon_lists().get(c).getName());
-                citysJsonBean.setArea_id(jsonBean.get(i).getSon_lists().get(c).getArea_id());
-                CityList.add(citysJsonBean);//添加城市
-
-                ArrayList<CitysJsonBean> City_AreaList = new ArrayList<>();//该城市的所有地区列表
-                for (int d = 0; d < jsonBean.get(i).getSon_lists().get(c).getSon_lists().size(); d++) {//该城市对应地区所有数据
-                    CitysJsonBean citysJsonBean1 = new CitysJsonBean();
-                    citysJsonBean1.setName(jsonBean.get(i).getSon_lists().get(c).getSon_lists().get(d).getName());
-                    citysJsonBean1.setArea_id(jsonBean.get(i).getSon_lists().get(c).getSon_lists().get(d).getArea_id());
-
-                    City_AreaList.add(citysJsonBean1);//添加该城市所有地区数据
-                }
-                Province_AreaList.addAll(CityList);//添加该省所有地区数据
-            }
-
-            *//**
-             * 添加城市数据
-             *//*
-            options2Items1.addAll(CityList);
-
-            *//**
-             * 添加地区数据
-             *//*
-            options3Items1.addAll(CityList);
-        }
-
-        mHandler.sendEmptyMessage(MSG_LOAD_SUCCESS);
-
-    }*/
-
-    public ArrayList<JsonBean> parseData(String result) {//Gson 解析
-        ArrayList<JsonBean> detail = new ArrayList<>();
-        try {
-            JSONArray data = new JSONArray(result);
-            Gson gson = new Gson();
-            for (int i = 0; i < data.length(); i++) {
-                JsonBean entity = gson.fromJson(data.optJSONObject(i).toString(), JsonBean.class);
-                detail.add(entity);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            mHandler.sendEmptyMessage(MSG_LOAD_FAILED);
-        }
-        return detail;
-    }
-
-    /*public ArrayList<CitysBean> parseData1(String result) {//Gson 解析
-        ArrayList<CitysBean> detail = new ArrayList<>();
-        try {
-            JSONArray data = new JSONArray(result);
-            Gson gson = new Gson();
-            for (int i = 0; i < data.length(); i++) {
-                CitysBean entity = gson.fromJson(data.optJSONObject(i).toString(), CitysBean.class);
-                detail.add(entity);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            mHandler.sendEmptyMessage(MSG_LOAD_FAILED);
-        }
-        return detail;
-    }*/
-
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_LOAD_DATA:
-                    if (thread == null) {//如果已创建就不再重新创建子线程了
-                        thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 写子线程中的操作,解析省市区数据
-                                initJsonData();
-                            }
-                        });
-                        thread.start();
-                    }
-                    break;
-                case MSG_LOAD_SUCCESS:
-                    isLoaded = true;
-                    break;
-                case MSG_LOAD_FAILED:
-                    Toast.makeText(getApplicationContext(), "地址选择器解析数据失败", Toast.LENGTH_SHORT).show();
-                    break;
-
-            }
-        }
-    };
 }

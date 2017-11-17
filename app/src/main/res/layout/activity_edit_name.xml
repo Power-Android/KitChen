@@ -11,5 +11,6 @@
         android:id="@+id/name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLength="8"
         android:layout_margin="10dp" />
 </LinearLayout>

@@ -26,6 +26,7 @@ import com.power.kitchen.activity.CancleRepaireDetailActivity;
 import com.power.kitchen.adapter.CancleRepaireAdapter;
 import com.power.kitchen.adapter.MyFooter;
 import com.power.kitchen.adapter.MyHeader;
+import com.power.kitchen.app.BaseFragment;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
@@ -51,7 +52,7 @@ import butterknife.Unbinder;
  * 已取消
  */
 
-public class CancleRepairTabFragment extends Fragment implements SpringView.OnFreshListener {
+public class CancleRepairTabFragment extends BaseFragment implements SpringView.OnFreshListener {
 
     @BindView(R.id.cancle_list) ListView cancleList;
     @BindView(R.id.springview) SpringView springView;
@@ -101,6 +102,12 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
         springView.setFooter(new MyFooter(getActivity()));
     }
 
+    @Override
+    protected void lazyFetchData() {
+        super.lazyFetchData();
+        requestOrderList();
+    }
+
     private void requestOrderList() {
         Map<String,String> map = new HashMap<>();
         map.put("app_id","android-user_20170808");
@@ -147,6 +154,12 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        springView.callFresh();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -157,13 +170,11 @@ public class CancleRepairTabFragment extends Fragment implements SpringView.OnFr
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (TextUtils.equals(list.toString(),"[]")){
-                    p = 1;
-                    adapter.notifyDataSetChanged();
-                }else {
-                    p = p + 1;
-                    requestOrderList();
+                if (!listAll.isEmpty()){
+                    listAll.clear();
                 }
+                p = 1;
+                requestOrderList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

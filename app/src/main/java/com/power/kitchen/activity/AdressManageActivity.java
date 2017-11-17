@@ -69,7 +69,7 @@ public class AdressManageActivity extends BaseActivity implements AdressManageAd
         ultimateBar.setColorStatusBar(ContextCompat.getColor(this, R.color.green01));
         setContentView(R.layout.activity_address_manage);
         ButterKnife.bind(this);
-        initLoad();
+//        initLoad();
         initViewAndListener();
     }
 
@@ -128,17 +128,17 @@ public class AdressManageActivity extends BaseActivity implements AdressManageAd
                         AreaListBean areaListBean = response.body();
                         if (TextUtils.equals("1",areaListBean.getStatus())){
                             list = areaListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            /*if (TextUtils.equals("0",list.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
-                            }else {
+                            }else {*/
                                 adapter = new AdressManageAdapter(AdressManageActivity.this,list);
                                 adressList.setAdapter(adapter);
-                                loadService.showSuccess();
+//                                loadService.showSuccess();
                                 adapter.setOnItemDeleteClickListener(AdressManageActivity.this);
-                            }
+//                            }
                         }else {
                             TUtils.showShort(getApplicationContext(),areaListBean.getInfo());
-                            loadService.showCallback(ErrorCallback.class);
+//                            loadService.showCallback(ErrorCallback.class);
                         }
 
                     }

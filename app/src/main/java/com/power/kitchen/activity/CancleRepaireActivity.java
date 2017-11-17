@@ -55,6 +55,7 @@ public class CancleRepaireActivity extends BaseActivity {
     private List<CommetTypeBean.DataBean> list;
     private String quxiaoId;
     private ResultBean resultBean;
+    private String tips = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,12 @@ public class CancleRepaireActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.query_btn:
-                requestOrderClose();
+                if (TextUtils.isEmpty(quxiaoId)){
+                    tips = "请选择取消原因";
+                    showTips(tips);
+                }else {
+                    requestOrderClose();
+                }
                 break;
         }
     }
@@ -190,6 +196,26 @@ public class CancleRepaireActivity extends BaseActivity {
                     public void clickSingleButton(NormalAlertDialog dialog, View view) {
                         dialog.dismiss();
                         finish();
+                    }
+                })
+                .build()
+                .show();
+    }
+
+    private void showTips(String tips) {
+        new NormalAlertDialog.Builder(this).setHeight(0.23f)  //屏幕高度*0.23
+                .setWidth(0.65f)  //屏幕宽度*0.65
+                .setTitleVisible(true).setTitleText("提交失败")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText(tips)
+                .setContentTextColor(R.color.text_color02)
+                .setSingleMode(true).setSingleButtonText("确 认")
+                .setSingleButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setSingleListener(new DialogInterface.OnSingleClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickSingleButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
                     }
                 })
                 .build()

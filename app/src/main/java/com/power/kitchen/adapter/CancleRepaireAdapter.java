@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.power.kitchen.R;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.utils.TimeUtils;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class CancleRepaireAdapter extends BaseAdapter {
             viewHolder.isBaoxiuTv.setText("保修期外");
         }
         viewHolder.nameTv01.setText(list.get(position).getGoods_code());
-        viewHolder.timeTv.setText(list.get(position).getGoods_date());
+        viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));
         viewHolder.xinghaoTv.setText(list.get(position).getGoods_model());
 
         return convertView;

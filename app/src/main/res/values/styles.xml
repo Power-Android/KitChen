@@ -39,7 +39,7 @@
     </style>
     <style name="gary_hint">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/hint</item>
+        <item name="android:textColor">@color/text_color02</item>
     </style>
     <style name="gary_textview">
         <item name="android:textSize">16sp</item>
@@ -166,6 +166,10 @@
         <item name="android:textSize">14sp</item>
     </style>
     <!--极光结束-->
+    <style name="popwin_anim_style">
+        <item name="android:windowEnterAnimation">@anim/in_pop</item>
+        <item name="android:windowExitAnimation">@anim/out_pop</item>
+    </style>
 
 
 </resources>

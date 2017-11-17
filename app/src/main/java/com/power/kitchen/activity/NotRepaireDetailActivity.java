@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
         weiwanchengView01.setVisibility(View.VISIBLE);
         weiwanchengView02.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
+        ggtCancleIv.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
         oid = getIntent().getStringExtra("oid");
         scrollView.smoothScrollBy(0,0);
@@ -133,7 +135,12 @@ public class NotRepaireDetailActivity extends BaseActivity {
                             shifuPhoneTv.setText(orderInfoBean.getData().getM_w_info().getMobile());
                             shifuGsTv.setText(orderInfoBean.getData().getM_d_info().getCompany_name());
                             jiedanTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getAccept_time()));
-                            gsJuliTv.setText(orderInfoBean.getData().getInfo().getKm()+"KM");
+                            String getKm = orderInfoBean.getData().getInfo().getContact_juli();
+                            double m_double = Double.parseDouble(getKm);
+                            double km_double = m_double/1000;
+                            DecimalFormat df = new DecimalFormat(".0");
+                            String km = df.format(km_double);
+                            gsJuliTv.setText(km + "KM");
                             bxTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getCreate_time()));
                             txmTv.setText(orderInfoBean.getData().getInfo().getGoods_code());
                             goumaiTimeTv.setText(orderInfoBean.getData().getInfo().getGoods_date());

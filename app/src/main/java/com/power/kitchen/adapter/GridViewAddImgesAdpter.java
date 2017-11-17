@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import java.io.File;
 import java.util.ArrayList;
@@ -104,13 +105,14 @@ public class GridViewAddImgesAdpter extends BaseAdapter {
         }
         /**代表+号之前的需要正常显示图片**/
         if (list != null && position < list.size()) {
-            final File file = new File(list.get(position).getPath());
+//            final File file = new File(list.get(position).getPath());
+            Logger.e(list.get(position).getPath());
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.color.green01);
 //                    .diskCacheStrategy(DiskCacheStrategy.ALL);
             Glide.with(context)
-                    .load(file)
+                    .load(list.get(position).getPath())
                     .apply(options)
                     .into(viewHolder.ivimage);
             viewHolder.btdel.setVisibility(View.VISIBLE);

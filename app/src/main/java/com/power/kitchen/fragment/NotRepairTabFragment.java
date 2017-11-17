@@ -29,6 +29,7 @@ import com.power.kitchen.adapter.MyFooter;
 import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.adapter.NotRepaireAdapter;
 import com.power.kitchen.adapter.WaitRepairAdapter;
+import com.power.kitchen.app.BaseFragment;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
 import com.power.kitchen.callback.EmptyCallback;
@@ -57,7 +58,7 @@ import butterknife.Unbinder;
  * 未完成
  */
 
-public class NotRepairTabFragment extends Fragment implements SpringView.OnFreshListener{
+public class NotRepairTabFragment extends BaseFragment implements SpringView.OnFreshListener{
 
     @BindView(R.id.not_list) ListView notList;
     @BindView(R.id.springview) SpringView springView;
@@ -76,7 +77,6 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
         unbinder = ButterKnife.bind(this, view);
         initLoad();
         initView();
-        requestOrderList();
         return loadService.getLoadLayout();
     }
 
@@ -104,6 +104,12 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
         springView.setListener(this);
         springView.setHeader(new MyHeader(getActivity()));
         springView.setFooter(new MyFooter(getActivity()));
+    }
+
+    @Override
+    protected void lazyFetchData() {
+        super.lazyFetchData();
+        requestOrderList();
     }
 
     private void requestOrderList() {
@@ -152,6 +158,12 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        springView.callFresh();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -162,13 +174,11 @@ public class NotRepairTabFragment extends Fragment implements SpringView.OnFresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (TextUtils.equals(list.toString(),"[]")){
-                    p = 1;
-                    adapter.notifyDataSetChanged();
-                }else {
-                    p = p + 1;
-                    requestOrderList();
+                if (!listAll.isEmpty()){
+                    listAll.clear();
                 }
+                p = 1;
+                requestOrderList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

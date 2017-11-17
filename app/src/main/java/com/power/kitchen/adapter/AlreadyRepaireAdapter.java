@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.power.kitchen.R;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.utils.TimeUtils;
 
 import java.util.List;
 
@@ -62,7 +63,12 @@ public class AlreadyRepaireAdapter extends BaseAdapter {
         viewHolder.bianhaoTv.setText(list.get(position).getOid());
         viewHolder.leixingTv.setText(list.get(position).getGoods_type_name());
         viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
-        viewHolder.isJiedanTv.setText(list.get(position).getOrder_status_name());
+        String status_pay = list.get(position).getStatus_pay();
+        if (TextUtils.equals("0",status_pay)){
+            viewHolder.isJiedanTv.setText("待支付");
+        }else {
+            viewHolder.isJiedanTv.setText("已维修");
+        }
         String goods_is_warranty = list.get(position).getGoods_is_warranty();
         if (TextUtils.equals("1",goods_is_warranty)){
             viewHolder.isBaoxiuTv.setText("保修期内");
@@ -70,10 +76,10 @@ public class AlreadyRepaireAdapter extends BaseAdapter {
             viewHolder.isBaoxiuTv.setText("保修期外");
         }
         viewHolder.nameTv01.setText(list.get(position).getGoods_code());
-        viewHolder.timeTv.setText(list.get(position).getGoods_date());
+        viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));
         viewHolder.xinghaoTv.setText(list.get(position).getGoods_model());
-        viewHolder.moneyTv.setVisibility(View.VISIBLE);
-        viewHolder.moneyTv.setText(list.get(position).getPrice());
+//        viewHolder.moneyTv.setVisibility(View.VISIBLE);
+//        viewHolder.moneyTv.setText(list.get(position).getPrice());
         return convertView;
     }
 

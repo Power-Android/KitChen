@@ -76,4 +76,6 @@ public class Urls {
     public static final String send_sms = api_url + "/Api/Oauth/send_sms.html";
     //图形验证码
     public static final String verify_img = api_url + "/Api/Oauth/verify_img.html";
+    //支付宝支付
+    public static final String alipay_data = api_url + "/Api/Apppay/alipay_params_data.html";
 }

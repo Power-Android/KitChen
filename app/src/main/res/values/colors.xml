@@ -14,6 +14,7 @@
     <color name="gary01">#EEEEEE</color>
     <color name="gary02">#DDDDDD</color>   <!--下划线颜色-->
     <color name="gary_background">#FAFAFA</color>   <!--灰色背景-->
+    <color name="gary_background1">#EEEEEF</color>   <!--灰色背景-->
     <color name="yellow01">#ff9900</color>    <!--报修记录橘黄色-->
     <color name="hint">#CCCCCC</color>  <!--hint字体颜色-->
     <color name="gary_background02">#EEEEF0</color>
@@ -24,6 +25,7 @@
     <color name="gary05">#E8E8E8</color>
     <color name="white01">#FAFAFA</color>
     <color name="red01">#ff0000</color>
+    <color name="province_line_border">#C7C7C7</color>
 
 
 

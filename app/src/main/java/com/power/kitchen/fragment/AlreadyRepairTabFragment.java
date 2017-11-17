@@ -28,6 +28,7 @@ import com.power.kitchen.adapter.AlreadyRepaireAdapter;
 import com.power.kitchen.adapter.MyFooter;
 import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.adapter.WaitRepairAdapter;
+import com.power.kitchen.app.BaseFragment;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
 import com.power.kitchen.callback.EmptyCallback;
@@ -56,7 +57,7 @@ import butterknife.Unbinder;
  * 已维修
  */
 
-public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnFreshListener{
+public class AlreadyRepairTabFragment extends BaseFragment implements SpringView.OnFreshListener{
 
     @BindView(R.id.already_list) ListView alreadyList;
     @BindView(R.id.springview) SpringView springView;
@@ -110,6 +111,12 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
         springView.setFooter(new MyFooter(getActivity()));
     }
 
+    @Override
+    protected void lazyFetchData() {
+        super.lazyFetchData();
+        requestOrderList();
+    }
+
     private void requestOrderList() {
         Map<String,String> map = new HashMap<>();
         map.put("app_id","android-user_20170808");
@@ -141,8 +148,12 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         String oid = listAll.get(position).getOid();
+                                        String status_pay = listAll.get(position).getStatus_pay();
+                                        String status_comment = listAll.get(position).getStatus_comment();
                                         Intent intent = new Intent(getActivity(),AlreadyRepaireDetailActivity.class);
                                         intent.putExtra("oid",oid);
+                                        intent.putExtra("status_pay",status_pay);
+                                        intent.putExtra("status_comment",status_comment);
                                         startActivity(intent);
                                     }
                                 });
@@ -156,6 +167,12 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        springView.callFresh();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -166,13 +183,11 @@ public class AlreadyRepairTabFragment extends Fragment implements SpringView.OnF
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (TextUtils.equals(list.toString(),"[]")){
-                    p = 1;
-                    adapter.notifyDataSetChanged();
-                }else {
-                    p = p + 1;
-                    requestOrderList();
+                if (!listAll.isEmpty()){
+                    listAll.clear();
                 }
+                p = 1;
+                requestOrderList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);

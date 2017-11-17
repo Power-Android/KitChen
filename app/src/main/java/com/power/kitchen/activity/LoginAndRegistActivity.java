@@ -83,6 +83,7 @@ public class LoginAndRegistActivity extends BaseActivity {
     private String yzmCode;
     private String tips;
     private String registrationID;
+    private String yzmCodeRegist;
 
 
     @Override
@@ -148,7 +149,7 @@ public class LoginAndRegistActivity extends BaseActivity {
                 registTv.setBackgroundColor(getResources().getColor(R.color.white));
                 registTv.setTextColor(getResources().getColor(R.color.green01));
                 loginOrRegist = 2;
-                requestVerifyImg();
+                requestVerifyImg1();
                 break;
             case R.id.look_login_iv://显示/隐藏登录密码
                 pwdShow(loginPwdEt,lookLoginIv);
@@ -158,10 +159,9 @@ public class LoginAndRegistActivity extends BaseActivity {
                 requestVerifyImg();
                 break;
             case R.id.login_btn://登录
-                //TODO 记得打开注释
-//                if (loginValidate()){
+                if (loginValidate()){
                     requestLogin();
-//                }
+                }
                 break;
             case R.id.foget_pwd_tv://忘记密码
                 startActivity(new Intent(LoginAndRegistActivity.this,PwdRetrievalActivity.class));
@@ -187,7 +187,7 @@ public class LoginAndRegistActivity extends BaseActivity {
                 break;
             case R.id.regist_yzm_iv://请求注册验证码图片
                 loginOrRegist = 2;
-                requestVerifyImg();
+                requestVerifyImg1();
                 break;
             case R.id.regist_xieyi_ll://注册协议
                 startActivity(new Intent(this,RegistXieYiActivity.class));
@@ -264,7 +264,9 @@ public class LoginAndRegistActivity extends BaseActivity {
             showTipsValidate(tips);
             return false;
         }
-        if (TextUtils.equals(loginYzmEt.getText().toString(),yzmCode)){
+        if (!TextUtils.equals(loginYzmEt.getText().toString(), yzmCode)){
+            Logger.e(loginYzmEt.getText().toString());
+            Logger.e(yzmCode);
             tips = "验证码错误！";
             showTipsValidate(tips);
             return false;
@@ -319,7 +321,7 @@ public class LoginAndRegistActivity extends BaseActivity {
             showTipsValidate(tips);
             return false;
         }
-        if (TextUtils.equals(registYzmEt.getText().toString(),yzmCode)){
+        if (TextUtils.equals(registYzmEt.getText().toString(),yzmCodeRegist)){
             tips = "验证码错误！";
             showTipsValidate(tips);
             return false;
@@ -507,21 +509,44 @@ public class LoginAndRegistActivity extends BaseActivity {
                         SendSmsBean verifyBean = response.body();
                         if (TextUtils.equals("1",verifyBean.getStatus())){
                             String src = verifyBean.getData().getSrc();
-                            if (loginOrRegist == 1){
-                                Glide.with(LoginAndRegistActivity.this)
-                                        .load(src)
-                                        .into(loginYzmIv);
-                            }else {
-                                Glide.with(LoginAndRegistActivity.this)
-                                        .load(src)
-                                        .into(registYzmIv);
-                            }
-
+                            Glide.with(LoginAndRegistActivity.this)
+                                    .load(src)
+                                    .into(loginYzmIv);
                             yzmCode = verifyBean.getData().getCode();
+                            Logger.e(yzmCode);
                         }
                     }
                 });
     }
+
+    private void requestVerifyImg1() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("height","70");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<SendSmsBean>post(Urls.verify_img)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<SendSmsBean>(SendSmsBean.class) {
+                    @Override
+                    public void onSuccess(Response<SendSmsBean> response) {
+                        SendSmsBean verifyBean = response.body();
+                        if (TextUtils.equals("1",verifyBean.getStatus())){
+                            String src = verifyBean.getData().getSrc();
+                            Glide.with(LoginAndRegistActivity.this)
+                                    .load(src)
+                                    .into(registYzmIv);
+                            yzmCodeRegist = verifyBean.getData().getCode();
+                            Logger.e(yzmCode);
+                        }
+                    }
+                });
+    }
+
 
     /**
      * 获取设备唯一标识

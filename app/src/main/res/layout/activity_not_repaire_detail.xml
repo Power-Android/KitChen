@@ -52,7 +52,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:gravity="center_horizontal"
+                    android:visibility="visible">
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,6 +156,188 @@
                             android:singleLine="true" />
 
                     </RelativeLayout>
+                </LinearLayout>
+                <!--已维修界面  待支付信息-->
+                <LinearLayout
+                    android:id="@+id/yiweixiu_daizhifu_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/gary02">
+                        <TextView
+                            style="@style/black_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="10dp"
+                            android:text="@string/zfxx" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="支付金额："
+                            style="@style/black_textview"
+                            android:layout_toLeftOf="@+id/pay_tv"
+                            android:layout_centerVertical="true"/>
+                        <TextView
+                            android:id="@+id/pay_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/red01"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/weichat_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+                        <ImageView
+                            android:id="@+id/weichat_iv"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/kc_weichat_icon"/>
+                        <TextView
+                            android:id="@+id/weichat_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/weichat_iv"
+                            android:text="微信支付"
+                            android:layout_marginLeft="10dp"
+                            style="@style/black_smtextview" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="推荐安装微信5.0及以上版本的用户使用"
+                            android:textSize="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_below="@+id/weichat_tv"
+                            android:layout_toRightOf="@id/weichat_iv"/>
+                        <ImageView
+                            android:id="@+id/weichat_select_iv"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:visibility="gone"
+                            android:src="@drawable/kc_adress_green"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint"/>
+                    <RelativeLayout
+                        android:id="@+id/albb_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+                        <ImageView
+                            android:id="@+id/albb_iv"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/kc_albb_icon"/>
+                        <TextView
+                            android:id="@+id/albb_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/albb_iv"
+                            android:text="支付宝支付"
+                            android:layout_marginLeft="10dp"
+                            style="@style/black_smtextview" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="推荐安装支付宝钱包APP的用户使用"
+                            android:textSize="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_below="@+id/albb_tv"
+                            android:layout_toRightOf="@id/albb_iv"/>
+                        <ImageView
+                            android:id="@+id/albb_select_iv"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:visibility="gone"
+                            android:src="@drawable/kc_adress_green"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint"/>
+                    <RelativeLayout
+                        android:id="@+id/yinlian_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+                        <ImageView
+                            android:id="@+id/yinlian_iv"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@mipmap/kc_yinlian_icon"/>
+                        <TextView
+                            android:id="@+id/yinlian_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/yinlian_iv"
+                            android:text="银行转帐"
+                            android:layout_marginLeft="10dp"
+                            style="@style/black_smtextview" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="任何用户可以使用"
+                            android:textSize="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_below="@+id/yinlian_tv"
+                            android:layout_toRightOf="@id/yinlian_iv"/>
+                        <ImageView
+                            android:id="@+id/yinlian_select_iv"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:visibility="gone"
+                            android:src="@drawable/kc_adress_green"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/hint"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@color/text_color01"
+                            android:text="现金支付"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@color/text_color01"
+                            android:text="签约后付费客户和现场支付现金后，系统将会及时更新支付状态"
+                            android:gravity="start"/>
+                    </LinearLayout>
                 </LinearLayout>
                 <!--已维修界面-->
                 <LinearLayout
@@ -728,7 +911,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:text="@string/ctmc" />
+                        android:text="单位名称" />
 
                     <TextView
                         android:id="@+id/cantingname_tv"

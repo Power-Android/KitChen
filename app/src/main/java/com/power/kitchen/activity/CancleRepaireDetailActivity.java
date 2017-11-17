@@ -108,6 +108,7 @@ public class CancleRepaireDetailActivity extends BaseActivity {
         queryBtn.setText("重新报修");
         titleReasonTv.setText("报修已取消，若需要维修，请重新报修");
         backIv.setOnClickListener(this);
+        ggtCancleIv.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
         scrollView.smoothScrollBy(0,0);
     }

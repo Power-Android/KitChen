@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,10 +151,11 @@ public class WaitRepaireDetailActivity extends BaseActivity {
                             if (TextUtils.equals("0",status_accept)){
                                 queryBtn.setText("取消报修");
                                 queryLl.setVisibility(View.VISIBLE);
+                                weiwanchengView02.setVisibility(View.GONE);
                             }else {
                                 ifJieDanTv.setText("您的报修已被接单");
                                 ifJieDanContentTv.setText("维修工作人员将会与您电话取得联系");
-                                ifJieDanContentTv.setGravity(Gravity.CENTER);
+                                ifJieDanContentTv.setGravity(Gravity.CENTER_HORIZONTAL);
                             }
 
                             payMoneyTv.setText(orderInfoBean.getData().getInfo().getPrice());
@@ -165,7 +167,12 @@ public class WaitRepaireDetailActivity extends BaseActivity {
                             shifuPhone.setText(orderInfoBean.getData().getM_w_info().getMobile());
                             shifuGsTv.setText(orderInfoBean.getData().getM_d_info().getCompany_name());
                             jiedanTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getAccept_time()));
-                            gsJuliTv.setText(orderInfoBean.getData().getInfo().getKm() + "KM");
+                            String getKm = orderInfoBean.getData().getInfo().getContact_juli();
+                            double m_double = Double.parseDouble(getKm);
+                            double km_double = m_double/1000;
+                            DecimalFormat df = new DecimalFormat(".0");
+                            String km = df.format(km_double);
+                            gsJuliTv.setText(km + "KM");
                             bxTime.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getCreate_time()));
                             txmTv.setText(orderInfoBean.getData().getInfo().getGoods_code());
                             goumaiTimeTv.setText(orderInfoBean.getData().getInfo().getGoods_date());

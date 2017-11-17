@@ -1,7 +1,5 @@
 package com.power.kitchen.bean;
 
-import com.bigkoo.pickerview.model.IPickerViewData;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,69 +7,52 @@ import java.util.List;
  * Created by Administrator on 2017/11/6.
  */
 
-public class CitysBean implements IPickerViewData {
+public class CitysBean implements Serializable {
 
     /**
-     * area_id : 2
-     * name : 北京市
-     * up_id : 1
-     * son_lists : [{"area_id":"33","name":"市辖区","up_id":"2","son_lists":[{"area_id":"378","name":"东城区","up_id":"33"},{"area_id":"379","name":"西城区","up_id":"33"},{"area_id":"382","name":"朝阳区","up_id":"33"},{"area_id":"383","name":"丰台区","up_id":"33"},{"area_id":"384","name":"石景山区","up_id":"33"},{"area_id":"385","name":"海淀区","up_id":"33"},{"area_id":"386","name":"门头沟区","up_id":"33"},{"area_id":"387","name":"房山区","up_id":"33"},{"area_id":"388","name":"通州区","up_id":"33"},{"area_id":"389","name":"顺义区","up_id":"33"},{"area_id":"390","name":"昌平区","up_id":"33"},{"area_id":"391","name":"大兴区","up_id":"33"},{"area_id":"392","name":"怀柔区","up_id":"33"},{"area_id":"393","name":"平谷区","up_id":"33"}]}]
+     * status : 1
+     * info : ok
+     * data : [{"area_id":"2","name":"北京市","up_id":"1"},{"area_id":"3","name":"天津市","up_id":"1"},{"area_id":"4","name":"河北省","up_id":"1"},{"area_id":"5","name":"山西省","up_id":"1"},{"area_id":"6","name":"内蒙古自治区","up_id":"1"},{"area_id":"7","name":"辽宁省","up_id":"1"},{"area_id":"8","name":"吉林省","up_id":"1"},{"area_id":"9","name":"黑龙江省","up_id":"1"},{"area_id":"10","name":"上海市","up_id":"1"},{"area_id":"11","name":"江苏省","up_id":"1"},{"area_id":"12","name":"浙江省","up_id":"1"},{"area_id":"13","name":"安徽省","up_id":"1"},{"area_id":"14","name":"福建省","up_id":"1"},{"area_id":"15","name":"江西省","up_id":"1"},{"area_id":"16","name":"山东省","up_id":"1"},{"area_id":"17","name":"河南省","up_id":"1"},{"area_id":"18","name":"湖北省","up_id":"1"},{"area_id":"19","name":"湖南省","up_id":"1"},{"area_id":"20","name":"广东省","up_id":"1"},{"area_id":"21","name":"广西壮族自治区","up_id":"1"},{"area_id":"22","name":"海南省","up_id":"1"},{"area_id":"23","name":"重庆市","up_id":"1"},{"area_id":"24","name":"四川省","up_id":"1"},{"area_id":"25","name":"贵州省","up_id":"1"},{"area_id":"26","name":"云南省","up_id":"1"},{"area_id":"27","name":"西藏自治区","up_id":"1"},{"area_id":"28","name":"陕西省","up_id":"1"},{"area_id":"29","name":"甘肃省","up_id":"1"},{"area_id":"30","name":"青海省","up_id":"1"},{"area_id":"31","name":"宁夏回族自治区","up_id":"1"},{"area_id":"32","name":"新疆维吾尔自治区","up_id":"1"}]
      */
 
-    private String area_id;
-    private String name;
-    private String up_id;
-    private List<SonListsBeanX> son_lists;
+    private String status;
+    private String info;
+    private List<DataBean> data;
 
-    public String getArea_id() {
-        return area_id;
+    public String getStatus() {
+        return status;
     }
 
-    public void setArea_id(String area_id) {
-        this.area_id = area_id;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getName() {
-        return name;
+    public String getInfo() {
+        return info;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
-    public String getUp_id() {
-        return up_id;
+    public List<DataBean> getData() {
+        return data;
     }
 
-    public void setUp_id(String up_id) {
-        this.up_id = up_id;
+    public void setData(List<DataBean> data) {
+        this.data = data;
     }
 
-    public List<SonListsBeanX> getSon_lists() {
-        return son_lists;
-    }
-
-    public void setSon_lists(List<SonListsBeanX> son_lists) {
-        this.son_lists = son_lists;
-    }
-
-    @Override
-    public String getPickerViewText() {
-        return this.name;
-    }
-
-    public static class SonListsBeanX {
+    public static class DataBean {
         /**
-         * area_id : 33
-         * name : 市辖区
-         * up_id : 2
-         * son_lists : [{"area_id":"378","name":"东城区","up_id":"33"},{"area_id":"379","name":"西城区","up_id":"33"},{"area_id":"382","name":"朝阳区","up_id":"33"},{"area_id":"383","name":"丰台区","up_id":"33"},{"area_id":"384","name":"石景山区","up_id":"33"},{"area_id":"385","name":"海淀区","up_id":"33"},{"area_id":"386","name":"门头沟区","up_id":"33"},{"area_id":"387","name":"房山区","up_id":"33"},{"area_id":"388","name":"通州区","up_id":"33"},{"area_id":"389","name":"顺义区","up_id":"33"},{"area_id":"390","name":"昌平区","up_id":"33"},{"area_id":"391","name":"大兴区","up_id":"33"},{"area_id":"392","name":"怀柔区","up_id":"33"},{"area_id":"393","name":"平谷区","up_id":"33"}]
+         * area_id : 2
+         * name : 北京市
+         * up_id : 1
          */
 
         private String area_id;
         private String name;
         private String up_id;
-        private List<SonListsBean> son_lists;
 
         public String getArea_id() {
             return area_id;
@@ -95,50 +76,6 @@ public class CitysBean implements IPickerViewData {
 
         public void setUp_id(String up_id) {
             this.up_id = up_id;
-        }
-
-        public List<SonListsBean> getSon_lists() {
-            return son_lists;
-        }
-
-        public void setSon_lists(List<SonListsBean> son_lists) {
-            this.son_lists = son_lists;
-        }
-
-        public static class SonListsBean {
-            /**
-             * area_id : 378
-             * name : 东城区
-             * up_id : 33
-             */
-
-            private String area_id;
-            private String name;
-            private String up_id;
-
-            public String getArea_id() {
-                return area_id;
-            }
-
-            public void setArea_id(String area_id) {
-                this.area_id = area_id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public String getUp_id() {
-                return up_id;
-            }
-
-            public void setUp_id(String up_id) {
-                this.up_id = up_id;
-            }
         }
     }
 }

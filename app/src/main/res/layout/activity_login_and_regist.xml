@@ -238,7 +238,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/iv_04"
                         android:singleLine="true"
-                        android:password="true"
+                        android:digits="1234567890"
                         android:background="@null"
                         android:hint="@string/qsrsjh"
                         style="@style/gary_hint" />
