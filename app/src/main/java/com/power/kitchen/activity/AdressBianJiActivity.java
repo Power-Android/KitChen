@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
@@ -50,11 +51,11 @@ public class AdressBianJiActivity extends BaseActivity implements AreaClickListe
     @BindView(R.id.telnum_tv) EditText telnumEt;
     @BindView(R.id.adress_tv) TextView adressTv;
     @BindView(R.id.adress_iv) ImageView adressIv;
-    @BindView(R.id.location_iv) ImageView locationIv;
     @BindView(R.id.detailadress_tv) EditText detailadressEt;
     @BindView(R.id.moren_switchBtn) SwitchButton morenSwitchBtn;
     @BindView(R.id.delete_btn) Button deleteBtn;
     @BindView(R.id.gsmc_tv) EditText gsmcEt;
+    @BindView(R.id.adress_rl) RelativeLayout adress_rl;
 
     private UltimateBar ultimateBar;
     private int temp = 0;
@@ -119,8 +120,7 @@ public class AdressBianJiActivity extends BaseActivity implements AreaClickListe
         backIv.setOnClickListener(this);
         titleRightTv.setOnClickListener(this);
         deleteBtn.setOnClickListener(this);
-        adressIv.setOnClickListener(this);
-        locationIv.setOnClickListener(this);
+        adress_rl.setOnClickListener(this);
         area_id = getIntent().getStringExtra("area_id");
         String name = getIntent().getStringExtra("name");
         String phone = getIntent().getStringExtra("phone");
@@ -166,12 +166,7 @@ public class AdressBianJiActivity extends BaseActivity implements AreaClickListe
                     requestAreaEdit();
                 }
                 break;
-            case R.id.adress_iv:
-                if(selectedAreaPop!=null){
-                    setShowPop(selectedAreaPop, adressIv);
-                }
-                break;
-            case R.id.location_iv:
+            case R.id.adress_rl:
                 if(selectedAreaPop!=null){
                     setShowPop(selectedAreaPop, adressIv);
                 }

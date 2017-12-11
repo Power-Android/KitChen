@@ -2,6 +2,7 @@ package com.power.kitchen.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,8 +10,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,26 +23,44 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.DeviceDetailsActivity;
+import com.power.kitchen.activity.MainActivity;
+import com.power.kitchen.bean.BackgroundBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.CommonPopupWindow;
+import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
+import com.power.kitchen.utils.Urls;
 
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -49,13 +71,16 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * Created by power on 2017/9/19.
+ *
+ * @author power
+ * @date 2017/9/19
  */
 
 public class RepairFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.pzksbx_layout) LinearLayout pzksbxLayout;
     @BindView(R.id.txbxd_layout) LinearLayout txbxdLayout;
+    @BindView(R.id.background_ll) ImageView backgroundLl;
     Unbinder unbinder;
     private CommonPopupWindow popupWindow;
     private List<LocalMedia> selectList = new ArrayList<>();
@@ -65,10 +90,36 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         UltimateBar ultimateBar = new UltimateBar(getActivity());
         ultimateBar.setImmersionBar(false);
+        requestBackground();
         View view = inflater.inflate(R.layout.fragment_repair, container, false);
         unbinder = ButterKnife.bind(this, view);
         initListener();
         return view;
+    }
+
+    private void requestBackground() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("tokne",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<BackgroundBean>post(Urls.background)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<BackgroundBean>(BackgroundBean.class) {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onSuccess(Response<BackgroundBean> response) {
+                        BackgroundBean backgroundBean = response.body();
+                        if (TextUtils.equals("1",backgroundBean.getStatus())){
+                            String image = backgroundBean.getData().getImage();
+                            Glide.with(getActivity()).load(image).into(backgroundLl);
+                        }
+                    }
+                });
     }
 
     private void initListener() {
@@ -90,6 +141,8 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.txbxd_layout:
                 startActivity(new Intent(getActivity(),DeviceDetailsActivity.class));
+                break;
+            default:
                 break;
         }
     }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,39 +27,42 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bigkoo.pickerview.OptionsPickerView;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.search.geocode.GeoCodeOption;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.pickerview.listener.CustomListener;
-import com.google.gson.Gson;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.StringUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
-import com.power.kitchen.adapter.GridViewAdapter;
 import com.power.kitchen.adapter.GridViewAddImgesAdpter;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.Area;
 import com.power.kitchen.bean.AreaListsBean;
 import com.power.kitchen.bean.CitysBean;
-import com.power.kitchen.bean.CitysJsonBean;
-import com.power.kitchen.bean.EditFaceBean;
-import com.power.kitchen.bean.JsonBean;
+import com.power.kitchen.bean.OrderAdressBean;
 import com.power.kitchen.bean.OrderInfoBean;
 import com.power.kitchen.bean.ResultBean;
 import com.power.kitchen.bean.UpLoadImgBean;
 import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.CommonPopupWindow;
-import com.power.kitchen.utils.GetJsonDataUtil;
+import com.power.kitchen.utils.ProgressDialogUtils;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.SelectedAreaPop;
 import com.power.kitchen.utils.TUtils;
@@ -76,14 +80,11 @@ import org.zackratos.ultimatebar.UltimateBar;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,7 +105,7 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
     @BindView(R.id.leixing_tv) TextView leixingTv;@BindView(R.id.jump_leixing_iv) RelativeLayout jumpLeixingIv;
     @BindView(R.id.xinghao_et) TextView xinghaoEt;@BindView(R.id.device_name_et) EditText deviceNameEt;
     @BindView(R.id.device_phone_et) EditText devicePhoneEt;@BindView(R.id.device_ctmc_et) EditText deviceCtmcEt;
-    @BindView(R.id.device_adress_tv) TextView deviceAdressTv;@BindView(R.id.jump_adress_iv) RelativeLayout jumpAdressIv;
+    @BindView(R.id.device_adress_tv) TextView deviceAdressTv;@BindView(R.id.jump_adress_iv) ImageView jumpAdressIv;
     @BindView(R.id.location_iv) ImageView locationIv;@BindView(R.id.detail_adress_et) EditText detailAdressEt;
     @BindView(R.id.problem_device_et) EditText problemDeviceEt;@BindView(R.id.cancle_btn) Button cancleBtn;
     @BindView(R.id.query_btn) Button queryBtn;@BindView(R.id.radiogroup) RadioGroup radiogroup;
@@ -124,11 +125,21 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
     private TimePickerView pvCustomLunar;
     private ArrayList<String> listExtra;//拍照报修传过来的图片路径
     private Intent intent;
-    private String brandNme, typeNme, brandId, typeId = "", tx, tips,sheng_id="",shi_id="",qu_id="";
+    private String brandNme, typeNme, brandId, typeId = "", tx, tips,sheng_id="",shi_id="",qu_id="",bd_lat,bd_lng;
     private List<AreaListsBean.DataBean> province_list = new ArrayList<>();
     private OrderInfoBean orderInfoBean;
     private List<String> srcList = new ArrayList<>();
     private int size = 0;
+    private InputMethodManager imm;
+
+    public LocationClient mLocationClient = null;
+    private BDLocationListener myListener = new MyLocationListener();
+    private GeoCoder geoCoder;
+
+    private ProgressDialogUtils pd;
+    private String first_areaName;
+    private boolean if_baoxiu;
+
 
     public static Intent newIntent(Context context, OrderInfoBean orderInfoBean) {
         Intent mIntent = new Intent(context, DeviceDetailsActivity.class);
@@ -161,13 +172,28 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
         setContentView(R.layout.activity_device_detail);
         ButterKnife.bind(this);
         initView();
+        initLocation();//百度地图定位
     }
 
     private void initView() {
+        pd = ProgressDialogUtils.show(this, "");
+
         contentTv.setText("报修详情");
         initListener();
         getIntentData();//上级拍照返回来的数据----图片的path路径
         initLunarPicker();//初始化时间选择器
+        if_baoxiu = SPUtils.getInstance().getBoolean("if_baoxiu", true);
+        if (if_baoxiu){
+            deviceNameEt.setText(SPUtils.getInstance().getString("first_name",""));
+            devicePhoneEt.setText(SPUtils.getInstance().getString("first_phone",""));
+            deviceCtmcEt.setText(SPUtils.getInstance().getString("first_company",""));
+            deviceAdressTv.setText(SPUtils.getInstance().getString("first_shengName",""));
+            detailAdressEt.setText(SPUtils.getInstance().getString("first_address",""));
+            sheng_id = SPUtils.getInstance().getString("first_shengId","");
+            shi_id = SPUtils.getInstance().getString("first_shiId","");
+            qu_id = SPUtils.getInstance().getString("first_quId","");
+        }
+
         /**
          * 添加照片adapter
          */
@@ -195,6 +221,7 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
             }
         });
         getData();
+        imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     /**
@@ -282,6 +309,7 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
         locationIv.setOnClickListener(this);
         cancleBtn.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
+        deviceAdressTv.setOnClickListener(this);
         requestAreaProvice();
     }
 
@@ -329,6 +357,9 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
                 finish();
                 break;
             case R.id.jump_date_iv://选择购买日期
+                if (imm != null){
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                }
                 pvCustomLunar.show();
                 break;
             case R.id.jump_pinpai_iv://选择品牌
@@ -342,26 +373,64 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
                 startActivityForResult(intent, 101);
                 break;
             case R.id.jump_adress_iv://选择所在区域
+                if (imm != null){
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                }
                 if(selectedAreaPop!=null){
                     setShowPop(selectedAreaPop, jumpAdressIv);
                 }
                 break;
-            case R.id.location_iv://定位
-                if(selectedAreaPop!=null){
-                    setShowPop(selectedAreaPop, locationIv);
+            case R.id.device_adress_tv:
+                if (imm != null){
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
                 }
+                if(selectedAreaPop!=null){
+                    setShowPop(selectedAreaPop, jumpAdressIv);
+                }
+            case R.id.location_iv://定位
+                mLocationClient.start();
                 break;
             case R.id.cancle_btn://取消报修
                 showTips();
                 break;
             case R.id.query_btn://确认报修
-                if (validate()) {
-                    if (list2.size() != 0){
-                        requestUploadImg();
-                    }else {
-                        requestOrderAdd();
-                    }
+                if (validate()){
+                    pd.show();
+                    geoCoder = GeoCoder.newInstance();
+                    String address = deviceAdressTv.getText().toString().trim()+detailAdressEt.getText().toString().trim();
+                    Logger.e(address);
+
+                    geoCoder.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
+                        @Override
+                        public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+                            if (geoCodeResult != null){
+                                Logger.e("地理编码查询结果" + geoCodeResult.getLocation());
+                                double latitude = geoCodeResult.getLocation().latitude;
+                                double longitude = geoCodeResult.getLocation().longitude;
+                                bd_lat = latitude+"";
+                                bd_lng = longitude+"";
+                            }else {
+                                bd_lat = SPUtils.getInstance().getString("latitude","");
+                                bd_lng = SPUtils.getInstance().getString("longitude","");
+                            }
+                            if (validate()) {
+                                if (list2.size() != 0){
+                                    requestUploadImg();
+                                }else {
+                                    requestOrderAdd();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+
+                        }
+                    });
+                    GeoCodeOption GeoOption = new GeoCodeOption().city("").address(address);
+                    geoCoder.geocode(GeoOption);
                 }
+
                 break;
         }
     }
@@ -534,8 +603,10 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
         map.put("shi_id",shi_id);
         map.put("qu_id",qu_id);
         map.put("address",detailAdressEt.getText().toString());
-        map.put("bd_lat",SPUtils.getInstance().getString("latitude",""));
-        map.put("bd_lng",SPUtils.getInstance().getString("longitude",""));
+        map.put("bd_lat",bd_lat);
+        Logger.e(bd_lat);
+        map.put("bd_lng",bd_lng);
+        Logger.e(bd_lng);
         map.put("code",deviceTxmEt.getText().toString());
         map.put("date",dateTv.getText().toString());
         map.put("is_warranty",temp);
@@ -552,6 +623,7 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
+        Logger.e("报修提交的参数："+values.toString());
 
         OkGo.<ResultBean>post(Urls.order_add)
                 .tag(this)
@@ -562,6 +634,16 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
                         ResultBean body = response.body();
                         if (TextUtils.equals("1",body.getStatus())){
                             TUtils.showShort(getApplicationContext(),body.getInfo());
+                            SPUtils.getInstance().putBoolean("if_baoxiu",true);
+                            SPUtils.getInstance().putString("first_name",deviceNameEt.getText().toString());
+                            SPUtils.getInstance().putString("first_phone",devicePhoneEt.getText().toString());
+                            SPUtils.getInstance().putString("first_company",deviceCtmcEt.getText().toString());
+                            SPUtils.getInstance().putString("first_shengName",first_areaName);
+                            SPUtils.getInstance().putString("first_shengId",sheng_id);
+                            SPUtils.getInstance().putString("first_shiId",shi_id);
+                            SPUtils.getInstance().putString("first_quId",qu_id);
+                            SPUtils.getInstance().putString("first_address",detailAdressEt.getText().toString());
+                            pd.cancel();
                             finish();
                         }else {
                             showTipsValidate(body.getInfo());
@@ -688,15 +770,28 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
                     selectList = PictureSelector.obtainMultipleResult(data);
+                    Logger.e(selectList.size()+"111111");
                     // 例如 LocalMedia 里面返回三种path
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
                     list2.addAll(selectList);
-                    list1.addAll(list2);
-                    addImgesAdpter.setList(list1);
-                    addImgesAdpter.notifyDataSetChanged();
+                    Logger.e(list2.size()+"3333333");
+                    selectList.clear();
+                    Logger.e(selectList.size()+"22222222");
+                    if (list1.size() != 0){
+                        Logger.e(list1.size()+"55555555");
+                        list1.addAll(list2);
+                        list2.clear();
+                        addImgesAdpter.setList(list1);
+                        addImgesAdpter.notifyDataSetChanged();
+                    }else {
+                        addImgesAdpter.setList(list2);
+                        Logger.e(list2.size()+"44444444444");
+                        addImgesAdpter.notifyDataSetChanged();
+                    }
+
                     break;
             }
         }
@@ -773,6 +868,7 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
     @Override
     public void onAreaClickListener(String areaName, String sheng_id, String shi_id, String qu_id) {
         deviceAdressTv.setText(areaName);
+        first_areaName = areaName;
         this.sheng_id=sheng_id;
         this.shi_id=shi_id;
         this.qu_id=qu_id;
@@ -783,4 +879,81 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
     public void onAreaClearListener() {
         selectedAreaPop.dismiss();
     }
+
+    private void initLocation() {
+        mLocationClient = new LocationClient(getApplicationContext());//声明LocationClient类
+        mLocationClient.registerLocationListener(myListener);//注册监听函数
+
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);// 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");// 可选，默认gcj02，设置返回的定位结果坐标系
+        int span = 0;
+        option.setScanSpan(span);// 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);// 可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);// 可选，默认false，设置是否当gps有效时按照1S1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true);// 可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);// 可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);// 可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);// 可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);// 可选，默认false，设置是否需要过滤gps仿真结果，默认需要
+        mLocationClient.setLocOption(option);
+    }
+
+
+    public class MyLocationListener implements BDLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation location){
+            int errorCode = location.getLocType();//获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
+            Logger.e(errorCode+"");
+            double latitude = location.getLatitude();    //获取纬度信息
+            double longitude = location.getLongitude();    //获取经度信息
+            float radius = location.getRadius();    //获取定位精度，默认值为0.0f
+            String coorType = location.getCoorType();//获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
+            mLocationClient.stop();
+            if (errorCode == 61 || errorCode == 66 || errorCode == 161){
+                SPUtils.getInstance().putString("latitude",String.valueOf(latitude));
+                SPUtils.getInstance().putString("longitude",String.valueOf(longitude));
+                Logger.e("纬度："+latitude+"\n经度："+longitude);
+                requestOrderAdress();
+            }else {
+                TUtils.showShort(getApplicationContext(),"百度地图定位失败，请检查网络操作后重试。");
+            }
+        }
+    }
+
+    private void requestOrderAdress() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        map.put("lat",SPUtils.getInstance().getString("latitude",""));
+        map.put("lng",SPUtils.getInstance().getString("longitude",""));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+        Logger.e("详细地址提交的参数："+values.toString());
+        OkGo.<OrderAdressBean>post(Urls.order_adress)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<OrderAdressBean>(DeviceDetailsActivity.this,OrderAdressBean.class) {
+                    @Override
+                    public void onSuccess(Response<OrderAdressBean> response) {
+                        OrderAdressBean orderAdressBean = response.body();
+                        if (TextUtils.equals("1",orderAdressBean.getStatus())){
+                            String sheng_name = orderAdressBean.getData().getSheng_name();
+                            sheng_id = orderAdressBean.getData().getSheng_id();
+                            String shi_name = orderAdressBean.getData().getShi_name();
+                            shi_id = orderAdressBean.getData().getShi_id();
+                            String qu_name = orderAdressBean.getData().getQu_name();
+                            qu_id = orderAdressBean.getData().getQu_id();
+                            deviceAdressTv.setText(sheng_name+" "+shi_name+" "+qu_name);
+                        }else {
+                            TUtils.showShort(getApplicationContext(),orderAdressBean.getInfo());
+                        }
+                    }
+                });
+    }
+
+
 }

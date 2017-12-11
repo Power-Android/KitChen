@@ -1,5 +1,6 @@
 package com.power.kitchen.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,9 +10,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,15 +62,17 @@ public class AddAdressActivity extends BaseActivity implements SelectedAreaPop.A
     @BindView(R.id.telnum_tv) EditText telnumTv;
     @BindView(R.id.adress_tv) TextView adressTv;
     @BindView(R.id.adress_iv) ImageView adressIv;
-    @BindView(R.id.location_iv) ImageView locationIv;
     @BindView(R.id.detailadress_tv) EditText detailadressTv;
     @BindView(R.id.moren_switchBtn) SwitchButton morenSwitchBtn;
     @BindView(R.id.gsmc_tv) EditText gsmcTv;
+    @BindView(R.id.adress_rl) RelativeLayout adress_rl;
 
     private UltimateBar ultimateBar;
     private int temp = 0;
     private String tips,sheng_id="",shi_id="",qu_id="";
     private SelectedAreaPop selectedAreaPop;
+    private InputMethodManager imm;
+
 
 
     @Override
@@ -83,6 +88,8 @@ public class AddAdressActivity extends BaseActivity implements SelectedAreaPop.A
         ButterKnife.bind(this);
         initViewAndListener();
         requestAreaProvice();
+        imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
     }
 
     private void requestAreaProvice() {
@@ -126,8 +133,7 @@ public class AddAdressActivity extends BaseActivity implements SelectedAreaPop.A
         titleRightTv.setVisibility(View.VISIBLE);
         backIv.setOnClickListener(this);
         titleRightTv.setOnClickListener(this);
-        adressIv.setOnClickListener(this);
-        locationIv.setOnClickListener(this);
+        adress_rl.setOnClickListener(this);
         setSwitchBtn();
     }
 
@@ -155,12 +161,10 @@ public class AddAdressActivity extends BaseActivity implements SelectedAreaPop.A
                     requestAreaAdd();
                 }
                 break;
-            case R.id.adress_iv:
-                if(selectedAreaPop!=null){
-                    setShowPop(selectedAreaPop, adressIv);
+            case R.id.adress_rl:
+                if (imm != null){
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
                 }
-                break;
-            case R.id.location_iv:
                 if(selectedAreaPop!=null){
                     setShowPop(selectedAreaPop, adressIv);
                 }

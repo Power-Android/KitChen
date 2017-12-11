@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.orhanobut.logger.Logger;
@@ -32,6 +31,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  */
 public class MyReceiver extends BroadcastReceiver {
 	private static final String TAG = "JIGUANG-Example";
+	private String message;
+	private String title;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -119,21 +120,23 @@ public class MyReceiver extends BroadcastReceiver {
 
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(context);
 		//这里我们可以获取到我们需要用到的东西
-		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);//获得服务端发送过来的消息内容
-		String title = bundle.getString(JPushInterface.EXTRA_TITLE);//获得服务端发送过来的标题
-
+		//获得服务端发送过来的消息内容
+//		message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+		//获得服务端发送过来的标题
+//		title = bundle.getString(JPushInterface.EXTRA_TITLE);
+		Analysis(bundle.getString(JPushInterface.EXTRA_MESSAGE));
 
 		//为notification设置文本内容为message，标题为title，小图标为系统启动路标
 		notification.setAutoCancel(true).setContentText(message).setContentTitle(title)
-				.setSmallIcon(R.drawable.ic_launcher);
+				.setSmallIcon(R.drawable.jpush_notification_icon);
 
 		//点击notification跳转到想打开的Activity
 		Intent mIntent = new Intent(context, MainActivity.class);
-
 		mIntent.putExtras(bundle);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, mIntent, 0);
-
 		notification.setContentIntent(pendingIntent);
+
+
 		//为notification设置一个自定义铃声
 		notification.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.music));
 		notificationManager.notify(2, notification.build());
@@ -155,5 +158,35 @@ public class MyReceiver extends BroadcastReceiver {
 			}
 			LocalBroadcastManager.getInstance(context).sendBroadcast(msgIntent);
 		}*/
+	}
+
+	private void Analysis(String data){
+
+		try {
+			JSONObject jo = new JSONObject(data);
+
+			String sms_type = jo.getString("sms_type");
+			if("accept".equals(sms_type)){
+				title="您的订单已被接单";
+				String oid = jo.getString("oid");
+				message="订单编号："+oid;
+			}else if("ok_order".equals(sms_type)){
+				title="已完成订单变更";
+				String oid = jo.getString("oid");
+				message="订单编号："+oid;
+			}else if("no_order".equals(sms_type)){
+				title="未完成订单变更";
+				String oid = jo.getString("oid");
+				message="订单编号："+oid;
+			}else if("payok".equals(sms_type)){
+				title="维修订单支付完成";
+				String oid = jo.getString("oid");
+				message="订单编号："+oid;
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

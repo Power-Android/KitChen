@@ -78,4 +78,12 @@ public class Urls {
     public static final String verify_img = api_url + "/Api/Oauth/verify_img.html";
     //支付宝支付
     public static final String alipay_data = api_url + "/Api/Apppay/alipay_params_data.html";
+    //微信支付
+    public static final String wechat_pay = api_url + "/Api/Apppay/weixin_params_data.html";
+    //获取默认地址
+    public static final String order_adress = api_url + "/Api/UserOrder/order_address.html";
+    //通知数量
+    public static final String notice_num = api_url + "/Api/UserNotice/notice_num.html";
+    //首页背景图
+    public static final String background = api_url + "/Api/BackGround/index.html";
 }

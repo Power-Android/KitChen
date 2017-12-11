@@ -13,9 +13,6 @@ public class SPUtils {
 
     private static final String SP_NAME = "sclm_sp";
 
-    private static final List<String> citys = new ArrayList<String>();
-    private static final List<String> abcList = new ArrayList<String>();
-
     private static SPUtils instance = new SPUtils();
 
     public SPUtils() {
@@ -161,35 +158,6 @@ public class SPUtils {
         }
     }
 
-
-    public void putCity(String key, String city){
-        if(!citys.contains(city)){
-            if(citys.size()<=2){
-                citys.add(0,city);
-            }else{
-                citys.remove(2);
-                citys.add(0,city);
-
-            }
-        }
-
-        String str = listToString(citys);
-        try {
-            android.content.SharedPreferences sp = getSp();
-            if (sp != null) {
-                Editor e = sp.edit();
-                e.putString(key, str);
-                e.commit();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-
-    }
-
     public String listToString(List<String> stringList){
         if (stringList==null) {
             return null;
@@ -205,26 +173,5 @@ public class SPUtils {
             result.append(string);
         }
         return result.toString();
-    }
-
-
-    public List<String> getSaveCity(String key){
-
-        abcList.clear();
-        String result = getString(key, "");
-        if(!TextUtils.isEmpty(result)){
-            if(!result.contains(",")){
-                abcList.add(result);
-            }else{
-                String[] array = result.split(",");
-
-                for (String str : array)
-                {
-                    abcList.add(str);
-                }
-            }
-        }
-
-        return abcList;
     }
 }

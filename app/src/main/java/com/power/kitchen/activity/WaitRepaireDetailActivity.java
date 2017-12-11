@@ -1,6 +1,7 @@
 package com.power.kitchen.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -97,6 +98,7 @@ public class WaitRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.if_jiedan_content_tv) TextView ifJieDanContentTv;
     private UltimateBar ultimateBar;
     private String oid;
+    private Intent intent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +118,8 @@ public class WaitRepaireDetailActivity extends BaseActivity {
         backIv.setOnClickListener(this);
         ggtCancleIv.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
+        shifuPhone.setOnClickListener(this);
+        phoneTv.setOnClickListener(this);
         yijiedanView.setVisibility(View.GONE);
         yijiedanView01.setVisibility(View.VISIBLE);
         weiwanchengView01.setVisibility(View.VISIBLE);
@@ -237,10 +241,20 @@ public class WaitRepaireDetailActivity extends BaseActivity {
                 ggtIv.setVisibility(View.GONE);
                 break;
             case R.id.query_btn:
-                Intent intent = new Intent(this,CancleRepaireActivity.class);
+                intent = new Intent(this,CancleRepaireActivity.class);
                 intent.putExtra("oid",oid);
                 startActivity(intent);
                 finish();
+                break;
+            case R.id.shifu_phone:
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+shifuPhone.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            case R.id.phone_tv:
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phoneTv.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
         }
     }

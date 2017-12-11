@@ -5,12 +5,14 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.icu.text.IDNA;
+import android.text.TextUtils;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.SDKInitializer;
 import com.kingja.loadsir.core.LoadSir;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -31,7 +33,11 @@ import com.power.kitchen.callback.ErrorCallback;
 import com.power.kitchen.callback.LoadingCallback;
 import com.power.kitchen.callback.TimeoutCallback;
 import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.TUtils;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -50,9 +56,6 @@ public class MyApplication extends Application {
     private static MyApplication mApplication;
     private static LinkedList<Activity> activityStack;
     public static Context APP_CONTEXT;
-
-    public LocationClient mLocationClient = null;
-    private BDLocationListener myListener = new MyLocationListener();
 
 
     public MyApplication() {
@@ -77,51 +80,12 @@ public class MyApplication extends Application {
         setOkGo();//OkGo----第三方网络框架
         setLoadSir();//管理状态框架
         setLogger();//Logger---第三方日志打印
-        initLocation();//百度地图定位
-        mLocationClient.start();
-
+        SDKInitializer.initialize(this);
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
-    }
-
-    private void initLocation() {
-        mLocationClient = new LocationClient(getApplicationContext());//声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);//注册监听函数
-
-        LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);// 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        option.setCoorType("bd09ll");// 可选，默认gcj02，设置返回的定位结果坐标系
-        int span = 0;
-        option.setScanSpan(span);// 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
-        option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
-        option.setOpenGps(true);// 可选，默认false,设置是否使用gps
-        option.setLocationNotify(true);// 可选，默认false，设置是否当gps有效时按照1S1次频率输出GPS结果
-        option.setIsNeedLocationDescribe(true);// 可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
-        option.setIsNeedLocationPoiList(true);// 可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
-        option.setIgnoreKillProcess(false);// 可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
-        option.SetIgnoreCacheException(false);// 可选，默认false，设置是否收集CRASH信息，默认收集
-        option.setEnableSimulateGps(false);// 可选，默认false，设置是否需要过滤gps仿真结果，默认需要
-        mLocationClient.setLocOption(option);
-    }
-
-    public class MyLocationListener implements BDLocationListener {
-        @Override
-        public void onReceiveLocation(BDLocation location){
-
-            double latitude = location.getLatitude();    //获取纬度信息
-            Logger.e(String.valueOf(latitude));
-            SPUtils.getInstance().putString("latitude",String.valueOf(latitude));
-            double longitude = location.getLongitude();    //获取经度信息
-            Logger.e(String.valueOf(longitude));
-            SPUtils.getInstance().putString("longitude",String.valueOf(longitude));
-            float radius = location.getRadius();    //获取定位精度，默认值为0.0f
-            Logger.e(radius+"");
-            String coorType = location.getCoorType();//获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
-            Logger.e(coorType+"");
-            int errorCode = location.getLocType();
-            Logger.e(errorCode+"");//获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
-            mLocationClient.stop();
-        }
+        final IWXAPI msgApi = WXAPIFactory.createWXAPI(this, null);
+        // 将该app注册到微信
+        msgApi.registerApp("wx7556840f3ffa87a0");
     }
 
     /**

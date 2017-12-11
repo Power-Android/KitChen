@@ -5,24 +5,35 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
 import com.power.kitchen.adapter.CommentTabAdapter;
 import com.power.kitchen.app.BaseActivity;
+import com.power.kitchen.bean.NoticeNumBean;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.fragment.RepaireMessageFragment;
 import com.power.kitchen.fragment.SystemMessageFragment;
 import com.power.kitchen.utils.NoScrollViewPager;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.Urls;
 
+import org.json.JSONObject;
 import org.zackratos.ultimatebar.UltimateBar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +73,6 @@ public class MyMessageActivity extends BaseActivity {
     private void initView() {
         contentTv.setText("消息中心");
         backIv.setOnClickListener(this);
-
         messageTablayout.post(new Runnable() {
             @Override
             public void run() {
@@ -131,6 +141,8 @@ public class MyMessageActivity extends BaseActivity {
         switch (view.getId()){
             case R.id.back_iv:
                 finish();
+                break;
+            default:
                 break;
         }
     }

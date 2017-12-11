@@ -1,8 +1,10 @@
 package com.power.kitchen.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,13 +13,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.bean.SendSmsBean;
 import com.power.kitchen.callback.DialogCallback;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
@@ -29,6 +35,7 @@ import org.zackratos.ultimatebar.UltimateBar;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +64,7 @@ public class PwdRetrievalActivity extends BaseActivity {
     @BindView(R.id.retrieval_btn) Button retrievalBtn;
     private UltimateBar ultimateBar;
     private String tips;
+    private String yzmCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +89,7 @@ public class PwdRetrievalActivity extends BaseActivity {
         lookQuerypwdIv.setOnClickListener(this);
         retrievalYzmIv.setOnClickListener(this);
         retrievalBtn.setOnClickListener(this);
+        requestVerifyImg();
     }
 
     @Override
@@ -91,7 +100,17 @@ public class PwdRetrievalActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.get_yzm_tv://获取验证码
-                timer.start();
+                if (TextUtils.isEmpty(retrievalPhoneEt.getText().toString())){
+                    tips = "请填写手机号！";
+                    showTipsValidate(tips);
+                    return;
+                }
+                if (retrievalPhoneEt.getText().length() != 11){
+                    tips = "请输入正确手机号！";
+                    showTipsValidate(tips);
+                    return;
+                }
+                requestSendSms();
                 break;
             case R.id.look_retrievalpwd_iv://显示/隐藏密码
                 pwdShow(retrievalPwdEt,lookRetrievalpwdIv);
@@ -100,6 +119,7 @@ public class PwdRetrievalActivity extends BaseActivity {
                 pwdShow(retrievalQuerypwdEt,lookQuerypwdIv);
                 break;
             case R.id.retrieval_yzm_iv://请求验证码图片
+                requestVerifyImg();
                 break;
             case R.id.retrieval_btn://修改密码
                 if (validate()){
@@ -113,6 +133,11 @@ public class PwdRetrievalActivity extends BaseActivity {
         tips = "";
         if (TextUtils.isEmpty(retrievalPhoneEt.getText().toString())) {
             tips = "请填写手机号！";
+            showTipsValidate(tips);
+            return false;
+        }
+        if (!TextUtils.equals(yzmCode,retrievalYzmivEt.getText().toString())){
+            tips = "验证码错误！";
             showTipsValidate(tips);
             return false;
         }
@@ -187,11 +212,67 @@ public class PwdRetrievalActivity extends BaseActivity {
                 .show();
     }
 
+    private void requestVerifyImg() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("height","70");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<SendSmsBean>post(Urls.verify_img)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<SendSmsBean>(SendSmsBean.class) {
+                    @Override
+                    public void onSuccess(Response<SendSmsBean> response) {
+                        SendSmsBean verifyBean = response.body();
+                        if (TextUtils.equals("1",verifyBean.getStatus())){
+                            String src = verifyBean.getData().getSrc();
+                            Glide.with(PwdRetrievalActivity.this)
+                                    .load(src)
+                                    .into(retrievalYzmIv);
+                            yzmCode = verifyBean.getData().getCode();
+                            Logger.e(yzmCode);
+                        }
+                    }
+                });
+    }
+
+    private void requestSendSms() {
+        Map<String,String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("mobile",retrievalPhoneEt.getText().toString());
+        map.put("type","user_back");
+        map.put("flag",getUUID(this));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<SendSmsBean>post(Urls.send_sms)
+                .tag(this)
+                .params(params)
+                .execute(new DialogCallback<SendSmsBean>(this,SendSmsBean.class) {
+                    @Override
+                    public void onSuccess(Response<SendSmsBean> response) {
+                        SendSmsBean sendSmsBean = response.body();
+                        if (TextUtils.equals("1",sendSmsBean.getStatus())){
+                            TUtils.showShort(getApplicationContext(),sendSmsBean.getInfo());
+                            timer.start();
+                        }else {
+                            TUtils.showShort(getApplicationContext(),sendSmsBean.getInfo());
+                        }
+                    }
+                });
+    }
+
     private void requestResetPwd() {
         Map<String, String> map = new HashMap<>();
         map.put("app_id", SPUtils.getInstance().getString("app_id",""));
         map.put("token",SPUtils.getInstance().getString("token",""));
-        map.put("mobile",SPUtils.getInstance().getString("mobile",""));
+        map.put("mobile",retrievalPhoneEt.getText().toString());
         map.put("password",retrievalPwdEt.getText().toString());
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -208,7 +289,7 @@ public class PwdRetrievalActivity extends BaseActivity {
                             TUtils.showShort(getApplicationContext(),resultBean.getInfo());
                             finish();
                         }else {
-                            TUtils.showShort(getApplicationContext(),resultBean.getInfo());
+                            showTipsValidate(resultBean.getInfo());
                         }
                     }
                 });
@@ -224,13 +305,13 @@ public class PwdRetrievalActivity extends BaseActivity {
 
         int type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
         if(editText.getInputType() == type){//密码可见
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_gone_pwd));
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_eye_gary));
             editText.setSelection(editText.getText().length());     //把光标设置到当前文本末尾
 
         }else{
             editText.setInputType(type);
-            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_eye_gary));
+            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_gone_pwd));
             editText.setSelection(editText.getText().length());
         }
     }
@@ -251,5 +332,24 @@ public class PwdRetrievalActivity extends BaseActivity {
             getYzmTv.setText("获取验证码");
         }
     };
+
+    /**
+     * 获取设备唯一标识
+     * @param context
+     * @return
+     */
+    public static String getUUID(Context context) {
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        final String tmDevice, tmSerial, tmPhone, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String uniqueId = deviceUuid.toString();
+
+        return uniqueId;
+    }
 
 }

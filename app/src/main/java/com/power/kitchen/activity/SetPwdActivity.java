@@ -213,7 +213,7 @@ public class SetPwdActivity extends BaseActivity {
 
         int type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
         if(editText.getInputType() == type){//密码可见
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_gone_pwd));
             editText.setSelection(editText.getText().length());     //把光标设置到当前文本末尾
 

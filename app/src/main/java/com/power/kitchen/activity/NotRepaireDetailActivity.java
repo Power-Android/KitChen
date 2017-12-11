@@ -1,6 +1,7 @@
 package com.power.kitchen.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -83,6 +84,7 @@ public class NotRepaireDetailActivity extends BaseActivity {
     private String oid;
     private OrderInfoBean orderInfoBean;
     public static boolean flag = false;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,8 @@ public class NotRepaireDetailActivity extends BaseActivity {
         backIv.setOnClickListener(this);
         ggtCancleIv.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
+        shifuPhoneTv.setOnClickListener(this);
+        phoneTv.setOnClickListener(this);
         oid = getIntent().getStringExtra("oid");
         scrollView.smoothScrollBy(0,0);
         requestOrderInfo();
@@ -209,6 +213,16 @@ public class NotRepaireDetailActivity extends BaseActivity {
                 break;
             case R.id.ggt_cancle_iv:
                 ggtIv.setVisibility(View.GONE);
+                break;
+            case R.id.shifu_phone:
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+shifuPhoneTv.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            case R.id.phone_tv:
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phoneTv.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
         }
     }

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
+import com.kingja.loadsir.callback.SuccessCallback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
 import com.liaoinstan.springview.container.DefaultFooter;
@@ -32,6 +33,7 @@ import com.power.kitchen.adapter.WaitRepairAdapter;
 import com.power.kitchen.app.BaseFragment;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
 import com.power.kitchen.callback.JsonCallback;
@@ -86,7 +88,7 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
                 .addCallback(new ErrorCallback())
                 .addCallback(new TimeoutCallback())
                 .addCallback(new LoadingCallback())
-                .setDefaultCallback(LoadingCallback.class)
+                .setDefaultCallback(SuccessCallback.class)
                 .build();
         loadService = loadSir.register(view, new Callback.OnReloadListener() {
             @Override
@@ -109,6 +111,10 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
     @Override
     protected void lazyFetchData() {
         super.lazyFetchData();
+        if (!listAll.isEmpty()){
+            listAll.clear();
+        }
+        p = 1;
         requestOrderList();
     }
 
@@ -126,7 +132,7 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
         OkGo.<OrderListBean>post(Urls.order_lists)
                 .tag(this)
                 .params(params)
-                .execute(new JsonCallback<OrderListBean>(OrderListBean.class) {
+                .execute(new DialogCallback<OrderListBean>(getActivity(),OrderListBean.class) {
                     @Override
                     public void onSuccess(Response<OrderListBean> response) {
                         OrderListBean orderListBean = response.body();
@@ -136,9 +142,14 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
                             if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                adapter = new NotRepaireAdapter(getActivity(),listAll);
-                                notList.setAdapter(adapter);
-                                loadService.showSuccess();
+                                if (p == 1){
+                                    adapter = new NotRepaireAdapter(getActivity(),listAll);
+                                    notList.setAdapter(adapter);
+                                }else {
+                                    adapter.notifyDataSetChanged();
+                                }
+//                                loadService.showSuccess();
+                                p = p + 1;
                                 notList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -148,6 +159,7 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
                                         startActivity(intent);
                                     }
                                 });
+                                springView.onFinishFreshAndLoad();
                             }
                         }else {
                             TUtils.showShort(getActivity().getApplicationContext(),orderListBean.getInfo());
@@ -171,17 +183,11 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
                 if (!listAll.isEmpty()){
                     listAll.clear();
                 }
                 p = 1;
                 requestOrderList();
-                springView.onFinishFreshAndLoad();
-            }
-        }, 1000);
     }
 
     @Override
@@ -193,10 +199,8 @@ public class NotRepairTabFragment extends BaseFragment implements SpringView.OnF
                     p = 1;
                     adapter.notifyDataSetChanged();
                 }else {
-                    p = p + 1;
                     requestOrderList();
                 }
-                springView.onFinishFreshAndLoad();
             }
         }, 1000);
     }

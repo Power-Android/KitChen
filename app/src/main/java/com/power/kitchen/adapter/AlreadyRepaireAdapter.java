@@ -64,16 +64,16 @@ public class AlreadyRepaireAdapter extends BaseAdapter {
         viewHolder.leixingTv.setText(list.get(position).getGoods_type_name());
         viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
         String status_pay = list.get(position).getStatus_pay();
-        if (TextUtils.equals("0",status_pay)){
-            viewHolder.isJiedanTv.setText("待支付");
-        }else {
-            viewHolder.isJiedanTv.setText("已维修");
-        }
         String goods_is_warranty = list.get(position).getGoods_is_warranty();
         if (TextUtils.equals("1",goods_is_warranty)){
             viewHolder.isBaoxiuTv.setText("保修期内");
         }else {
             viewHolder.isBaoxiuTv.setText("保修期外");
+        }
+        if (TextUtils.equals("0",status_pay) && TextUtils.equals("0",goods_is_warranty)){
+            viewHolder.isJiedanTv.setText("待支付");
+        }else {
+            viewHolder.isJiedanTv.setText("已维修");
         }
         viewHolder.nameTv01.setText(list.get(position).getGoods_code());
         viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));

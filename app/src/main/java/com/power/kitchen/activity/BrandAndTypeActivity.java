@@ -261,7 +261,6 @@ public class BrandAndTypeActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra("brandName",brand_name);
                 intent.putExtra("typeName",type_name);
-                Logger.e(type_name);
                 intent.putExtra("brandId",brand_id);
                 intent.putExtra("typeId",type_id);
                 setResult(101,intent);

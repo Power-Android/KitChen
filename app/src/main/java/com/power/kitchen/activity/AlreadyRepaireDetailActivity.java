@@ -1,7 +1,11 @@
 package com.power.kitchen.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +32,7 @@ import com.power.kitchen.app.BaseActivity;
 import com.power.kitchen.bean.AliPayAcceptBean;
 import com.power.kitchen.bean.OrderInfoBean;
 import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.bean.WeChatBean;
 import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.AuthResult;
@@ -37,6 +42,11 @@ import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.TimeUtils;
 import com.power.kitchen.utils.Urls;
 import com.power.kitchen.view.MyGridView;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.wevey.selector.dialog.DialogInterface;
+import com.wevey.selector.dialog.NormalAlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,12 +96,16 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
     @BindView(R.id.albb_rl) RelativeLayout albbRl;@BindView(R.id.albb_select_iv) ImageView albbSelectIv;
     @BindView(R.id.yinlian_rl) RelativeLayout yinlianRl;@BindView(R.id.yinlian_select_iv) ImageView yinlianSelectIv;
     @BindView(R.id.pay_tv) TextView payTv;@BindView(R.id.yijiedan_view01) LinearLayout yijiedanView01;
+    @BindView(R.id.pay_typeName) TextView payTypeNameTv;
 
     private UltimateBar ultimateBar;
     private String oid, status_pay, flag;
     private String orderInfo;
     private static final int SDK_PAY_FLAG = 1;
     private static final int SDK_AUTH_FLAG = 2;
+    private String goods_is_warranty;
+    private IWXAPI api;
+    private Intent intent;
 
 
     @Override
@@ -106,12 +120,13 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_not_repaire_detail);
         ButterKnife.bind(this);
         initView();
+        api = WXAPIFactory.createWXAPI(this,"wx7556840f3ffa87a0");
     }
 
     private void initView() {
         status_pay = getIntent().getStringExtra("status_pay");
-        Logger.e(status_pay);
-        if (TextUtils.equals("0", status_pay)){
+        goods_is_warranty = getIntent().getStringExtra("goods_is_warranty");
+        if (TextUtils.equals("0", status_pay) && TextUtils.equals("0", goods_is_warranty)){
             contentTv.setText("待支付");
             yiweixiuDaizhifuView.setVisibility(View.VISIBLE);
             queryBtn.setText("去支付");
@@ -131,6 +146,8 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
         weichatRl.setOnClickListener(this);
         albbRl.setOnClickListener(this);
         yinlianRl.setOnClickListener(this);
+        shifuPhone.setOnClickListener(this);
+        phoneTv.setOnClickListener(this);
         String commentOid = getIntent().getStringExtra("comment_oid");
         if (!TextUtils.isEmpty(commentOid)){
             requestOrderInfo(commentOid);
@@ -154,13 +171,19 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                 .tag(this)
                 .params(params)
                 .execute(new DialogCallback<OrderInfoBean>(this, OrderInfoBean.class) {
+
+                    private float peijian_privice;
+
                     @Override
                     public void onSuccess(Response<OrderInfoBean> response) {
                         OrderInfoBean orderInfoBean = response.body();
+                        if (TextUtils.equals("1",goods_is_warranty)){
+                            yiwanchengView01.setVisibility(View.GONE);
+                        }
                         if (TextUtils.equals("1", orderInfoBean.getStatus())) {
                             String status_comment = orderInfoBean.getData().getInfo().getStatus_comment();
                             if (TextUtils.equals("1",status_comment)){
-                                queryBtn.setText("去评价");
+                                queryLl.setVisibility(View.GONE);
                                 pingjiaView.setVisibility(View.VISIBLE);
                                 pingjiaChengduTv.setText(orderInfoBean.getData().getComment().getLevel_name());
                                 if (TextUtils.isEmpty(orderInfoBean.getData().getComment().getContent())){
@@ -168,11 +191,21 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                                 }else {
                                     pingjiaMiaoshuTv.setText(orderInfoBean.getData().getComment().getContent());
                                 }
+                            } else if (TextUtils.equals("0",status_comment) && TextUtils.equals("0",status_pay) && TextUtils.equals("0", goods_is_warranty)){
+                                queryBtn.setText("去支付");
+                                queryLl.setVisibility(View.VISIBLE);
                             }else {
+                                queryBtn.setText("去评价");
                                 queryLl.setVisibility(View.VISIBLE);
                             }
-                            payMoneyTv.setText(orderInfoBean.getData().getInfo().getPrice());
-                            payTv.setText(orderInfoBean.getData().getInfo().getPrice());
+                            float price = Float.parseFloat(orderInfoBean.getData().getInfo().getPrice());
+                            if (!TextUtils.isEmpty(orderInfoBean.getData().getInfo().getPeijian_price())){
+                                peijian_privice = Float.parseFloat(orderInfoBean.getData().getInfo().getPeijian_price());
+                            }
+                            float money = price + peijian_privice;
+                            payMoneyTv.setText("￥"+price);
+                            payTv.setText("￥"+price);
+                            payTypeNameTv.setText(orderInfoBean.getData().getInfo().getPay_type_name());
                             payFangshiTv.setText(orderInfoBean.getData().getInfo().getPay_type_name());
                             payTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getPay_time()));
                             deviceTxmEt.setText(orderInfoBean.getData().getInfo().getOid());
@@ -247,15 +280,19 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.query_btn:
-                if (TextUtils.equals("0",status_pay)){
-                    if (TextUtils.equals("1",flag)){
-                        TUtils.showShort(getApplicationContext(),"微信支付");
-                    }
-                    if (TextUtils.equals("2",flag)){
-                        requestAliPay();
-                    }
-                    if (TextUtils.equals("3",flag)){
-                        TUtils.showShort(getApplicationContext(),"银联支付");
+                if (TextUtils.equals("去支付",queryBtn.getText().toString())){
+                    if (TextUtils.equals("0",status_pay) && TextUtils.equals("0",goods_is_warranty)){
+                        if (TextUtils.equals("1",flag)){
+                            if (isWeixinAvilible(this)){
+                                requestWeChatPay();
+                            }
+                        }
+                        if (TextUtils.equals("2",flag)){
+                            requestAliPay();
+                        }
+                        if (TextUtils.equals("3",flag)){
+                            TUtils.showShort(getApplicationContext(),"银联支付");
+                        }
                     }
                 }else {
                     Intent intent = new Intent(this,RepaireCommentActivity.class);
@@ -285,7 +322,67 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                 yinlianSelectIv.setVisibility(View.VISIBLE);
                 flag = "3";
                 break;
+            case R.id.shifu_phone:
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+shifuPhone.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            case R.id.phone_tv:
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phoneTv.getText().toString()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
         }
+    }
+
+    //判断用户是否安装微信
+    public static boolean isWeixinAvilible(Context context) {
+        final PackageManager packageManager = context.getPackageManager();// 获取packagemanager
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);// 获取所有已安装程序的包信息
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                if (pn.equals("com.tencent.mm")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void requestWeChatPay() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id",SPUtils.getInstance().getString("app_id",""));
+        map.put("token",SPUtils.getInstance().getString("token",""));
+        map.put("type","weixiu");
+        map.put("oid",oid);
+        map.put("ip","127.0.0.0");
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<WeChatBean>post(Urls.wechat_pay)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<WeChatBean>(WeChatBean.class) {
+                    @Override
+                    public void onSuccess(Response<WeChatBean> response) {
+                        WeChatBean weChatBean = response.body();
+                        if (TextUtils.equals("1",weChatBean.getStatus())){
+
+                            PayReq request = new PayReq();
+                            request.appId = weChatBean.getData().getAppid();
+                            request.partnerId = weChatBean.getData().getPartnerid();
+                            request.prepayId= weChatBean.getData().getPrepayid();
+                            request.packageValue = "Sign=WXPay";
+                            request.nonceStr= weChatBean.getData().getNoncestr();
+                            request.timeStamp= weChatBean.getData().getTimestamp();
+                            request.sign= weChatBean.getData().getSign();
+                            api.sendReq(request);
+                            finish();
+                        }
+                    }
+                });
     }
 
     private void requestAliPay() {
@@ -325,7 +422,7 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                             payThread.start();
 
                         }else {
-                            TUtils.showShort(getApplicationContext(),aliPayAcceptBean.getInfo());
+                            showTipsValidate(aliPayAcceptBean.getInfo());
                         }
                     }
                 });
@@ -360,5 +457,26 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
             }
         }
     };
+
+    private void showTipsValidate(String tips) {
+        new NormalAlertDialog.Builder(this).setHeight(0.23f)  //屏幕高度*0.23
+                .setWidth(0.65f)  //屏幕宽度*0.65
+                .setTitleVisible(true).setTitleText("提示")
+                .setTitleTextColor(R.color.text_color01)
+                .setContentText(tips)
+                .setContentTextColor(R.color.text_color02)
+                .setSingleMode(true).setSingleButtonText("确定")
+                .setSingleButtonTextColor(R.color.green01)
+                .setCanceledOnTouchOutside(false)
+                .setSingleListener(new DialogInterface.OnSingleClickListener<NormalAlertDialog>() {
+                    @Override
+                    public void clickSingleButton(NormalAlertDialog dialog, View view) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .build()
+                .show();
+    }
 
 }

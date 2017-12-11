@@ -23,12 +23,13 @@ import com.power.kitchen.bean.CitysBean;
 import com.power.kitchen.bean.ResultBean;
 import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.weight.widget.OnWheelChangedListener;
+import com.power.kitchen.weight.widget.OnWheelScrollListener;
 import com.power.kitchen.weight.widget.WheelView;
 import com.power.kitchen.weight.widget.adapters.ArrayWheelAdapter;
 
 import org.json.JSONObject;
 
-public class SelectedAreaPop extends PopupWindow implements OnClickListener, OnWheelChangedListener {
+public class SelectedAreaPop extends PopupWindow implements OnClickListener, OnWheelChangedListener,OnWheelScrollListener {
 
 	private Context context;
 	
@@ -105,8 +106,10 @@ public class SelectedAreaPop extends PopupWindow implements OnClickListener, OnW
 	private void setUpListener() {
     	// 添加change事件
     	mViewProvince.addChangingListener(this);
+		mViewProvince.addScrollingListener(this);
     	// 添加change事件
     	mViewCity.addChangingListener(this);
+		mViewCity.addScrollingListener(this);
     	// 添加change事件
     	mViewDistrict.addChangingListener(this);
     	// 添加onclick事件
@@ -128,14 +131,15 @@ public class SelectedAreaPop extends PopupWindow implements OnClickListener, OnW
 	public void onChanged(WheelView wheel, int oldValue, int newValue) {
 		// TODO Auto-generated method stub
 		if (wheel == mViewProvince) {
-			updateCities();
+//			updateCities();
 		} else if (wheel == mViewCity) {
-			updateAreas();
+//			updateAreas();
 		} else if (wheel == mViewDistrict) {
 			mCurrentDistrictName=Dareas.get(newValue).name;
 			qu_id=Dareas.get(newValue).area_id;
 		}
 	}
+
 	/**
 	 * 根据当前的市，更新区WheelView的信息
 	 */
@@ -179,6 +183,23 @@ public class SelectedAreaPop extends PopupWindow implements OnClickListener, OnW
 		sb.append(mCurrentProviceName+" "+mCurrentCityName+" "+mCurrentDistrictName);
 		areaClickListener.onAreaClickListener(sb.toString(), sheng_id, shi_id, qu_id);
 
+	}
+
+	@Override
+	public void onScrollingStarted(WheelView wheel) {
+
+	}
+
+	@Override
+	public void onScrollingFinished(WheelView wheel) {
+		if (wheel == mViewProvince) {
+			updateCities();
+		} else if (wheel == mViewCity) {
+			updateAreas();
+		} else if (wheel == mViewDistrict) {
+//			mCurrentDistrictName=Dareas.get(newValue).name;
+//			qu_id=Dareas.get(newValue).area_id;
+		}
 	}
 
 
@@ -253,11 +274,15 @@ public class SelectedAreaPop extends PopupWindow implements OnClickListener, OnW
 								areas.add(area);
 							}
 							Dareas = areas;
+
+							mCurrentDistrictName=Dareas.get(0).name;
+							qu_id=Dareas.get(0).area_id;
+
 							mViewDistrict.setViewAdapter(new ArrayWheelAdapter(context, Dareas));
 							mViewDistrict.setCurrentItem(0);
 						}
 					}
 				});
 	}
-	
+
 }

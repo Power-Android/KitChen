@@ -395,10 +395,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/gary_hint"
-                    android:singleLine="true"
-                    android:maxLength="15"
-                    android:ellipsize="end"
                     android:background="@null"
+                    android:maxLines="2"
+                    android:gravity="start"
                     android:layout_marginLeft="40dp"
                     android:hint="请填写公司名称"
                     android:layout_alignBaseline="@+id/tv_09"
@@ -414,7 +413,6 @@
                 android:layout_marginRight="10dp"
                 android:background="@color/hint" />
             <RelativeLayout
-                android:id="@+id/jump_adress_iv"
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
                 <ImageView
@@ -440,8 +438,10 @@
                     android:layout_centerVertical="true"
                     android:singleLine="true"
                     android:layout_marginLeft="40dp"
+                    android:layout_toLeftOf="@+id/jump_adress_iv"
                     android:layout_toRightOf="@+id/tv_10"/>
                 <ImageView
+                    android:id="@+id/jump_adress_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -459,10 +459,15 @@
                     android:padding="10dp"
                     android:src="@mipmap/kc_dingwei_icon" />
             </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -484,9 +489,8 @@
                     android:layout_centerVertical="true"
                     style="@style/gary_hint"
                     android:background="@null"
-                    android:singleLine="true"
-                    android:maxLength="17"
-                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="2"
                     android:layout_marginLeft="40dp"
                     android:layout_toRightOf="@+id/tv_11"
                     android:hint="精确到街道和门牌号"/>

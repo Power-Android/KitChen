@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingja.loadsir.callback.Callback;
+import com.kingja.loadsir.callback.SuccessCallback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
 import com.liaoinstan.springview.widget.SpringView;
@@ -27,6 +28,7 @@ import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.bean.MessageBean;
 import com.power.kitchen.bean.NoticeOrderListBean;
 import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.EmptyCallback;
 import com.power.kitchen.callback.ErrorCallback;
 import com.power.kitchen.callback.JsonCallback;
@@ -58,8 +60,10 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
     Unbinder unbinder;
     private View view;
     private LoadService loadService;
-    private List<NoticeOrderListBean.DataBean.ListsBean> list;
-
+    private List<NoticeOrderListBean.DataBean.ListsBean> list = new ArrayList<>();
+    private List<NoticeOrderListBean.DataBean.ListsBean> listAll = new ArrayList<>();
+    private int p = 1;
+    private MessageAdapter adapter;
 
     @Nullable
     @Override
@@ -100,7 +104,7 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
                 .addCallback(new ErrorCallback())
                 .addCallback(new TimeoutCallback())
                 .addCallback(new LoadingCallback())
-                .setDefaultCallback(LoadingCallback.class)
+                .setDefaultCallback(SuccessCallback.class)
                 .build();
         loadService = loadSir.register(view, new Callback.OnReloadListener() {
             @Override
@@ -117,7 +121,7 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
         map.put("app_id", SPUtils.getInstance().getString("app_id",""));
         map.put("token",SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
@@ -125,27 +129,34 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
         OkGo.<NoticeOrderListBean>post(Urls.notice_order_list)
                 .tag(this)
                 .params(params)
-                .execute(new JsonCallback<NoticeOrderListBean>(NoticeOrderListBean.class) {
+                .execute(new DialogCallback<NoticeOrderListBean>(getActivity(),NoticeOrderListBean.class) {
                     @Override
                     public void onSuccess(Response<NoticeOrderListBean> response) {
                         NoticeOrderListBean noticeOrderListBean = response.body();
                         if (TextUtils.equals("1",noticeOrderListBean.getStatus())){
                             list = noticeOrderListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                MessageAdapter adapter = new MessageAdapter(getActivity(),list);
-                                repaireListView.setAdapter(adapter);
+                                if (p == 1){
+                                    adapter = new MessageAdapter(getActivity(),listAll);
+                                    repaireListView.setAdapter(adapter);
+                                }else {
+                                    adapter.notifyDataSetChanged();
+                                }
+                                p = p + 1;
                                 loadService.showSuccess();
                                 repaireListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         Intent intent = new Intent(getActivity(), MessageDetailActivity.class);
-                                        intent.putExtra("notice_id",list.get(position).getNotice_id());
+                                        intent.putExtra("notice_id",listAll.get(position).getNotice_id());
                                         intent.putExtra("flag","repaire");
                                         startActivity(intent);
                                     }
                                 });
+                                springView.onFinishFreshAndLoad();
                             }
                         }
                     }
@@ -160,22 +171,15 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+                if (!listAll.isEmpty()){
+                    listAll.clear();
+                }
+                p = 1;
                 requestNoticeOrderList();
-                springView.onFinishFreshAndLoad();
-            }
-        }, 1000);
     }
 
     @Override
     public void onLoadmore() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                springView.onFinishFreshAndLoad();
-            }
-        }, 1000);
+                requestNoticeOrderList();
     }
 }

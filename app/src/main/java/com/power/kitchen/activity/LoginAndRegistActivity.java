@@ -1,9 +1,14 @@
 package com.power.kitchen.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -84,6 +89,7 @@ public class LoginAndRegistActivity extends BaseActivity {
     private String tips;
     private String registrationID;
     private String yzmCodeRegist;
+    private String uniqueId;
 
 
     @Override
@@ -150,6 +156,20 @@ public class LoginAndRegistActivity extends BaseActivity {
                 registTv.setTextColor(getResources().getColor(R.color.green01));
                 loginOrRegist = 2;
                 requestVerifyImg1();
+
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String tmDevice, tmSerial, tmPhone, androidId;
+                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
+                } else {
+                    tmDevice = "" + tm.getDeviceId();
+                    tmSerial = "" + tm.getSimSerialNumber();
+                    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+                    UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+                    uniqueId = deviceUuid.toString();
+                }
                 break;
             case R.id.look_login_iv://显示/隐藏登录密码
                 pwdShow(loginPwdEt,lookLoginIv);
@@ -209,13 +229,13 @@ public class LoginAndRegistActivity extends BaseActivity {
 
         int type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
         if(editText.getInputType() == type){//密码可见
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_gone_pwd));
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_eye_gary));
             editText.setSelection(editText.getText().length());     //把光标设置到当前文本末尾
 
         }else{
             editText.setInputType(type);
-            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_eye_gary));
+            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.kc_gone_pwd));
             editText.setSelection(editText.getText().length());
         }
     }
@@ -260,7 +280,7 @@ public class LoginAndRegistActivity extends BaseActivity {
             return false;
         }
         if (!ispsd(loginPwdEt.getText().toString())){
-            tips = "密码格式不正确！";
+            tips = "请输入6-20位字母+数字组合！";
             showTipsValidate(tips);
             return false;
         }
@@ -311,8 +331,8 @@ public class LoginAndRegistActivity extends BaseActivity {
             showTipsValidate(tips);
             return false;
         }
-        if (!ispsd(loginPwdEt.getText().toString())){
-            tips = "密码格式不正确！";
+        if (!ispsd(registPwdEt.getText().toString())){
+            tips = "请输入6-20位字母+数字组合！";
             showTipsValidate(tips);
             return false;
         }
@@ -333,7 +353,6 @@ public class LoginAndRegistActivity extends BaseActivity {
         }
         return true;
     }
-
 
     /**
      * 是否是纯数字或者纯英文
@@ -400,12 +419,8 @@ public class LoginAndRegistActivity extends BaseActivity {
         Map<String,String> map = new HashMap<>();
         map.put("app_id","android-user_20170808");
         map.put("token",SPUtils.getInstance().getString("token",""));
-//        map.put("mobile",loginPhoneEt.getText().toString().trim());
-//        map.put("password",loginPwdEt.getText().toString().trim());
-        map.put("mobile","18515885055");
-        map.put("password","a123456");
-//        map.put("android_tag",getUUID(this));
-//        Logger.e(getUUID(this));
+        map.put("mobile",loginPhoneEt.getText().toString().trim());
+        map.put("password",loginPwdEt.getText().toString().trim());
         map.put("android_tag",registrationID);
         Logger.e(registrationID);
         JSONObject values = new JSONObject(map);
@@ -423,10 +438,11 @@ public class LoginAndRegistActivity extends BaseActivity {
                             SPUtils.getInstance().putString("id",loginBean.getData().getId());
                             SPUtils.getInstance().putString("face",loginBean.getData().getFace());
                             SPUtils.getInstance().putString("mobile",loginBean.getData().getMobile());
-
                             //极光推送
                             JPushInterface.setAlias(LoginAndRegistActivity.this, 1, loginBean.getData().getId());
                             startActivity(new Intent(LoginAndRegistActivity.this,MainActivity.class));
+                            SPUtils.getInstance().putBoolean("if_login",true);
+                            finish();
                         }else {
                             TUtils.showShort(getApplicationContext(),loginBean.getInfo());
                         }
@@ -469,10 +485,11 @@ public class LoginAndRegistActivity extends BaseActivity {
         map.put("token",SPUtils.getInstance().getString("token",""));
         map.put("mobile",registPhoneEt.getText().toString());
         map.put("type","user_reg");
-        map.put("flag",getUUID(this));
+        map.put("flag",uniqueId);
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
+        Logger.e(values.toString());
 
         OkGo.<SendSmsBean>post(Urls.send_sms)
                 .tag(this)
@@ -495,7 +512,8 @@ public class LoginAndRegistActivity extends BaseActivity {
         Map<String,String> map = new HashMap<>();
         map.put("app_id",SPUtils.getInstance().getString("app_id",""));
         map.put("token",SPUtils.getInstance().getString("token",""));
-        map.put("height","70");
+        map.put("width","240");
+        map.put("height","80");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
@@ -523,7 +541,8 @@ public class LoginAndRegistActivity extends BaseActivity {
         Map<String,String> map = new HashMap<>();
         map.put("app_id",SPUtils.getInstance().getString("app_id",""));
         map.put("token",SPUtils.getInstance().getString("token",""));
-        map.put("height","70");
+        map.put("width","240");
+        map.put("height","80");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
         params.put("data",values.toString());
@@ -548,23 +567,18 @@ public class LoginAndRegistActivity extends BaseActivity {
     }
 
 
-    /**
-     * 获取设备唯一标识
-     * @param context
-     * @return
-     */
-    public static String getUUID(Context context) {
-        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101){
+            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            String tmDevice, tmSerial, tmPhone, androidId;
+                tmDevice = "" + tm.getDeviceId();
+                tmSerial = "" + tm.getSimSerialNumber();
+                androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
-        final String tmDevice, tmSerial, tmPhone, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        String uniqueId = deviceUuid.toString();
-
-        return uniqueId;
+                UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+                uniqueId = deviceUuid.toString();
+        }
     }
-
 }

@@ -59,9 +59,10 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
     Unbinder unbinder;
     private LoadService loadService;
     private View view;
-    List<CommentListBean.DataBean.ListsBean> list;
-
-
+    List<CommentListBean.DataBean.ListsBean> list = new ArrayList<>();
+    List<CommentListBean.DataBean.ListsBean> listAll = new ArrayList<>();
+    private int p = 1;
+    private SatisfactionAdapter adapter;
 
     @Nullable
     @Override
@@ -71,6 +72,10 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
 
         initLoad();
         initView();
+        if (!listAll.isEmpty()){
+            listAll.clear();
+        }
+        p = 1;
         requestCommentList();
 
         return loadService.getLoadLayout();
@@ -88,7 +93,7 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
         map.put("app_id", SPUtils.getInstance().getString("app_id",""));
         map.put("token",SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         map.put("level","1");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -103,11 +108,17 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
                         CommentListBean commentListBean = response.body();
                         if (TextUtils.equals("1",commentListBean.getStatus())){
                             list = commentListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                SatisfactionAdapter adapter = new SatisfactionAdapter(getActivity(),list);
-                                satisfactionListView.setAdapter(adapter);
+                                if (p == 1){
+                                    adapter = new SatisfactionAdapter(getActivity(),listAll);
+                                    satisfactionListView.setAdapter(adapter);
+                                }else {
+                                    adapter.notifyDataSetChanged();
+                                }
+                                p = p + 1;
                                 loadService.showSuccess();
                                 satisfactionListView.setOnItemClickListener(SatisfactionFragment.this);
                             }
@@ -135,6 +146,7 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
             public void onReload(View v) {
                 //重新加载逻辑
                 loadService.showCallback(LoadingCallback.class);
+                p = 1;
                 requestCommentList();
             }
         });
@@ -151,6 +163,11 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (!listAll.isEmpty()){
+                    listAll.clear();
+                }
+                p = 1;
+                requestCommentList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -161,6 +178,7 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                requestCommentList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -168,7 +186,7 @@ public class SatisfactionFragment extends Fragment implements SpringView.OnFresh
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String coment_id = list.get(position).getComent_id();
+        String coment_id = listAll.get(position).getComent_id();
         requestCommentInfo(coment_id);
     }
 

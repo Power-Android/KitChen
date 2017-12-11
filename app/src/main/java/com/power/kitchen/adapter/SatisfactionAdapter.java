@@ -66,7 +66,7 @@ public class SatisfactionAdapter extends BaseAdapter {
         viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
         viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));
         viewHolder.nameTv01.setText(list.get(position).getGoods_code());
-        viewHolder.leixingTv.setText(list.get(position).getGoods_model());
+        viewHolder.xinghaoTv.setText(list.get(position).getGoods_model());
         viewHolder.isJiedanTv.setText("已完成");
         String goods_is_warranty = list.get(position).getGoods_is_warranty();
         if (TextUtils.equals("1",goods_is_warranty)){

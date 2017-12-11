@@ -62,7 +62,10 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
     Unbinder unbinder;
     private View view;
     private LoadService loadService;
-    List<CommentListBean.DataBean.ListsBean> list;
+    List<CommentListBean.DataBean.ListsBean> list = new ArrayList<>();
+    List<CommentListBean.DataBean.ListsBean> listAll = new ArrayList<>();
+    private int p = 1;
+    private SatisfactionAdapter adapter;
 
     @Nullable
     @Override
@@ -72,8 +75,11 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
 
         initLoad();
         initView();
+        if (!listAll.isEmpty()){
+            listAll.clear();
+        }
+        p = 1;
         requestCommentList();
-
         return loadService.getLoadLayout();
     }
 
@@ -100,6 +106,7 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
             public void onReload(View v) {
                 //重新加载逻辑
                 loadService.showCallback(LoadingCallback.class);
+                p = 1;
                 requestCommentList();
             }
         });
@@ -110,7 +117,7 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
         map.put("app_id", SPUtils.getInstance().getString("app_id",""));
         map.put("token",SPUtils.getInstance().getString("token",""));
         map.put("id",SPUtils.getInstance().getString("id",""));
-        map.put("p","1");
+        map.put("p",p+"");
         map.put("level","3");
         JSONObject values = new JSONObject(map);
         HttpParams params = new HttpParams();
@@ -125,14 +132,19 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
                         CommentListBean commentListBean = response.body();
                         if (TextUtils.equals("1",commentListBean.getStatus())){
                             list = commentListBean.getData().getLists();
-                            if (TextUtils.equals("0",list.size()+"")){
+                            listAll.addAll(list);
+                            if (TextUtils.equals("0",listAll.size()+"")){
                                 loadService.showCallback(EmptyCallback.class);
                             }else {
-                                SatisfactionAdapter adapter = new SatisfactionAdapter(getActivity(),list);
-                                discontentListView.setAdapter(adapter);
+                                if (p == 1){
+                                    adapter = new SatisfactionAdapter(getActivity(),listAll);
+                                    discontentListView.setAdapter(adapter);
+                                }else {
+                                    adapter.notifyDataSetChanged();
+                                }
+                                p = p + 1;
                                 loadService.showSuccess();
                                 discontentListView.setOnItemClickListener(DiscontentFragment.this);
-
                             }
                         }else {
                             TUtils.showShort(getActivity().getApplicationContext(),commentListBean.getInfo());
@@ -153,6 +165,11 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (!listAll.isEmpty()){
+                    listAll.clear();
+                }
+                p = 1;
+                requestCommentList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -163,6 +180,7 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                requestCommentList();
                 springView.onFinishFreshAndLoad();
             }
         }, 1000);
@@ -170,7 +188,7 @@ public class DiscontentFragment extends Fragment implements SpringView.OnFreshLi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String coment_id = list.get(position).getComent_id();
+        String coment_id = listAll.get(position).getComent_id();
         requestCommentInfo(coment_id);
     }
 
