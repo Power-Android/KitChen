@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/if_look_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingTop="15dp"
+        android:paddingRight="10dp"
+        android:src="@mipmap/kc_if_lookmessage_icon"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟，商厨联盟"
+            style="@style/black_textview"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+        <TextView
+            android:id="@+id/time_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2017年10月23日 18:50:46"
+            android:paddingBottom="10dp"
+            android:textColor="@color/gary"/>
+    </LinearLayout>
+</LinearLayout>

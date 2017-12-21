@@ -1,6 +1,7 @@
 package com.power.kitchen.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.power.kitchen.R;
+import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.bean.WaiteRepairBean;
+import com.power.kitchen.utils.TimeUtils;
 
 import java.util.List;
 
@@ -23,10 +26,10 @@ import butterknife.ButterKnife;
 public class CancleRepaireAdapter extends BaseAdapter {
 
     private Context context;
-    private List<WaiteRepairBean> list;
+    private List<OrderListBean.DataBean.ListsBean> list;
     private LayoutInflater inflater;
 
-    public CancleRepaireAdapter(Context context, List<WaiteRepairBean> list) {
+    public CancleRepaireAdapter(Context context, List<OrderListBean.DataBean.ListsBean> list) {
         this.context = context;
         this.list = list;
         inflater = LayoutInflater.from(context);
@@ -57,14 +60,19 @@ public class CancleRepaireAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.bianhaoTv.setText(list.get(position).getBianhao());
-        viewHolder.leixingTv.setText(list.get(position).getLeixing());
-        viewHolder.nameTv.setText(list.get(position).getName());
-        viewHolder.isJiedanTv.setText(list.get(position).getIs_jiedan());
-        viewHolder.isBaoxiuTv.setText(list.get(position).getIs_baoxiu());
-        viewHolder.nameTv01.setText(list.get(position).getBianhao());
-        viewHolder.timeTv.setText(list.get(position).getShijian());
-        viewHolder.xinghaoTv.setText(list.get(position).getXinghao());
+        viewHolder.bianhaoTv.setText(list.get(position).getOid());
+        viewHolder.leixingTv.setText(list.get(position).getGoods_type_name());
+        viewHolder.nameTv.setText(list.get(position).getGoods_brand_name());
+        viewHolder.isJiedanTv.setText(list.get(position).getOrder_status_name());
+        String goods_is_warranty = list.get(position).getGoods_is_warranty();
+        if (TextUtils.equals("1",goods_is_warranty)){
+            viewHolder.isBaoxiuTv.setText("保修期内");
+        }else {
+            viewHolder.isBaoxiuTv.setText("保修期外");
+        }
+        viewHolder.nameTv01.setText(list.get(position).getGoods_code());
+        viewHolder.timeTv.setText(TimeUtils.getStrTimeYMD(list.get(position).getCreate_time()));
+        viewHolder.xinghaoTv.setText(list.get(position).getGoods_model());
 
         return convertView;
     }

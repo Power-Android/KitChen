@@ -14,21 +14,80 @@
     <string name="tcdl">退出登录</string>
     <string name="voice">声音</string>
     <string name="zhendong">震动</string>
-    <string name="telnum">400-400-4000</string>
+    <string name="telnum">400-836-1768</string>
     <!--&#8194; 	全角空格，长度等于半个中文字符-->
     <!--&#8195; 	全角空格，长度等于一个中文字符-->
     <string name="ymm">原密码&#8195;</string>
     <string name="xmm">新密码&#8195;</string>
     <string name="qrmm">确认密码</string>
-    <string name="mmts">6-20位字母或汉字</string>
+    <string name="mmts">6-20位数字和字母组合</string>
     <string name="xgmm">修改密码</string>
-    <string name="xm">姓名</string>
-    <string name="ctmc">餐厅名称</string>
-    <string name="sjh">手机号</string>
+    <string name="xm">姓名&#8195;&#8195;</string>
+    <string name="ctmc">单位名称</string>
+    <string name="sjh">手机号&#8195;</string>
     <string name="szqy">所在区域</string>
     <string name="xxdz">详细地址</string>
     <string name="dzgl">地址管理</string>
-
+    <string name="sbxx">设备信息</string>
+    <string name="txm">条形码&#8195;</string>
+    <string name="gmrq">购买日期</string>
+    <string name="bxq">保修期&#8195;</string>
+    <string name="bxqn">保修期内</string>
+    <string name="bxqw">保修期外</string>
+    <string name="pp">品牌&#8195;&#8195;</string>
+    <string name="lx">类型&#8195;&#8195;</string>
+    <string name="xh">型号&#8195;&#8195;</string>
+    <string name="lxxx">联系信息</string>
+    <string name="wtms">问题描述</string>
+    <string name="sbtp">设备图片</string>
+    <string name="qxbx">取消报修</string>
+    <string name="qrbx">确认报修</string>
+    <string name="dl">登&#8195;录</string>
+    <string name="zc">注册</string>
+    <string name="dldqsjh">大陆地区手机号</string>
+    <string name="srybszzm">输入右边数字、字母</string>
+    <string name="wjmm">忘记密码？</string>
+    <string name="qsrsjh">请输入手机号</string>
+    <string name="wczckqbxfw">完成注册，开启报修服务</string>
+    <string name="djwcjty">点击完成即同意</string>
+    <string name="sclmyhzcxy">《商厨联盟用户注册协议》</string>
+    <string name="qsrmm">请输入6-20位密码</string>
+    <string name="qsryzm">请输入验证码</string>
+    <string name="hqyzm">获取验证码</string>
+    <string name="bxdh">报修单号</string>
+    <string name="jdxx">接单信息</string>
+    <string name="zfxx">支付信息</string>
+    <string name="zfje">支付金额</string>
+    <string name="zffs">支付方式</string>
+    <string name="zfsj">支付时间</string>
+    <string name="sfxm">师傅姓名</string>
+    <string name="lxdh">联系电话</string>
+    <string name="gsmc">公司名称</string>
+    <string name="jdsj">接单时间</string>
+    <string name="gsjl">公司距离</string>
+    <string name="bxsj">报修时间</string>
+    <string name="jxbx">继续报修</string>
+    <string name="qxyy">取消原因</string>
+    <string name="swmr">设为默认</string>
+    <string name="scdz">删除地址</string>
+    <string name="qsrxm">请输入姓名</string>
+    <string name="qsrlxdh">请输入联系电话</string>
+    <string name="qsrndxxdz">请输入您的详细地址</string>
+    <string name="yijiedan">距离您最近的维修工作人员将尽快接单，并通过电话与您取得联系，请耐心等待，您也可以在接单前取消订单</string>
+    <string name="fuwupingjia">尊敬的客户您好，感谢您的支持和理解，请为本次服务做出评价！</string>
+    <!--极光开始-->
+    <string name="hello">Hello World, JPush!</string>
+    <string name="tag_hint">Tag为大小写字母，数字，下划线,中文， 多个用以逗号分隔</string>
+    <string name="alias_hint">Alias为大小写字母，数字，下划线</string>
+    <string name="style_hint">style为数字</string>
+    <string name="error_style_empty">style不能为空</string>
+    <string name="error_alias_empty">alias不能为空</string>
+    <string name="error_tag_empty">tag不能为空</string>
+    <string name="error_tag_gs_empty">格式不对</string>
+    <string name="error_network">网络连接异常,初始化失败 请检查网络！</string>
+    <string name="logining">程序在后台执行, 请查看日志！</string>
+    <string name="setting_su">设置成功</string>
+    <!--极光结束-->
 
     <string-array name="tab_name">
         <item>待维修</item>

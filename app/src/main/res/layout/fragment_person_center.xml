@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_marginBottom="50dp"
     android:background="@color/gary_background">
     <ScrollView
@@ -19,6 +20,10 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/white">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/green01"/>
             <RelativeLayout
                 android:id="@+id/head_layout"
                 android:layout_width="match_parent"
@@ -28,15 +33,13 @@
                     android:id="@+id/my_head_iv"
                     android:layout_width="108dp"
                     android:layout_height="108dp"
-                    android:src="@mipmap/kc_my_head"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="50dp"
-                    android:layout_marginBottom="30dp"/>
+                    android:layout_marginBottom="30dp" />
                 <TextView
                     android:id="@+id/my_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="孙尚香"
                     style="@style/white_textview"
                     android:maxEms="10"
                     android:singleLine="true"
@@ -51,7 +54,6 @@
                     android:maxEms="10"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:text="敌人还有五秒到达战场"
                     style="@style/white_textview"
                     android:layout_below="@+id/my_name_tv"
                     android:layout_alignLeft="@+id/my_name_tv"
@@ -66,14 +68,29 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
-                <ImageView
-                    android:id="@+id/my_msg_iv"
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/kc_my_message"
-                    android:padding="20dp"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"/>
+                    android:layout_alignParentEnd="true">
+                    <ImageView
+                        android:id="@+id/my_msg_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/kc_my_message"
+                        android:padding="20dp" />
+                    <TextView
+                        android:id="@+id/message_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:background="@drawable/bg_xiaoxi"
+                        android:textSize="10dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/white"/>
+                </FrameLayout>
+
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -101,7 +118,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gary"
+                    android:background="@color/gary02"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <LinearLayout
@@ -126,7 +143,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gary"
+                    android:background="@color/gary02"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <RelativeLayout
@@ -160,15 +177,15 @@
                         android:layout_gravity="center_vertical"/>
                     <com.suke.widget.SwitchButton
                         android:id="@+id/voice_switchBtn"
-                        android:layout_toLeftOf="@+id/tv_02"
-                        android:layout_marginRight="20dp"
                         android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
                         android:layout_width="50dp"
                         android:layout_height="30dp"
                         app:sb_show_indicator="false"
                         app:sb_checked="true"
                         android:layout_gravity="center_vertical" />
-                    <TextView
+                   <!-- <TextView
                         android:id="@+id/tv_02"
                         android:layout_toLeftOf="@+id/zd_switchBtn"
                         android:layout_width="wrap_content"
@@ -186,15 +203,16 @@
                         android:layout_height="30dp"
                         android:layout_marginRight="10dp"
                         app:sb_show_indicator="false"
-                        android:layout_gravity="center_vertical" />
+                        android:layout_gravity="center_vertical" />-->
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gary"
+                    android:background="@color/gary02"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <RelativeLayout
+                    android:id="@+id/dzgl_rl"
                     android:layout_width="match_parent"
                     android:layout_height="60dp">
                     <ImageView
@@ -211,28 +229,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_centerVertical="true"
-                        android:text="@string/wdwz"
+                        android:text="@string/dzgl"
                         style="@style/black_textview"/>
-                    <TextView
-                        android:id="@+id/my_location_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:layout_centerVertical="true"
-                        android:text="深渊峡谷"
-                        android:maxEms="10"
-                        android:singleLine="true"
-                        android:ellipsize="end"
-                        style="@style/black_textview"
-                        android:layout_toLeftOf="@+id/my_location_iv"/>
+
                     <ImageView
-                        android:id="@+id/my_location_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="10dp"
-                        android:src="@mipmap/kc_dingwei_icon"
+                        android:src="@mipmap/kc_arrowhead_gary"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
@@ -241,7 +244,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
-                    android:background="@color/gary_background" />
+                    android:background="@color/gary01" />
                 <RelativeLayout
                     android:id="@+id/my_gywm_layout"
                     android:layout_width="match_parent"
@@ -274,7 +277,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gary"
+                    android:background="@color/gary02"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <RelativeLayout
@@ -298,6 +301,7 @@
                         android:text="@string/fwrx"
                         style="@style/black_textview"/>
                     <TextView
+                        android:id="@+id/call_phone_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/telnum"
@@ -310,7 +314,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gary"
+                    android:background="@color/gary02"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
                 <LinearLayout

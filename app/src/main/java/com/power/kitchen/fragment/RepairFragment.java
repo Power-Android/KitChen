@@ -2,51 +2,124 @@ package com.power.kitchen.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.compress.Luban;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.DeviceDetailsActivity;
+import com.power.kitchen.activity.MainActivity;
+import com.power.kitchen.bean.BackgroundBean;
+import com.power.kitchen.bean.ResultBean;
+import com.power.kitchen.callback.JsonCallback;
 import com.power.kitchen.utils.CommonPopupWindow;
+import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
-import com.zhy.m.permission.MPermissions;
-import com.zhy.m.permission.PermissionDenied;
-import com.zhy.m.permission.PermissionGrant;
+import com.power.kitchen.utils.Urls;
+
+import org.json.JSONObject;
+import org.zackratos.ultimatebar.UltimateBar;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
- * Created by power on 2017/9/19.
+ *
+ * @author power
+ * @date 2017/9/19
  */
 
 public class RepairFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.pzksbx_layout) LinearLayout pzksbxLayout;
     @BindView(R.id.txbxd_layout) LinearLayout txbxdLayout;
+    @BindView(R.id.background_ll) ImageView backgroundLl;
     Unbinder unbinder;
     private CommonPopupWindow popupWindow;
-    private static final int REQUECT_CODE_CAREMA = 2;
+    private List<LocalMedia> selectList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        UltimateBar ultimateBar = new UltimateBar(getActivity());
+        ultimateBar.setImmersionBar(false);
+        requestBackground();
         View view = inflater.inflate(R.layout.fragment_repair, container, false);
         unbinder = ButterKnife.bind(this, view);
         initListener();
         return view;
+    }
+
+    private void requestBackground() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("tokne",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<BackgroundBean>post(Urls.background)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<BackgroundBean>(BackgroundBean.class) {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onSuccess(Response<BackgroundBean> response) {
+                        BackgroundBean backgroundBean = response.body();
+                        if (TextUtils.equals("1",backgroundBean.getStatus())){
+                            String image = backgroundBean.getData().getImage();
+                            Glide.with(getActivity()).load(image).into(backgroundLl);
+                        }
+                    }
+                });
     }
 
     private void initListener() {
@@ -67,7 +140,9 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
                 showPopup();
                 break;
             case R.id.txbxd_layout:
-                TUtils.showShort(getActivity().getApplicationContext(), "22222222222");
+                startActivity(new Intent(getActivity(),DeviceDetailsActivity.class));
+                break;
+            default:
                 break;
         }
     }
@@ -91,9 +166,8 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 if (popupWindow != null) {
-                                    MPermissions.requestPermissions(RepairFragment.this, 1,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
                                     popupWindow.dismiss();
+                                    requestCamera();
                                 }
                             }
                         });
@@ -101,8 +175,8 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 if (popupWindow != null) {
-                                    TUtils.showShort(getActivity().getApplicationContext(),"相册");
                                     popupWindow.dismiss();
+                                    requestPhoto();
                                 }
                             }
                         });
@@ -110,7 +184,6 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 if (popupWindow != null) {
-                                    TUtils.showShort(getActivity().getApplicationContext(),"取消");
                                     popupWindow.dismiss();
                                 }
                             }
@@ -130,24 +203,84 @@ public class RepairFragment extends Fragment implements View.OnClickListener {
         popupWindow.showAtLocation(getActivity().findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0);
     }
 
-    @PermissionGrant(1)
-    public void requestCaremaSuccess() {
-        TUtils.showShort(getActivity().getApplicationContext(),"请求权限成功");
+    private void requestPhoto() {
+        // 进入相册 以下是例子：不需要的api可以不写
+        PictureSelector.create(RepairFragment.this)
+                .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                .theme(R.style.picture_default_style1)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
+                .maxSelectNum(9)// 最大图片选择数量
+                .minSelectNum(1)// 最小选择数量
+                .imageSpanCount(4)// 每行显示个数
+                .selectionMode(PictureConfig.MULTIPLE)// 多选 or 单选 PictureConfig.SINGLE
+                .previewImage(true)// 是否可预览图片
+                .previewVideo(true)// 是否可预览视频
+                .enablePreviewAudio(true) // 是否可播放音频
+                .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
+                .isCamera(true)// 是否显示拍照按钮
+                .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
+                .enableCrop(false)// 是否裁剪
+                .compress(true)// 是否压缩
+                .compressMode(PictureConfig.SYSTEM_COMPRESS_MODE)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+                //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
+                .glideOverride(200, 200)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+//                .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                .hideBottomControls(true)// 是否显示uCrop工具栏，默认不显示
+                .isGif(true)// 是否显示gif图片
+                .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
+                .circleDimmedLayer(false)// 是否圆形裁剪
+                .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                .openClickSound(false)// 是否开启点击声音
+//                .selectionMedia(list)// 是否传入已选图片
+//                        .videoMaxSecond(15)
+//                        .videoMinSecond(10)
+                //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                //.cropCompressQuality(90)// 裁剪压缩质量 默认100
+                //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
+                //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+                //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                //.rotateEnabled() // 裁剪是否可旋转图片
+                //.scaleEnabled()// 裁剪是否可放大缩小图片
+                //.videoQuality()// 视频录制质量 0 or 1
+                //.videoSecond()//显示多少秒以内的视频or音频也可适用
+                //.recordVideoSecond()//录制视频秒数 默认60s
+                .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
-    @PermissionDenied(1)
-    public void requestCaremaFailed() {
-        TUtils.showShort(getActivity().getApplicationContext(),"请求权限失败");
+    private void requestCamera() {
+        PictureSelector.create(RepairFragment.this)
+                .openCamera(PictureMimeType.ofImage())// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
+                .theme(R.style.picture_default_style)// 主题样式设置 具体参考 values/styles
+//                .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+//                .selectionMedia(list)// 是否传入已选图片
+//                .previewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        MPermissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    selectList = PictureSelector.obtainMultipleResult(data);
+                    ArrayList<String> list = new ArrayList<>();
+                    for (int i = 0; i < selectList.size(); i++) {
+                        LocalMedia localMedia = selectList.get(i);
+                        String path = localMedia.getPath();
+                        list.add(path);
+                    }
+                    /**
+                     * 拿到图片路径，跳转到设备详情页
+                     */
+                    Intent intent = new Intent(getActivity(),DeviceDetailsActivity.class);
+                    intent.putStringArrayListExtra("list",list);
+                    startActivity(intent);
+
+                    break;
+            }
+        }
     }
-
-    /**
-     * 跳转到照相机
-     */
-
 }

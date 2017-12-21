@@ -1,11 +1,13 @@
 package com.power.kitchen.fragment;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +16,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.power.kitchen.R;
+import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.adapter.RepaireTabAdapter;
+import com.power.kitchen.bean.NoticeNumBean;
+import com.power.kitchen.callback.JsonCallback;
+import com.power.kitchen.utils.NoScrollViewPager;
+import com.power.kitchen.utils.SPUtils;
+import com.power.kitchen.utils.Urls;
+
+import org.json.JSONObject;
+import org.zackratos.ultimatebar.UltimateBar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,10 +49,12 @@ import butterknife.Unbinder;
 public class RepairRecordsFragment extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.bxjl_tablayout) TabLayout bxjlTablayout;
-    @BindView(R.id.bxjl_viewpager) ViewPager bxjlViewpager;
     @BindView(R.id.back_iv) ImageView backIv;
     @BindView(R.id.content_tv) TextView contentTv;
     @BindView(R.id.title_msg) ImageView titleMsg;
+    @BindView(R.id.bxjl_viewpager) NoScrollViewPager bxjlViewpager;
+    @BindView(R.id.message_tv) TextView messageTv;
+
     Unbinder unbinder;
 
     private List<Fragment> fragmentList;
@@ -46,6 +64,12 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_repair_records, container, false);
+        /**
+         * GitHub：导航栏
+         * https://github.com/Zackratos/UltimateBar
+         */
+        UltimateBar ultimateBar = new UltimateBar(getActivity());
+        ultimateBar.setColorStatusBar(ContextCompat.getColor(getActivity(),R.color.green01));
         unbinder = ButterKnife.bind(this, view);
         initView();
         initListener();
@@ -57,7 +81,7 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
         backIv.setVisibility(View.GONE);
         titleMsg.setVisibility(View.VISIBLE);
         contentTv.setText("报修记录");
-
+        requestNotice();
         //解决页面滑动时，闪烁的问题
         bxjlTablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -116,7 +140,6 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
     }
 
     private void initListener() {
-        backIv.setOnClickListener(this);
         titleMsg.setOnClickListener(this);
     }
 
@@ -160,9 +183,36 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.title_msg:
+                startActivity(new Intent(getActivity(), MyMessageActivity.class));
+                break;
+            default:
                 break;
         }
+    }
+
+    private void requestNotice() {
+        Map<String, String> map = new HashMap<>();
+        map.put("app_id", SPUtils.getInstance().getString("app_id",""));
+        map.put("tokne",SPUtils.getInstance().getString("token",""));
+        map.put("id",SPUtils.getInstance().getString("id",""));
+        JSONObject values = new JSONObject(map);
+        HttpParams params = new HttpParams();
+        params.put("data",values.toString());
+
+        OkGo.<NoticeNumBean>post(Urls.notice_num)
+                .tag(this)
+                .params(params)
+                .execute(new JsonCallback<NoticeNumBean>(NoticeNumBean.class) {
+                    @Override
+                    public void onSuccess(Response<NoticeNumBean> response) {
+                        NoticeNumBean noticeNumBean = response.body();
+                        if (TextUtils.equals("1",noticeNumBean.getStatus())){
+                            messageTv.setVisibility(View.VISIBLE);
+                            messageTv.setText(noticeNumBean.getData().getCount());
+                        }
+                    }
+                });
     }
 }

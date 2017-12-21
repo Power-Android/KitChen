@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.power.kitchen.activity.DeviceDetailsActivity">
+
+    <include layout="@layout/item_title_layout"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/black_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gary02"
+                android:paddingBottom="20dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp"
+                android:text="@string/sbxx" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:id="@+id/tv_07"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/txm" />
+
+                <EditText
+                    android:id="@+id/device_txm_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_07"
+                    android:layout_marginLeft="40dp"
+                    style="@style/gary_hint"
+                    android:background="@null"
+                    android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:singleLine="true"
+                    android:hint="请填写设备条形码" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+
+            <RelativeLayout
+                android:id="@+id/jump_date_iv"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:id="@+id/tv_01"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/gmrq" />
+
+                <TextView
+                    android:id="@+id/date_tv"
+                    style="@style/gary_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@+id/tv_01" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:src="@mipmap/kc_arrowhead_black" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:id="@+id/iv_01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_02"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+
+                <TextView
+                    android:id="@+id/tv_02"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/bxq" />
+
+                <RadioGroup
+                    android:id="@+id/radiogroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_02"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/bxqn_rbt"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="40dp"
+                        android:button="@null"
+                        android:checked="true"
+                        android:background="@drawable/radio_selector1_style"
+                        android:textColor="@color/text_color01" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/bxqn"
+                        android:textColor="@color/text_color01"/>
+
+                    <RadioButton
+                        android:id="@+id/bxqw_rbt"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="50dp"
+                        android:background="@drawable/radio_selector1_style"
+                        android:button="@null"
+                        android:textColor="@color/text_color01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/bxqw"
+                        android:textColor="@color/text_color01"/>
+                </RadioGroup>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+
+            <RelativeLayout
+                android:id="@+id/jump_pinpai_iv"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_03"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+
+                <TextView
+                    android:id="@+id/tv_03"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/pp" />
+
+                <TextView
+                    android:id="@+id/pinpai_tv"
+                    style="@style/gary_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="39dp"
+                    android:layout_alignBaseline="@+id/tv_03"
+                    android:layout_alignBottom="@+id/tv_03"
+                    android:layout_toRightOf="@+id/tv_03"
+                    android:layout_toEndOf="@+id/tv_03"
+                    android:layout_marginStart="39dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:src="@mipmap/kc_arrowhead_black" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+
+            <RelativeLayout
+                android:id="@+id/jump_leixing_iv"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:id="@+id/tv_04"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/lx" />
+
+                <TextView
+                    android:id="@+id/leixing_tv"
+                    style="@style/gary_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@+id/tv_04" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:src="@mipmap/kc_arrowhead_black" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:id="@+id/tv_05"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/xh" />
+
+                <EditText
+                    android:id="@+id/xinghao_et"
+                    style="@style/gary_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@+id/tv_05"
+                    android:singleLine="true"
+                    android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:background="@null"
+                    android:hint="请填写设备型号" />
+
+            </RelativeLayout>
+
+            <TextView
+                style="@style/black_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gary02"
+                android:paddingBottom="20dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp"
+                android:text="@string/lxxx" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_06"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+                <TextView
+                    android:id="@+id/tv_06"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/xm" />
+                <EditText
+                    android:id="@+id/device_name_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    style="@style/gary_hint"
+                    android:background="@null"
+                    android:maxLength="7"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@+id/tv_06"
+                    android:hint="请填写联系人姓名"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_08"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+                <TextView
+                    android:id="@+id/tv_08"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/sjh" />
+                <EditText
+                    android:id="@+id/device_phone_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    style="@style/gary_hint"
+                    android:background="@null"
+                    android:phoneNumber="true"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@+id/tv_08"
+                    android:hint="请填写联系人手机号"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_09"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+                <TextView
+                    android:id="@+id/tv_09"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/ctmc" />
+                <EditText
+                    android:id="@+id/device_ctmc_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/gary_hint"
+                    android:background="@null"
+                    android:maxLines="2"
+                    android:gravity="start"
+                    android:layout_marginLeft="40dp"
+                    android:hint="请填写公司名称"
+                    android:layout_alignBaseline="@+id/tv_09"
+                    android:layout_alignBottom="@+id/tv_09"
+                    android:layout_toRightOf="@+id/tv_09"
+                    android:layout_toEndOf="@+id/tv_09"
+                    android:layout_marginStart="40dp" />
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_10"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+                <TextView
+                    android:id="@+id/tv_10"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/szqy" />
+                <TextView
+                    android:id="@+id/device_adress_tv"
+                    style="@style/gary_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:singleLine="true"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toLeftOf="@+id/jump_adress_iv"
+                    android:layout_toRightOf="@+id/tv_10"/>
+                <ImageView
+                    android:id="@+id/jump_adress_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/location_iv"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:src="@mipmap/kc_arrowhead_black" />
+                <ImageView
+                    android:id="@+id/location_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:src="@mipmap/kc_dingwei_icon" />
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/hint" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_11"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/kc_bitian" />
+                <TextView
+                    android:id="@+id/tv_11"
+                    style="@style/black_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/xxdz" />
+                <EditText
+                    android:id="@+id/detail_adress_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    style="@style/gary_hint"
+                    android:background="@null"
+                    android:gravity="start"
+                    android:maxLines="2"
+                    android:layout_marginLeft="40dp"
+                    android:layout_toRightOf="@+id/tv_11"
+                    android:hint="精确到街道和门牌号"/>
+            </RelativeLayout>
+            <TextView
+                style="@style/black_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gary02"
+                android:paddingBottom="20dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp"
+                android:text="@string/wtms" />
+            <EditText
+                android:id="@+id/problem_device_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="7"
+                android:ellipsize="end"
+                android:padding="10dp"
+                android:gravity="top"
+                style="@style/gary_hint"
+                android:textSize="14sp"
+                android:hint="请输入故障设备信息"
+                android:background="@null"/>
+            <TextView
+                style="@style/black_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gary02"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="20dp"
+                android:text="@string/sbtp" />
+            <com.power.kitchen.view.MyGridView
+                android:id="@+id/gridview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/gary02"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:numColumns="3"
+                android:verticalSpacing="3dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/gary02"
+                android:paddingTop="30dp"
+                android:paddingBottom="20dp">
+                <Button
+                    android:id="@+id/cancle_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/white"
+                    android:layout_weight="1"
+                    android:text="@string/qxbx"
+                    android:textSize="16sp"
+                    android:background="@color/button_gary"/>
+                <Button
+                    android:id="@+id/query_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:background="@color/green01"
+                    android:text="@string/qrbx"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

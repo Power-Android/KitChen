@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gary_background">
+    android:background="@color/gary_background1">
     <RelativeLayout
         android:id="@+id/layout_01"
         android:layout_width="match_parent"
@@ -13,7 +13,6 @@
             android:id="@+id/bianhao_tv"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="123456789"
             style="@style/black_smtextview"
             android:gravity="center_vertical"
             android:layout_marginLeft="10dp"/>
@@ -31,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/gary_background"
         android:layout_below="@+id/layout_01">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -39,7 +39,6 @@
                 android:id="@+id/name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="美的（Midea）"
                 style="@style/black_smtextview"
                 android:layout_marginLeft="10dp"
                 android:layout_centerVertical="true"/>
@@ -48,20 +47,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="空调"
                 style="@style/black_smtextview"
                 android:layout_marginTop="20dp"/>
             <TextView
                 android:id="@+id/is_baoxiu_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="保修期外"
                 style="@style/black_smtextview"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/gone_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -69,7 +67,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/name_tv"
-                android:text="KDF-57SJSFLGH"
                 style="@style/black_smtextview"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp" />
@@ -77,8 +74,8 @@
                 android:id="@+id/name_tv_01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="123456789"
                 style="@style/black_smtextview"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/name_tv"
                 android:layout_marginTop="10dp"
@@ -101,7 +98,6 @@
                 android:id="@+id/time_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2017年9月20日 19:32:23"
                 android:padding="10dp"
                 android:textColor="@color/gary"/>
             <TextView

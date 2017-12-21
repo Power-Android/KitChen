@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.power.kitchen.activity.MyMessageActivity">
+    <include layout="@layout/item_title_layout"/>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/message_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:tabTextColor="@color/text_color01"
+        app:tabIndicatorColor="@color/green01"
+        app:tabIndicatorHeight="1.5dp"
+        app:tabSelectedTextColor="@color/green01"
+        app:tabTextAppearance="@style/MyCustomTabTextAppearance"/>
+    <com.power.kitchen.utils.NoScrollViewPager
+        android:id="@+id/message_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.power.kitchen.utils.NoScrollViewPager>
+</LinearLayout>
