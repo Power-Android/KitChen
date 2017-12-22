@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
+import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
 import com.power.kitchen.activity.MyMessageActivity;
 import com.power.kitchen.adapter.RepaireTabAdapter;
@@ -81,7 +82,6 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
         backIv.setVisibility(View.GONE);
         titleMsg.setVisibility(View.VISIBLE);
         contentTv.setText("报修记录");
-        requestNotice();
         //解决页面滑动时，闪烁的问题
         bxjlTablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -214,5 +214,12 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requestNotice();
+        Logger.e("--------消息---------");
     }
 }

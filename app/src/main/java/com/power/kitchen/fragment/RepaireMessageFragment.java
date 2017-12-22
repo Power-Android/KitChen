@@ -73,7 +73,6 @@ public class RepaireMessageFragment extends Fragment implements SpringView.OnFre
 
         initLoad();
         initView();
-        requestNoticeOrderList();
         return loadService.getLoadLayout();
     }
 

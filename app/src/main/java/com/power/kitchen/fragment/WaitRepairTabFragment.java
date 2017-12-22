@@ -20,6 +20,8 @@ import com.kingja.loadsir.core.LoadSir;
 import com.liaoinstan.springview.container.AliHeader;
 import com.liaoinstan.springview.container.DefaultFooter;
 import com.liaoinstan.springview.container.DefaultHeader;
+import com.liaoinstan.springview.container.MeituanFooter;
+import com.liaoinstan.springview.container.MeituanHeader;
 import com.liaoinstan.springview.widget.SpringView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
@@ -103,8 +105,8 @@ public class WaitRepairTabFragment extends BaseFragment implements View.OnClickL
         springView.setType(SpringView.Type.FOLLOW);
         springView.setListener(this);
 //        springView.setHeader(new AliHeader(getActivity(),R.mipmap.app_logo,true));
-        springView.setHeader(new MyHeader(getActivity()));
         springView.setFooter(new MyFooter(getActivity()));
+        springView.setHeader(new MyHeader(getActivity()));
     }
 
     @Override
