@@ -74,7 +74,6 @@ public class SystemMessageFragment extends Fragment implements SpringView.OnFres
 
         initLoad();
         initView();
-        requestNoticeSystemList();
         return loadService.getLoadLayout();
     }
 

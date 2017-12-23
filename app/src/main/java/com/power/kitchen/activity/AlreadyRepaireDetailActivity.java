@@ -205,7 +205,6 @@ public class AlreadyRepaireDetailActivity extends BaseActivity {
                             float money = price + peijian_privice;
                             payMoneyTv.setText("￥"+price);
                             payTv.setText("￥"+price);
-                            payTypeNameTv.setText(orderInfoBean.getData().getInfo().getPay_type_name());
                             payFangshiTv.setText(orderInfoBean.getData().getInfo().getPay_type_name());
                             payTimeTv.setText(TimeUtils.getStrTimeYMD(orderInfoBean.getData().getInfo().getPay_time()));
                             deviceTxmEt.setText(orderInfoBean.getData().getInfo().getOid());
