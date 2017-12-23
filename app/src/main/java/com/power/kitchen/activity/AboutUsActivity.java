@@ -33,6 +33,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 关于我们
+ */
 public class AboutUsActivity extends BaseActivity {
 
     @BindView(R.id.back_iv) ImageView backIv;
