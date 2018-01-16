@@ -34,6 +34,7 @@ import com.power.kitchen.adapter.MyFooter;
 import com.power.kitchen.adapter.MyHeader;
 import com.power.kitchen.adapter.WaitRepairAdapter;
 import com.power.kitchen.app.BaseFragment;
+import com.power.kitchen.bean.EventBean;
 import com.power.kitchen.bean.OrderListBean;
 import com.power.kitchen.callback.DialogCallback;
 import com.power.kitchen.callback.EmptyCallback;
@@ -44,6 +45,10 @@ import com.power.kitchen.callback.TimeoutCallback;
 import com.power.kitchen.utils.SPUtils;
 import com.power.kitchen.utils.TUtils;
 import com.power.kitchen.utils.Urls;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -78,6 +83,7 @@ public class WaitRepairTabFragment extends BaseFragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_wait_repaire, container, false);
         unbinder = ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
         initLoad();
         initView();
         return loadService.getLoadLayout();
@@ -175,10 +181,16 @@ public class WaitRepairTabFragment extends BaseFragment implements View.OnClickL
                 });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void myEvent(EventBean eventBean) {
+        if (eventBean.getMsg().equals("refrash")) {
+            springView.callFresh();
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        Logger.e("22222222222");
         springView.callFresh();
     }
 
@@ -186,6 +198,7 @@ public class WaitRepairTabFragment extends BaseFragment implements View.OnClickL
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

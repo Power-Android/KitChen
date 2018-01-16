@@ -12,7 +12,9 @@ import android.text.TextUtils;
 
 import com.orhanobut.logger.Logger;
 import com.power.kitchen.R;
+import com.power.kitchen.bean.EventBean;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,13 +49,12 @@ public class MyReceiver extends BroadcastReceiver {
 
 			} else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
 				Logger.d("[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
-				processCustomMessage(context, bundle);
 
 			} else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 				Logger.d("[MyReceiver] 接收到推送下来的通知");
 				int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
 				Logger.d("[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
-
+				processCustomMessage(context, bundle);
 			} else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
 				Logger.d("[MyReceiver] 用户点击打开了通知");
 
@@ -170,6 +171,8 @@ public class MyReceiver extends BroadcastReceiver {
 				title="您的订单已被接单";
 				String oid = jo.getString("oid");
 				message="订单编号："+oid;
+				EventBean eventBean = new EventBean("refrash");
+				EventBus.getDefault().postSticky(eventBean);
 			}else if("ok_order".equals(sms_type)){
 				title="已完成订单变更";
 				String oid = jo.getString("oid");

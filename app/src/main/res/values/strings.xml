@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">商厨联盟</string>
+    <string name="app_name">商厨联盟用户</string>
     <string name="tab_bxjl">报修记录</string>
     <string name="tab_baoxiu">报修</string>
     <string name="tab_grzx">个人中心</string>

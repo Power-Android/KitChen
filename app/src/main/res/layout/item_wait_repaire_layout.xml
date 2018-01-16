@@ -24,6 +24,7 @@
             android:layout_marginRight="10dp"
             android:textColor="@color/yellow01"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
     <LinearLayout
@@ -55,6 +56,7 @@
                 android:layout_height="wrap_content"
                 style="@style/black_smtextview"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
@@ -66,7 +68,6 @@
                 android:id="@+id/xinghao_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/name_tv"
                 style="@style/black_smtextview"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp" />
@@ -77,7 +78,6 @@
                 style="@style/black_smtextview"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@+id/name_tv"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"/>
         </RelativeLayout>
