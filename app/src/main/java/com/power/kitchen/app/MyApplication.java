@@ -100,7 +100,7 @@ public class MyApplication extends Application {
         //log相关
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor("POWER");
         loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
-        loggingInterceptor.setColorLevel(Level.WARNING);                             //log颜色级别，决定了log在控制台显示的颜色
+        loggingInterceptor.setColorLevel(Level.SEVERE);                             //log颜色级别，决定了log在控制台显示的颜色
         builder.addInterceptor(loggingInterceptor);                                 //添加OkGo默认debug日志
 
         //超时时间设置，默认60秒

@@ -403,7 +403,7 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
                     geoCoder.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
                         @Override
                         public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
-                            if (geoCodeResult != null){
+                            if (geoCodeResult != null && geoCodeResult.getLocation() != null){
                                 Logger.e("地理编码查询结果" + geoCodeResult.getLocation());
                                 double latitude = geoCodeResult.getLocation().latitude;
                                 double longitude = geoCodeResult.getLocation().longitude;
@@ -770,25 +770,20 @@ public class DeviceDetailsActivity extends BaseActivity implements SelectedAreaP
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
                     selectList = PictureSelector.obtainMultipleResult(data);
-                    Logger.e(selectList.size()+"111111");
                     // 例如 LocalMedia 里面返回三种path
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
                     list2.addAll(selectList);
-                    Logger.e(list2.size()+"3333333");
                     selectList.clear();
-                    Logger.e(selectList.size()+"22222222");
                     if (list1.size() != 0){
-                        Logger.e(list1.size()+"55555555");
                         list1.addAll(list2);
                         list2.clear();
                         addImgesAdpter.setList(list1);
                         addImgesAdpter.notifyDataSetChanged();
                     }else {
                         addImgesAdpter.setList(list2);
-                        Logger.e(list2.size()+"44444444444");
                         addImgesAdpter.notifyDataSetChanged();
                     }
 

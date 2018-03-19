@@ -138,7 +138,7 @@ public class PersonCenterFragment extends Fragment implements View.OnClickListen
                     @Override
                     public void onSuccess(Response<NoticeNumBean> response) {
                         NoticeNumBean noticeNumBean = response.body();
-                        if (TextUtils.equals("1",noticeNumBean.getStatus())){
+                        if (TextUtils.equals("1",noticeNumBean.getStatus()) && !noticeNumBean.getData().getCount().equals("")){
                             meeageTv.setText(noticeNumBean.getData().getCount());
                             meeageTv.setVisibility(View.VISIBLE);
                         }else {

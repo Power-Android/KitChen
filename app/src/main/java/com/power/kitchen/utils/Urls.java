@@ -6,7 +6,7 @@ package com.power.kitchen.utils;
 
 public class Urls {
 
-    static final String api_url = "http://shangchu.ip189.enet360.com";
+    static final String api_url = "http://api.sclm365.com";
 
     //获取Token
     public static final String get_token = api_url + "/Api/Oauth/get_token.html";

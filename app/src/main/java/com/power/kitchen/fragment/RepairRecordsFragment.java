@@ -208,7 +208,7 @@ public class RepairRecordsFragment extends Fragment implements View.OnClickListe
                     @Override
                     public void onSuccess(Response<NoticeNumBean> response) {
                         NoticeNumBean noticeNumBean = response.body();
-                        if (TextUtils.equals("1",noticeNumBean.getStatus())){
+                        if (TextUtils.equals("1",noticeNumBean.getStatus()) && !noticeNumBean.getData().getCount().equals("")){
                             messageTv.setVisibility(View.VISIBLE);
                             messageTv.setText(noticeNumBean.getData().getCount());
                         }
